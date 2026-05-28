@@ -1,0 +1,148 @@
+/* ── BHK Grid ── */
+.bhk-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+.bhk-card {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: var(--glass-border);
+  border-radius: 20px;
+  overflow: hidden;
+  transition: var(--transition);
+  cursor: pointer;
+}
+
+.bhk-card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(224, 169, 109, 0.4);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 0 20px rgba(224,169,109,0.1);
+}
+
+.bhk-image-wrap {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+}
+
+.bhk-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.bhk-card:hover .bhk-img {
+  transform: scale(1.06);
+}
+
+.bhk-badge {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  background: linear-gradient(135deg, var(--accent-color), #c08748);
+  color: #000;
+  font-weight: 800;
+  font-size: 0.85rem;
+  padding: 0.3rem 0.9rem;
+  border-radius: 50px;
+  letter-spacing: 1px;
+}
+
+.bhk-badge-blue   { background: linear-gradient(135deg, #60a5fa, #2563eb); color: #fff; }
+.bhk-badge-gold   { background: linear-gradient(135deg, #fbbf24, #d97706); color: #000; }
+.bhk-badge-purple { background: linear-gradient(135deg, #a78bfa, #7c3aed); color: #fff; }
+
+.bhk-body {
+  padding: 1.5rem;
+}
+
+.bhk-body h3 {
+  font-size: 1.1rem;
+  margin-bottom: 0.75rem;
+  color: var(--text-color);
+}
+
+.bhk-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+
+.bhk-meta span {
+  font-size: 0.8rem;
+  color: var(--muted-color);
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 0.25rem 0.6rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.bhk-meta i { color: var(--accent-color); }
+
+.bhk-desc {
+  font-size: 0.88rem;
+  color: var(--muted-color);
+  line-height: 1.55;
+  margin-bottom: 1rem;
+}
+
+.bhk-cost-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(224,169,109,0.08);
+  border: 1px solid rgba(224,169,109,0.2);
+  border-radius: 10px;
+  padding: 0.6rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.bhk-cost-label {
+  font-size: 0.78rem;
+  color: var(--muted-color);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.bhk-cost-value {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--accent-color);
+}
+
+.bhk-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 1.2rem;
+}
+
+.bhk-tags span {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 50px;
+  padding: 0.2rem 0.65rem;
+  font-size: 0.75rem;
+  color: var(--muted-color);
+}
+
+.bhk-btn {
+  width: 100%;
+}
+
+.bhk-detail-panel {
+  border: 1px solid rgba(224,169,109,0.3) !important;
+  background: linear-gradient(135deg, rgba(224,169,109,0.05), rgba(124,58,237,0.05)) !important;
+}
+
+@media (max-width: 768px) {
+  .bhk-grid { grid-template-columns: 1fr; }
+}

@@ -1,0 +1,12 @@
+{
+  "name": "construct-ease-root",
+  "version": "1.0.0",
+  "description": "Root runner for Construct Ease project",
+  "scripts": {
+    "postinstall": "npm install --prefix client && npm install --prefix server",
+    "dev": "concurrently \"npm start --prefix server\" \"npm start --prefix client\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

@@ -1,0 +1,328 @@
+{% extends "base.html" %}
+
+{% block title %}Construct Ease - Build Your Dream Home{% endblock %}
+
+{% block head %}
+<style>
+    .how-it-works {
+        padding: 5rem 5%;
+        background: rgba(7, 13, 24, 0.6);
+        backdrop-filter: blur(8px);
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .step-card {
+        display: flex;
+        align-items: flex-start;
+        gap: 1.5rem;
+    }
+
+    .step-number {
+        min-width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: rgba(224, 169, 109, 0.12);
+        border: 2px solid rgba(224, 169, 109, 0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+        font-weight: 800;
+        color: var(--accent-color);
+        flex-shrink: 0;
+    }
+
+    .features-strip {
+        padding: 5rem 5%;
+    }
+
+    .feature-pill {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 50px;
+        padding: 0.8rem 1.5rem;
+        font-size: 0.9rem;
+        color: var(--muted-color);
+        transition: var(--transition);
+    }
+
+    .feature-pill:hover {
+        background: rgba(224, 169, 109, 0.08);
+        border-color: rgba(224, 169, 109, 0.2);
+        color: var(--text-color);
+        transform: translateY(-2px);
+    }
+
+    .feature-pill i {
+        color: var(--accent-color);
+        font-size: 1rem;
+    }
+
+    .pills-flex {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        justify-content: center;
+    }
+
+    .cta-section {
+        padding: 6rem 5%;
+        text-align: center;
+    }
+
+    .cta-section h2 {
+        font-size: clamp(2rem, 4vw, 3rem);
+        font-weight: 800;
+        letter-spacing: -1px;
+        margin-bottom: 1rem;
+    }
+
+    .cta-section p {
+        color: var(--muted-color);
+        font-size: 1.1rem;
+        margin-bottom: 2.5rem;
+    }
+
+    .roles-section {
+        padding: 5rem 5%;
+    }
+
+    .role-card {
+        text-align: center;
+        padding: 2.5rem 2rem;
+    }
+
+    .role-card h3 {
+        font-size: 1.4rem;
+        margin-bottom: 0.8rem;
+        color: var(--text-color);
+    }
+
+    .role-card .card-arrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--accent-color);
+        font-weight: 600;
+        font-size: 0.9rem;
+        margin-top: 1.5rem;
+        transition: var(--transition);
+    }
+
+    .glass-card:hover .card-arrow {
+        gap: 0.8rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- ===== HERO SECTION ===== -->
+<section class="hero">
+    <div class="hero-content animate">
+        <div class="hero-badge">
+            <i class="fa-solid fa-star"></i> India's Smart Construction Platform
+        </div>
+        <h1>
+            <span class="line1">Build Your Dream.</span>
+            <span class="line2">Effortlessly.</span>
+        </h1>
+        <p>Connecting House Owners, Architects, and Builders on one transparent platform for stunning, on-budget
+            construction projects.</p>
+        <div class="hero-buttons">
+            <a href="#roles" class="btn"><i class="fa-solid fa-rocket"></i> Get Started Free</a>
+            <a href="#how-it-works" class="btn btn-outline"><i class="fa-solid fa-play"></i> See How It Works</a>
+        </div>
+
+        <div class="hero-stats">
+            <div class="stat-item animate animate-delay-1">
+                <span class="stat-number">500+</span>
+                <span class="stat-label">Projects Completed</span>
+            </div>
+            <div class="stat-item animate animate-delay-2">
+                <span class="stat-number">98%</span>
+                <span class="stat-label">Client Satisfaction</span>
+            </div>
+            <div class="stat-item animate animate-delay-3">
+                <span class="stat-number">₹0</span>
+                <span class="stat-label">Hidden Costs</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== FEATURE PILLS ===== -->
+<section class="features-strip">
+    <div class="pills-flex scroll-reveal">
+        <div class="feature-pill"><i class="fa-solid fa-calculator"></i> Instant Cost Estimator</div>
+        <div class="feature-pill"><i class="fa-solid fa-shield-halved"></i> 100% Transparent Pricing</div>
+        <div class="feature-pill"><i class="fa-solid fa-layer-group"></i> Design Templates Library</div>
+        <div class="feature-pill"><i class="fa-solid fa-chart-line"></i> Live Material Prices</div>
+        <div class="feature-pill"><i class="fa-solid fa-users"></i> Verified Professionals</div>
+        <div class="feature-pill"><i class="fa-solid fa-file-invoice"></i> Smart Billing</div>
+        <div class="feature-pill"><i class="fa-solid fa-mobile-screen"></i> Mobile Friendly</div>
+    </div>
+</section>
+
+<!-- ===== ROLES SECTION ===== -->
+<section id="roles" class="roles-section">
+    <div class="section-title scroll-reveal">
+        <h2>Who Are You?</h2>
+        <p>Select your role to access powerful tools tailored just for you.</p>
+    </div>
+    <div class="grid-3">
+        <a href="{{ url_for('customer_dashboard') }}" class="glass-card role-card scroll-reveal animate-delay-1">
+            <i class="fa-solid fa-house-chimney-user feature-icon"></i>
+            <h3>House Owner</h3>
+            <p style="color: var(--muted-color); margin-top: 0.5rem;">Get clear cost breakdowns, explore design
+                templates, and stay perfectly within budget.</p>
+            <div class="divider"></div>
+            <ul
+                style="list-style: none; text-align: left; margin-top: 1rem; display: flex; flex-direction: column; gap: 0.6rem;">
+                <li style="color: var(--muted-color); font-size: 0.9rem;"><i class="fa-solid fa-check"
+                        style="color: var(--accent-color); margin-right: 0.5rem;"></i>Auto Cost Estimator</li>
+                <li style="color: var(--muted-color); font-size: 0.9rem;"><i class="fa-solid fa-check"
+                        style="color: var(--accent-color); margin-right: 0.5rem;"></i>Design Template Browser</li>
+                <li style="color: var(--muted-color); font-size: 0.9rem;"><i class="fa-solid fa-check"
+                        style="color: var(--accent-color); margin-right: 0.5rem;"></i>No Hidden Surprises</li>
+            </ul>
+            <span class="card-arrow">Get Started <i class="fa-solid fa-arrow-right"></i></span>
+        </a>
+
+        <a href="{{ url_for('architect_dashboard') }}" class="glass-card role-card scroll-reveal animate-delay-2">
+            <i class="fa-solid fa-compass-drafting feature-icon"></i>
+            <h3>Architect</h3>
+            <p style="color: var(--muted-color); margin-top: 0.5rem;">Reduce repetitive work. Upload design templates
+                and communicate clearly with clients.</p>
+            <div class="divider"></div>
+            <ul
+                style="list-style: none; text-align: left; margin-top: 1rem; display: flex; flex-direction: column; gap: 0.6rem;">
+                <li style="color: var(--muted-color); font-size: 0.9rem;"><i class="fa-solid fa-check"
+                        style="color: var(--accent-color); margin-right: 0.5rem;"></i>Upload Design Templates</li>
+                <li style="color: var(--muted-color); font-size: 0.9rem;"><i class="fa-solid fa-check"
+                        style="color: var(--accent-color); margin-right: 0.5rem;"></i>Client Portfolio View</li>
+                <li style="color: var(--muted-color); font-size: 0.9rem;"><i class="fa-solid fa-check"
+                        style="color: var(--accent-color); margin-right: 0.5rem;"></i>Automated Quoting</li>
+            </ul>
+            <span class="card-arrow">Get Started <i class="fa-solid fa-arrow-right"></i></span>
+        </a>
+
+        <a href="{{ url_for('builder_dashboard') }}" class="glass-card role-card scroll-reveal animate-delay-3">
+            <i class="fa-solid fa-helmet-safety feature-icon"></i>
+            <h3>Builder</h3>
+            <p style="color: var(--muted-color); margin-top: 0.5rem;">Generate accurate estimates, track live material
+                prices, and build trust through transparent billing.</p>
+            <div class="divider"></div>
+            <ul
+                style="list-style: none; text-align: left; margin-top: 1rem; display: flex; flex-direction: column; gap: 0.6rem;">
+                <li style="color: var(--muted-color); font-size: 0.9rem;"><i class="fa-solid fa-check"
+                        style="color: var(--accent-color); margin-right: 0.5rem;"></i>Live Material Prices</li>
+                <li style="color: var(--muted-color); font-size: 0.9rem;"><i class="fa-solid fa-check"
+                        style="color: var(--accent-color); margin-right: 0.5rem;"></i>Vendor Registration</li>
+                <li style="color: var(--muted-color); font-size: 0.9rem;"><i class="fa-solid fa-check"
+                        style="color: var(--accent-color); margin-right: 0.5rem;"></i>Transparent Billing</li>
+            </ul>
+            <span class="card-arrow">Get Started <i class="fa-solid fa-arrow-right"></i></span>
+        </a>
+
+        <a href="{{ url_for('interior_dashboard') }}" class="glass-card role-card scroll-reveal"
+            style="border: 1px solid rgba(224,169,109,0.25); background: rgba(224,169,109,0.05);">
+            <i class="fa-solid fa-couch feature-icon"></i>
+            <h3>Interior Design</h3>
+            <p style="color: var(--muted-color); margin-top: 0.5rem;">Explore stunning interior styles, get instant cost
+                breakdowns, find designers near you, and shop smart.</p>
+            <div class="divider"></div>
+            <ul
+                style="list-style: none; text-align: left; margin-top: 1rem; display: flex; flex-direction: column; gap: 0.6rem;">
+                <li style="color: var(--muted-color); font-size: 0.9rem;"><i class="fa-solid fa-check"
+                        style="color: var(--accent-color); margin-right: 0.5rem;"></i>Style Visualizer & Cost Estimator
+                </li>
+                <li style="color: var(--muted-color); font-size: 0.9rem;"><i class="fa-solid fa-check"
+                        style="color: var(--accent-color); margin-right: 0.5rem;"></i>Find Local Designers</li>
+                <li style="color: var(--muted-color); font-size: 0.9rem;"><i class="fa-solid fa-check"
+                        style="color: var(--accent-color); margin-right: 0.5rem;"></i>Affordable Furniture Stores</li>
+            </ul>
+            <span class="card-arrow" style="color:var(--accent-color);">Explore Now <i
+                    class="fa-solid fa-arrow-right"></i></span>
+        </a>
+    </div>
+</section>
+
+<!-- ===== HOW IT WORKS ===== -->
+<section id="how-it-works" class="how-it-works">
+    <div style="max-width: 1400px; margin: 0 auto;">
+        <div class="section-title scroll-reveal">
+            <h2>How It Works</h2>
+            <p>Simple steps to start your construction journey.</p>
+        </div>
+        <div class="grid-3">
+            <div class="glass-card step-card scroll-reveal animate-delay-1">
+                <div class="step-number">1</div>
+                <div>
+                    <h3 style="margin-bottom: 0.5rem;">Select Your Role</h3>
+                    <p style="color: var(--muted-color); font-size: 0.95rem;">Choose whether you're a House Owner,
+                        Architect, or Builder to access your personalized dashboard.</p>
+                </div>
+            </div>
+            <div class="glass-card step-card scroll-reveal animate-delay-2">
+                <div class="step-number">2</div>
+                <div>
+                    <h3 style="margin-bottom: 0.5rem;">Plan & Estimate</h3>
+                    <p style="color: var(--muted-color); font-size: 0.95rem;">Use our AI-powered cost estimator to get
+                        instant transparent cost breakdowns based on your requirements.</p>
+                </div>
+            </div>
+            <div class="glass-card step-card scroll-reveal animate-delay-3">
+                <div class="step-number">3</div>
+                <div>
+                    <h3 style="margin-bottom: 0.5rem;">Build With Confidence</h3>
+                    <p style="color: var(--muted-color); font-size: 0.95rem;">Connect with verified professionals, track
+                        progress live, and complete your dream project on time and budget.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== CTA SECTION ===== -->
+<section class="cta-section">
+    <div class="glass-card scroll-reveal" style="max-width: 700px; margin: 0 auto; padding: 4rem 3rem;">
+        <i class="fa-solid fa-building feature-icon" style="margin-bottom: 1.5rem;"></i>
+        <h2 style="font-size: clamp(1.8rem, 3vw, 2.5rem); letter-spacing: -1px;">Ready to Build Smarter?</h2>
+        <p style="color: var(--muted-color); font-size: 1.05rem; margin: 1rem 0 2.5rem;">Join thousands of homeowners,
+            architects, and builders already using Construct Ease to deliver better projects.</p>
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <a href="{{ url_for('customer_dashboard') }}" class="btn"><i class="fa-solid fa-house-chimney"></i> I'm a
+                House Owner</a>
+            <a href="{{ url_for('builder_dashboard') }}" class="btn btn-outline"><i
+                    class="fa-solid fa-helmet-safety"></i> I'm a Builder</a>
+        </div>
+    </div>
+</section>
+
+<script>
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.scroll-reveal').forEach(el => observer.observe(el));
+
+    window.addEventListener('scroll', () => {
+        const navbar = document.querySelector('.navbar');
+        if (window.scrollY > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    });
+</script>
+
+{% endblock %}

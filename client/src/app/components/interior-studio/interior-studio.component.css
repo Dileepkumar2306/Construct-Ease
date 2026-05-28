@@ -1,0 +1,35 @@
+/* Scoped CSS for Interior Studio Component */
+
+.budget-showroom-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.85rem;
+    color: var(--accent-color);
+    text-decoration: none;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 0.45rem 0.75rem;
+    border-radius: 8px;
+    background: rgba(224, 169, 109, 0.04);
+    border: 1px solid rgba(224, 169, 109, 0.12);
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+.budget-showroom-link:hover {
+    color: #000;
+    background: var(--accent-color);
+    border-color: var(--accent-color);
+    transform: translateX(4px);
+    text-decoration: none;
+    box-shadow: 0 4px 12px rgba(224, 169, 109, 0.3);
+}
+
+.budget-showroom-link i {
+    font-size: 0.75rem;
+    transition: transform 0.2s ease;
+}
+
+.budget-showroom-link:hover i {
+    transform: rotate(45deg);
+}

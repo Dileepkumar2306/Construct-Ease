@@ -1,0 +1,280 @@
+{% extends "base.html" %}
+{% block title %}House Owner Dashboard - Construct Ease{% endblock %}
+
+{% block head %}
+<style>
+    .split-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+    @media(max-width: 900px) { .split-layout { grid-template-columns: 1fr; } }
+    .result-box { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; }
+    .result-row { display: flex; justify-content: space-between; align-items: center; padding: 0.6rem 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .result-row:last-child { border-bottom: none; font-weight: 700; color: var(--accent-color); }
+    .template-img { width: 100%; height: 175px; object-fit: cover; border-radius: 10px; margin-bottom: 1rem; }
+    .badge { display: inline-block; padding: 0.25rem 0.7rem; border-radius: 50px; font-size: 0.75rem; font-weight: 600; background: rgba(224,169,109,0.15); color: var(--accent-color); border: 1px solid rgba(224,169,109,0.3); margin-bottom: 0.7rem; }
+    .tab-bar { display: flex; gap: 0.5rem; margin-bottom: 2rem; flex-wrap: wrap; }
+    .tab-btn { padding: 0.55rem 1.2rem; border-radius: 50px; border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.05); color: var(--muted-color); cursor: pointer; font-size: 0.88rem; transition: all 0.3s; }
+    .tab-btn.active, .tab-btn:hover { background: rgba(224,169,109,0.15); border-color: rgba(224,169,109,0.4); color: var(--accent-color); }
+    .progress-bar-wrap { background: rgba(0,0,0,0.3); border-radius: 20px; width: 100%; height: 8px; overflow: hidden; margin-top: 0.5rem; }
+    .progress-bar-fill { height: 100%; border-radius: 20px; background: linear-gradient(90deg, var(--accent-color), #f0c080); transition: width 1s ease; }
+    .project-card { padding: 1.5rem; }
+    .status-badge { display:inline-block; padding: 0.2rem 0.7rem; border-radius: 50px; font-size: 0.75rem; font-weight: 600; }
+    .status-planning { background: rgba(100,180,255,0.15); color: #64b4ff; }
+    .status-progress { background: rgba(224,169,109,0.15); color: var(--accent-color); }
+    .status-completion { background: rgba(110,231,183,0.15); color: #6ee7b7; }
+    .vendor-card { padding: 1.5rem; }
+    .star { color: #f5c518; }
+    .section-gap { margin-bottom: 2.5rem; }
+    .hero-dash { text-align:center; padding: 3rem 5% 1rem; }
+    .hero-dash h1 { font-size: clamp(1.8rem, 3.5vw, 2.8rem); font-weight: 800; letter-spacing: -1px; background: linear-gradient(135deg, #fff 30%, var(--accent-color)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0.8rem; }
+    .hero-dash p { color: var(--muted-color); max-width: 560px; margin: 0 auto; }
+    .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:2000; align-items:center; justify-content:center; }
+    .modal-overlay.open { display:flex; }
+    .modal-box { background: #0f1929; border: 1px solid rgba(255,255,255,0.12); border-radius: 16px; padding: 2rem; max-width: 480px; width: 90%; animation: fadeInUp 0.4s ease; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+
+    <div class="hero-dash animate">
+        <div class="hero-badge"><i class="fa-solid fa-house-chimney-user"></i> House Owner Dashboard</div>
+        <h1>Plan Your Dream Home</h1>
+        <p>Estimate costs, explore design templates, track projects, and find the best builders near you.</p>
+    </div>
+
+    <!-- COST ESTIMATOR -->
+    <section class="glass-card animate section-gap">
+        <h2 style="margin-bottom:0.4rem;"><span style="color:var(--accent-color);">Step 1</span> — Estimate Your Construction Cost</h2>
+        <p style="color:var(--muted-color); margin-bottom:2rem; font-size:0.95rem;">Get an instant transparent breakdown to help prevent budget surprises.</p>
+        <div class="split-layout">
+            <div>
+                <div class="form-group">
+                    <label>Total Construction Area (Sq. Ft)</label>
+                    <input type="number" id="area" class="form-control" placeholder="e.g. 1500" min="200">
+                </div>
+                <div class="form-group">
+                    <label>Construction Quality</label>
+                    <select id="quality" class="form-control" style="background:rgba(0,0,0,0.35);">
+                        <option value="budget">Budget (Standard materials)</option>
+                        <option value="standard" selected>Standard (Premium materials)</option>
+                        <option value="premium">Premium (Luxury finishes)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Your Name / Project Title</label>
+                    <input type="text" id="proj-title" class="form-control" placeholder="e.g. Sharma Residence">
+                </div>
+                <div class="form-group">
+                    <label>Location</label>
+                    <input type="text" id="proj-location" class="form-control" placeholder="e.g. Banjara Hills, Hyderabad">
+                </div>
+                <div style="display:flex; gap:1rem; margin-top:1rem;">
+                    <button class="btn" style="flex:1;" onclick="runEstimate()"><i class="fa-solid fa-calculator"></i> Calculate</button>
+                    <button class="btn btn-outline" style="flex:1;" id="save-btn" onclick="saveProject()" disabled><i class="fa-solid fa-floppy-disk"></i> Save Project</button>
+                </div>
+            </div>
+            <div id="estimate-results">
+                <div style="text-align:center; color:var(--muted-color); padding:3rem 1rem;">
+                    <i class="fa-solid fa-chart-pie" style="font-size:3rem; opacity:0.25; display:block; margin-bottom:1rem;"></i>
+                    Enter your details and click Calculate
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DESIGN TEMPLATES -->
+    <section class="glass-card animate section-gap">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:1.5rem;">
+            <div>
+                <h2 style="margin-bottom:0.3rem;"><span style="color:var(--accent-color);">Step 2</span> — Explore Design Templates</h2>
+                <p style="color:var(--muted-color); font-size:0.95rem;">Browse architect-uploaded house designs.</p>
+            </div>
+            <div class="tab-bar" style="margin-bottom:0;" id="template-tabs">
+                <button class="tab-btn active" onclick="loadTemplates('')">All</button>
+                <button class="tab-btn" onclick="loadTemplates('Modern')">Modern</button>
+                <button class="tab-btn" onclick="loadTemplates('Traditional')">Traditional</button>
+                <button class="tab-btn" onclick="loadTemplates('Luxury')">Luxury</button>
+                <button class="tab-btn" onclick="loadTemplates('Scandinavian')">Scandinavian</button>
+            </div>
+        </div>
+        <div class="grid-3" id="templates-container">
+            <div style="color:var(--muted-color);"><i class="fa-solid fa-spinner fa-spin"></i> Loading templates...</div>
+        </div>
+    </section>
+
+    <!-- MY PROJECTS -->
+    <section class="glass-card animate section-gap">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; flex-wrap:wrap; gap:1rem;">
+            <div>
+                <h2 style="margin-bottom:0.3rem;"><span style="color:var(--accent-color);">Step 3</span> — My Projects</h2>
+                <p style="color:var(--muted-color); font-size:0.95rem;">Track your construction projects and their progress.</p>
+            </div>
+            <button class="btn btn-outline" onclick="loadProjects()"><i class="fa-solid fa-rotate"></i> Refresh</button>
+        </div>
+        <div class="grid-3" id="projects-container">
+            <div style="color:var(--muted-color);"><i class="fa-solid fa-spinner fa-spin"></i> Loading projects...</div>
+        </div>
+    </section>
+
+    <!-- FIND BUILDERS -->
+    <section class="glass-card animate section-gap">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:1.5rem;">
+            <div>
+                <h2 style="margin-bottom:0.3rem;"><span style="color:var(--accent-color);">Step 4</span> — Find a Builder Near You</h2>
+                <p style="color:var(--muted-color); font-size:0.95rem;">Verified, rated builders for your budget range.</p>
+            </div>
+            <div class="tab-bar" style="margin-bottom:0;">
+                <button class="tab-btn active" onclick="loadBuilders('')">All Budgets</button>
+                <button class="tab-btn" onclick="loadBuilders('budget')">Budget</button>
+                <button class="tab-btn" onclick="loadBuilders('premium')">Premium</button>
+            </div>
+        </div>
+        <div class="grid-3" id="builders-container">
+            <div style="color:var(--muted-color);"><i class="fa-solid fa-spinner fa-spin"></i> Loading builders...</div>
+        </div>
+    </section>
+
+</div>
+
+<!-- Save Success Toast -->
+<div id="toast" style="display:none; position:fixed; bottom:2rem; right:2rem; background:rgba(110,231,183,0.15); border:1px solid rgba(110,231,183,0.4); color:#6ee7b7; padding:1rem 2rem; border-radius:12px; z-index:3000; font-weight:600; backdrop-filter:blur(10px);">
+    <i class="fa-solid fa-check-circle"></i> <span id="toast-msg">Saved!</span>
+</div>
+
+<script>
+    const INR = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 });
+    let lastEstimate = null;
+
+    async function runEstimate() {
+        const area = parseFloat(document.getElementById('area').value);
+        if (!area || area < 200) { alert('Please enter a valid area (min 200 sq ft)'); return; }
+        const quality = document.getElementById('quality').value;
+        const res = await fetch('/api/estimate', {
+            method: 'POST', headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ area, quality, margin: 0 })
+        });
+        const d = await res.json();
+        lastEstimate = d;
+        document.getElementById('save-btn').disabled = false;
+
+        document.getElementById('estimate-results').innerHTML = `
+            <div class="animate">
+                <div style="text-align:center; padding:1.2rem; background:rgba(224,169,109,0.08); border-radius:12px; border:1px solid rgba(224,169,109,0.2); margin-bottom:1.2rem;">
+                    <p style="color:var(--muted-color); font-size:0.85rem; margin-bottom:0.3rem;">${quality.charAt(0).toUpperCase()+quality.slice(1)} build · ${area} sq ft</p>
+                    <p style="font-size:2rem; font-weight:800; color:var(--accent-color);">${INR.format(d.total)}</p>
+                </div>
+                <div class="result-box">
+                    <div class="result-row"><span><i class="fa-solid fa-building" style="opacity:0.5; margin-right:8px;"></i>Foundation</span><span>${INR.format(d.breakdown.foundation)}</span></div>
+                    <div class="result-row"><span><i class="fa-solid fa-ruler-combined" style="opacity:0.5; margin-right:8px;"></i>Structure & Frame</span><span>${INR.format(d.breakdown.structure)}</span></div>
+                    <div class="result-row"><span><i class="fa-solid fa-cubes" style="opacity:0.5; margin-right:8px;"></i>Materials</span><span>${INR.format(d.breakdown.materials)}</span></div>
+                    <div class="result-row"><span><i class="fa-solid fa-helmet-safety" style="opacity:0.5; margin-right:8px;"></i>Labor</span><span>${INR.format(d.breakdown.labor)}</span></div>
+                    <div class="result-row"><span><i class="fa-solid fa-paint-roller" style="opacity:0.5; margin-right:8px;"></i>Finishing</span><span>${INR.format(d.breakdown.finishing)}</span></div>
+                    <div class="result-row"><span><i class="fa-solid fa-toolbox" style="opacity:0.5; margin-right:8px;"></i>Miscellaneous</span><span>${INR.format(d.breakdown.misc)}</span></div>
+                </div>
+                <p style="font-size:0.78rem; color:var(--muted-color);">* Estimates ±10–15%. Market rates as of 2026.</p>
+            </div>`;
+    }
+
+    async function saveProject() {
+        const title = document.getElementById('proj-title').value || 'My Project';
+        const area = parseFloat(document.getElementById('area').value) || 0;
+        const location = document.getElementById('proj-location').value || 'Hyderabad';
+        await fetch('/api/projects', {
+            method: 'POST', headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ title, area, location, budget: lastEstimate ? lastEstimate.total : 0, type: '2BHK', start_date: new Date().toISOString().split('T')[0] })
+        });
+        showToast('Project saved successfully!');
+        loadProjects();
+    }
+
+    async function loadTemplates(style) {
+        document.querySelectorAll('#template-tabs .tab-btn').forEach(b => b.classList.remove('active'));
+        if (event && event.target) event.target.classList.add('active');
+        const container = document.getElementById('templates-container');
+        container.innerHTML = '<div style="color:var(--muted-color);"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>';
+        const res = await fetch('/api/templates?style=' + encodeURIComponent(style));
+        const data = await res.json();
+        container.innerHTML = '';
+        if (!data.length) { container.innerHTML = '<p style="color:var(--muted-color);">No templates found.</p>'; return; }
+        data.forEach((t, i) => {
+            const div = document.createElement('div');
+            div.className = 'glass-card animate';
+            div.style.animationDelay = `${i * 0.08}s`;
+            div.innerHTML = `
+                <img src="${t.image_url || '/static/images/interior_modern.png'}" alt="${t.name}" class="template-img" onerror="this.style.display='none'">
+                <div class="badge">${t.style}</div>
+                <h3 style="margin-bottom:0.4rem;">${t.name}</h3>
+                <p style="color:var(--muted-color); font-size:0.85rem; margin-bottom:0.8rem;">${t.description || ''}</p>
+                <div style="display:flex; justify-content:space-between; font-size:0.85rem; color:var(--muted-color);">
+                    <span><i class="fa-solid fa-ruler-combined" style="color:var(--accent-color);"></i> ${t.area} sq ft</span>
+                    <span><i class="fa-solid fa-bed" style="color:var(--accent-color);"></i> ${t.bedrooms} BHK</span>
+                </div>
+                <p style="font-size:0.78rem; color:var(--muted-color); margin-top:0.8rem;">By ${t.uploaded_by || 'Architect'}</p>`;
+            container.appendChild(div);
+        });
+    }
+
+    async function loadProjects() {
+        const container = document.getElementById('projects-container');
+        container.innerHTML = '<div style="color:var(--muted-color);"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>';
+        const res = await fetch('/api/projects');
+        const data = await res.json();
+        container.innerHTML = '';
+        if (!data.length) { container.innerHTML = '<p style="color:var(--muted-color);">No projects yet. Save your first estimate above!</p>'; return; }
+        data.forEach((p, i) => {
+            const statusClass = p.progress >= 70 ? 'status-completion' : p.progress > 0 ? 'status-progress' : 'status-planning';
+            const div = document.createElement('div');
+            div.className = 'glass-card project-card animate';
+            div.style.animationDelay = `${i * 0.08}s`;
+            div.innerHTML = `
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:1rem;">
+                    <div><h3 style="font-size:1rem; margin-bottom:0.2rem;">${p.title}</h3><p style="color:var(--muted-color); font-size:0.8rem;"><i class="fa-solid fa-location-dot" style="color:var(--accent-color);"></i> ${p.location || 'Hyderabad'}</p></div>
+                    <span class="status-badge ${statusClass}">${p.status}</span>
+                </div>
+                <div style="font-size:0.85rem; color:var(--muted-color); margin-bottom:0.5rem;">Progress: <strong style="color:var(--text-color);">${p.progress}%</strong></div>
+                <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${p.progress}%;"></div></div>
+                <div style="display:flex; justify-content:space-between; margin-top:1rem; font-size:0.85rem; color:var(--muted-color);">
+                    <span>Budget: <strong style="color:var(--accent-color);">${INR.format(p.budget)}</strong></span>
+                    <span>${p.area} sq ft</span>
+                </div>`;
+            container.appendChild(div);
+        });
+    }
+
+    async function loadBuilders(budget) {
+        const container = document.getElementById('builders-container');
+        container.innerHTML = '<div style="color:var(--muted-color);"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>';
+        const res = await fetch('/api/customer/builders?budget=' + encodeURIComponent(budget));
+        const data = await res.json();
+        container.innerHTML = '';
+        data.forEach((v, i) => {
+            const stars = '★'.repeat(Math.round(v.rating)) + '☆'.repeat(5 - Math.round(v.rating));
+            const div = document.createElement('div');
+            div.className = 'glass-card vendor-card animate';
+            div.style.animationDelay = `${i * 0.08}s`;
+            div.innerHTML = `
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:0.8rem;">
+                    <div><h3 style="font-size:1rem; margin-bottom:0.2rem;">${v.name}</h3><p style="color:var(--muted-color); font-size:0.82rem;"><i class="fa-solid fa-location-dot" style="color:var(--accent-color);"></i> ${v.area}, ${v.city}</p></div>
+                    <div style="text-align:right;"><p class="star" style="font-size:0.85rem;">${stars}</p><p style="color:var(--muted-color); font-size:0.75rem;">${v.rating}/5</p></div>
+                </div>
+                <div style="display:flex; flex-wrap:wrap; gap:0.3rem; margin-bottom:0.8rem;">${(v.specialties || []).map(s => `<span style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); border-radius:6px; padding:0.2rem 0.6rem; font-size:0.78rem; color:var(--muted-color);">${s}</span>`).join('')}</div>
+                <div style="font-size:0.84rem; color:var(--muted-color); margin-bottom:0.4rem;">Experience: <strong style="color:var(--text-color);">${v.experience_yrs} yrs</strong> · Projects: <strong style="color:var(--text-color);">${v.projects_done}+</strong></div>
+                <div style="font-size:0.84rem; color:var(--muted-color); margin-bottom:1rem;">Min. Budget: <strong style="color:var(--accent-color);">${INR.format(v.min_project_size)}</strong></div>
+                <a href="tel:${v.phone}" class="btn" style="width:100%; text-align:center; font-size:0.85rem; padding:0.65rem;"><i class="fa-solid fa-phone"></i> ${v.phone}</a>`;
+            container.appendChild(div);
+        });
+    }
+
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        document.getElementById('toast-msg').textContent = msg;
+        t.style.display = 'block';
+        setTimeout(() => t.style.display = 'none', 3000);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        loadTemplates('');
+        loadProjects();
+        loadBuilders('');
+    });
+</script>
+{% endblock %}

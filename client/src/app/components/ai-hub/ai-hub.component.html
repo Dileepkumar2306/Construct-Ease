@@ -1,0 +1,708 @@
+<div class="ai-hub-wrapper">
+
+  <!-- ═══════════════════ HERO HEADER ═══════════════════ -->
+  <div class="ai-hub-header animate">
+    <div class="ai-badge"><i class="fa-solid fa-microchip"></i> Powered by AI</div>
+    <h1>AI Command <span>Center</span></h1>
+    <p>One intelligent hub — 6 powerful AI tools for smarter construction decisions</p>
+  </div>
+
+  <!-- ═══════════════════ TAB NAVIGATION ═══════════════════ -->
+  <div class="tab-nav animate">
+    <button
+      *ngFor="let tab of tabs"
+      class="tab-btn"
+      [class.active]="activeTab === tab.id"
+      (click)="setTab(tab.id)"
+      [id]="'tab-' + tab.id"
+    >
+      <i class="fa-solid" [class]="tab.icon"></i>
+      <span>{{ tab.label }}</span>
+    </button>
+  </div>
+
+  <!-- ═══════════════════ TAB PANELS ═══════════════════ -->
+  <div class="tab-content animate">
+
+    <!-- ─────────────── 0. AI DASHBOARD ─────────────── -->
+    <div *ngIf="activeTab === 'dashboard'" class="tab-panel" id="panel-dashboard">
+
+      <div class="panel-header">
+        <h2><i class="fa-solid fa-gauge-high"></i> AI Management Dashboard</h2>
+        <p>Real-time insights across all AI features</p>
+      </div>
+
+      <div *ngIf="dashboardLoading" class="loading-state">
+        <i class="fa-solid fa-spinner fa-spin"></i> Loading dashboard...
+      </div>
+
+      <div *ngIf="!dashboardLoading && dashboardData">
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon" style="--c: #e0a96d"><i class="fa-solid fa-brain"></i></div>
+            <div class="stat-value">{{ dashboardData.totalAnalyses }}</div>
+            <div class="stat-label">Total AI Analyses</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="--c: #60a5fa"><i class="fa-solid fa-calculator"></i></div>
+            <div class="stat-value">{{ dashboardData.estimatesGenerated }}</div>
+            <div class="stat-label">Cost Estimates</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="--c: #f87171"><i class="fa-solid fa-file-shield"></i></div>
+            <div class="stat-value">{{ dashboardData.contractsScanned }}</div>
+            <div class="stat-label">Contracts Scanned</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="--c: #34d399"><i class="fa-solid fa-house-chimney"></i></div>
+            <div class="stat-value">{{ dashboardData.roomsPlanned }}</div>
+            <div class="stat-label">Rooms Planned</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="--c: #a78bfa"><i class="fa-solid fa-calendar-days"></i></div>
+            <div class="stat-value">{{ dashboardData.timelinesCreated }}</div>
+            <div class="stat-label">Timelines Generated</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="--c: #fb923c"><i class="fa-solid fa-shield-halved"></i></div>
+            <div class="stat-value">{{ dashboardData.avgRiskScore }}</div>
+            <div class="stat-label">Avg Risk Score</div>
+          </div>
+        </div>
+
+        <!-- Recent Activity + Feature Tiles -->
+        <div class="dash-bottom-grid">
+
+          <div class="glass-card">
+            <h3><i class="fa-solid fa-clock-rotate-left" style="color:var(--accent-color)"></i> Recent Activity</h3>
+            <div class="activity-list">
+              <div *ngFor="let act of dashboardData.recentActivity" class="activity-item">
+                <span class="act-feature">{{ featureLabel(act.feature) }}</span>
+                <span class="act-summary">{{ act.summary }}</span>
+                <span class="act-time">{{ act.time }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="glass-card">
+            <h3><i class="fa-solid fa-rocket" style="color:var(--accent-color)"></i> Quick Launch</h3>
+            <div class="quick-launch-grid">
+              <button *ngFor="let tab of tabs.slice(1)" class="quick-btn" (click)="setTab(tab.id)">
+                <i class="fa-solid" [class]="tab.icon"></i>
+                <span>{{ tab.label }}</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ─────────────── 1. AI COST ESTIMATOR ─────────────── -->
+    <div *ngIf="activeTab === 'estimate'" class="tab-panel" id="panel-estimate">
+
+      <div class="panel-header">
+        <h2><i class="fa-solid fa-calculator"></i> AI House Cost Estimator</h2>
+        <p>Get precise breakdowns for cement, steel, labor, and all materials</p>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Construction Area (Sq. Ft)</label>
+          <input type="number" class="form-control" [(ngModel)]="estArea" placeholder="e.g. 1500" id="est-area" min="100">
+        </div>
+        <div class="form-group">
+          <label>City / Location</label>
+          <select class="form-control" [(ngModel)]="estCity" id="est-city">
+            <option value="mumbai">Mumbai</option>
+            <option value="delhi">Delhi</option>
+            <option value="bangalore">Bangalore</option>
+            <option value="hyderabad">Hyderabad</option>
+            <option value="chennai">Chennai</option>
+            <option value="pune">Pune</option>
+            <option value="ahmedabad">Ahmedabad</option>
+            <option value="kolkata">Kolkata</option>
+            <option value="jaipur">Jaipur</option>
+            <option value="lucknow">Lucknow</option>
+            <option value="default">Other City</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Number of Floors</label>
+          <select class="form-control" [(ngModel)]="estFloors" id="est-floors">
+            <option [value]="1">Ground Floor (G)</option>
+            <option [value]="2">G + 1 Floor</option>
+            <option [value]="3">G + 2 Floors</option>
+            <option [value]="4">G + 3 Floors</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Construction Quality</label>
+          <select class="form-control" [(ngModel)]="estQuality" id="est-quality">
+            <option value="budget">Budget (Standard materials)</option>
+            <option value="standard">Standard (Premium materials)</option>
+            <option value="premium">Premium (Luxury finishes)</option>
+            <option value="luxury">Ultra Luxury</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Project Type</label>
+          <select class="form-control" [(ngModel)]="estType" id="est-type">
+            <option value="residential">Residential Home</option>
+            <option value="villa">Independent Villa</option>
+            <option value="apartment">Apartment Complex</option>
+            <option value="commercial">Commercial Building</option>
+          </select>
+        </div>
+        <div class="form-group form-submit">
+          <button class="btn btn-ai" (click)="runEstimate()" [disabled]="estLoading" id="btn-estimate">
+            <i class="fa-solid" [class]="estLoading ? 'fa-spinner fa-spin' : 'fa-wand-magic-sparkles'"></i>
+            {{ estLoading ? 'Calculating...' : 'Generate AI Estimate' }}
+          </button>
+        </div>
+      </div>
+
+      <p *ngIf="estError" class="error-msg"><i class="fa-solid fa-triangle-exclamation"></i> {{ estError }}</p>
+
+      <!-- RESULT -->
+      <div *ngIf="estResult" class="result-panel">
+
+        <!-- Total Cost Hero -->
+        <div class="cost-hero">
+          <div class="cost-label">Estimated Total Cost</div>
+          <div class="cost-amount">{{ estResult.summary.totalCost | currency:'INR':'symbol':'1.0-0' }}</div>
+          <div class="cost-meta">
+            {{ estResult.summary.totalArea }} · {{ estResult.summary.quality | titlecase }} Quality ·
+            {{ estResult.summary.city | titlecase }} · ₹{{ estResult.summary.effectiveRatePerSqft }}/sqft
+          </div>
+        </div>
+
+        <!-- Breakdown Bars -->
+        <div class="breakdown-section">
+          <h3>Cost Breakdown</h3>
+          <div class="breakdown-bars">
+            <div *ngFor="let item of breakdownEntries" class="bar-row">
+              <div class="bar-label">
+                <span>{{ item.label }}</span>
+                <strong>{{ item.value | currency:'INR':'symbol':'1.0-0' }}</strong>
+              </div>
+              <div class="bar-track">
+                <div class="bar-fill" [style.width.%]="item.pct" [style.background]="item.color"></div>
+              </div>
+              <span class="bar-pct">{{ item.pct }}%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Materials Grid -->
+        <div class="materials-grid">
+          <h3>Material Quantities Needed</h3>
+          <div class="mat-cards">
+            <div class="mat-card">
+              <i class="fa-solid fa-industry"></i>
+              <div class="mat-qty">{{ estResult.materials.cement.quantity | number }}</div>
+              <div class="mat-unit">Cement Bags</div>
+              <div class="mat-cost">{{ estResult.materials.cement.estimatedCost | currency:'INR':'symbol':'1.0-0' }}</div>
+            </div>
+            <div class="mat-card">
+              <i class="fa-solid fa-screwdriver-wrench"></i>
+              <div class="mat-qty">{{ estResult.materials.steel.quantity | number }}</div>
+              <div class="mat-unit">Steel (kg)</div>
+              <div class="mat-cost">{{ estResult.materials.steel.estimatedCost | currency:'INR':'symbol':'1.0-0' }}</div>
+            </div>
+            <div class="mat-card">
+              <i class="fa-solid fa-mound"></i>
+              <div class="mat-qty">{{ estResult.materials.sand.quantity | number }}</div>
+              <div class="mat-unit">Sand (cft)</div>
+            </div>
+            <div class="mat-card">
+              <i class="fa-solid fa-bricks"></i>
+              <div class="mat-qty">{{ estResult.materials.bricks.quantity | number }}</div>
+              <div class="mat-unit">Bricks</div>
+            </div>
+            <div class="mat-card">
+              <i class="fa-solid fa-hard-hat"></i>
+              <div class="mat-qty">{{ estResult.laborDays | number }}</div>
+              <div class="mat-unit">Labor Days</div>
+            </div>
+            <div class="mat-card">
+              <i class="fa-solid fa-mountain"></i>
+              <div class="mat-qty">{{ estResult.materials.aggregate.quantity | number }}</div>
+              <div class="mat-unit">Aggregate (cft)</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- AI Insights -->
+        <div class="ai-insights">
+          <h3><i class="fa-solid fa-lightbulb"></i> AI Insights</h3>
+          <ul>
+            <li *ngFor="let insight of estResult.aiInsights">{{ insight }}</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ─────────────── 2. CONTRACT RISK SCANNER ─────────────── -->
+    <div *ngIf="activeTab === 'contract'" class="tab-panel" id="panel-contract">
+
+      <div class="panel-header">
+        <h2><i class="fa-solid fa-file-shield"></i> AI Contract Risk Scanner</h2>
+        <p>Paste any contract — AI detects risky clauses instantly with severity ratings</p>
+      </div>
+
+      <div class="contract-input-area">
+        <div class="form-group">
+          <div class="label-row">
+            <label>Contract Text</label>
+            <button class="btn btn-outline btn-sm" (click)="loadSample()" id="btn-sample-contract">
+              <i class="fa-solid fa-paste"></i> Load Sample Contract
+            </button>
+          </div>
+          <textarea
+            class="form-control contract-textarea"
+            [(ngModel)]="contractText"
+            placeholder="Paste your contract text here (minimum 50 characters)..."
+            id="contract-text"
+            rows="10"
+          ></textarea>
+          <div class="char-count">{{ contractText.length }} characters</div>
+        </div>
+        <button class="btn btn-ai" (click)="runRiskScan()" [disabled]="riskLoading || contractText.length < 50" id="btn-scan-contract">
+          <i class="fa-solid" [class]="riskLoading ? 'fa-spinner fa-spin' : 'fa-magnifying-glass-chart'"></i>
+          {{ riskLoading ? 'Scanning...' : 'Scan for Risks' }}
+        </button>
+      </div>
+
+      <p *ngIf="riskError" class="error-msg"><i class="fa-solid fa-triangle-exclamation"></i> {{ riskError }}</p>
+
+      <!-- RESULT -->
+      <div *ngIf="riskResult" class="result-panel">
+
+        <!-- Risk Score Card -->
+        <div class="risk-score-card" [class]="riskLevelClass()">
+          <div class="risk-gauge">
+            <div class="risk-score-num">{{ riskResult.riskScore }}</div>
+            <div class="risk-score-label">Risk Score</div>
+          </div>
+          <div class="risk-info">
+            <div class="risk-level-badge">{{ riskResult.riskLevel }}</div>
+            <p class="risk-advice">{{ riskResult.aiAdvice }}</p>
+            <div class="risk-summary-counts">
+              <span class="badge badge-high">{{ riskResult.summary.high }} HIGH</span>
+              <span class="badge badge-medium">{{ riskResult.summary.medium }} MEDIUM</span>
+              <span class="badge badge-low">{{ riskResult.summary.low }} LOW</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Findings List -->
+        <div class="findings-section" *ngIf="riskResult.findings.length > 0">
+          <h3>Detected Clauses ({{ riskResult.totalClauses }})</h3>
+          <div class="finding-card" *ngFor="let f of riskResult.findings">
+            <div class="finding-header">
+              <span class="finding-title">{{ f.clause }}</span>
+              <span class="badge" [class]="severityClass(f.severity)">{{ f.severity }}</span>
+            </div>
+            <p class="finding-snippet">{{ f.snippet }}</p>
+            <div class="finding-details">
+              <div class="finding-reason"><i class="fa-solid fa-circle-exclamation"></i> {{ f.reason }}</div>
+              <div class="finding-rec"><i class="fa-solid fa-circle-check"></i> {{ f.recommendation }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="riskResult.findings.length === 0" class="all-clear">
+          <i class="fa-solid fa-shield-check"></i>
+          <p>No risky clauses detected in this contract!</p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ─────────────── 3. AI ROOM PLANNER ─────────────── -->
+    <div *ngIf="activeTab === 'room'" class="tab-panel" id="panel-room">
+
+      <div class="panel-header">
+        <h2><i class="fa-solid fa-house-chimney"></i> AI Room Planner</h2>
+        <p>Get AI-optimized room dimensions, layouts and furniture recommendations</p>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Total Area (Sq. Ft)</label>
+          <input type="number" class="form-control" [(ngModel)]="roomArea" id="room-area" min="400">
+        </div>
+        <div class="form-group">
+          <label>Number of Bedrooms</label>
+          <select class="form-control" [(ngModel)]="roomCount" id="room-count">
+            <option [value]="1">1 BHK</option>
+            <option [value]="2">2 BHK</option>
+            <option [value]="3">3 BHK</option>
+            <option [value]="4">4 BHK</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Interior Style</label>
+          <select class="form-control" [(ngModel)]="roomStyle" id="room-style">
+            <option value="modern">Modern</option>
+            <option value="traditional">Traditional</option>
+            <option value="contemporary">Contemporary</option>
+            <option value="vastu">Vastu-Compliant</option>
+            <option value="industrial">Industrial</option>
+            <option value="minimalist">Minimalist</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Number of Floors</label>
+          <select class="form-control" [(ngModel)]="roomFloors" id="room-floors">
+            <option [value]="1">Single Floor</option>
+            <option [value]="2">Duplex (2 Floors)</option>
+            <option [value]="3">Triplex (3 Floors)</option>
+          </select>
+        </div>
+        <div class="form-group form-submit">
+          <button class="btn btn-ai" (click)="runRoomPlan()" [disabled]="roomLoading" id="btn-room-plan">
+            <i class="fa-solid" [class]="roomLoading ? 'fa-spinner fa-spin' : 'fa-wand-magic-sparkles'"></i>
+            {{ roomLoading ? 'Planning...' : 'Generate Room Plan' }}
+          </button>
+        </div>
+      </div>
+
+      <p *ngIf="roomError" class="error-msg"><i class="fa-solid fa-triangle-exclamation"></i> {{ roomError }}</p>
+
+      <!-- RESULT -->
+      <div *ngIf="roomResult" class="result-panel">
+
+        <div class="room-summary-bar">
+          <span><i class="fa-solid fa-vector-square"></i> {{ roomResult.summary.totalArea }} sqft</span>
+          <span><i class="fa-solid fa-bed"></i> {{ roomResult.summary.bedroomCount }} BHK</span>
+          <span><i class="fa-solid fa-palette"></i> {{ roomResult.summary.style | titlecase }}</span>
+          <span><i class="fa-solid fa-layer-group"></i> {{ roomResult.summary.floors }} Floor(s)</span>
+        </div>
+
+        <div class="room-cards">
+          <div class="room-card" *ngFor="let room of roomResult.rooms; let i = index" [style.animation-delay]="(i * 0.05) + 's'">
+            <div class="room-card-header">
+              <h4>{{ room.room }}</h4>
+              <span class="room-dim">{{ room.dimensions }}</span>
+            </div>
+            <div class="room-area-badge">{{ room.area }} sqft</div>
+            <div class="room-furniture">
+              <div class="furniture-tag" *ngFor="let f of room.furniture">
+                <i class="fa-solid fa-check"></i> {{ f }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ai-insights">
+          <h3><i class="fa-solid fa-paintbrush"></i> {{ roomResult.summary.style | titlecase }} Style Tips</h3>
+          <ul>
+            <li *ngFor="let tip of roomResult.styleTips">{{ tip }}</li>
+          </ul>
+        </div>
+
+        <div class="ai-insights">
+          <h3><i class="fa-solid fa-lightbulb"></i> AI Insights</h3>
+          <ul>
+            <li *ngFor="let insight of roomResult.aiInsights">{{ insight }}</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ─────────────── 4. TIMELINE PREDICTOR ─────────────── -->
+    <div *ngIf="activeTab === 'timeline'" class="tab-panel" id="panel-timeline">
+
+      <div class="panel-header">
+        <h2><i class="fa-solid fa-calendar-days"></i> AI Project Timeline Predictor</h2>
+        <p>Get a phase-by-phase construction schedule with projected milestone dates</p>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Construction Area (Sq. Ft)</label>
+          <input type="number" class="form-control" [(ngModel)]="timeArea" id="time-area" min="200">
+        </div>
+        <div class="form-group">
+          <label>Construction Quality</label>
+          <select class="form-control" [(ngModel)]="timeQuality" id="time-quality">
+            <option value="budget">Budget</option>
+            <option value="standard">Standard</option>
+            <option value="premium">Premium</option>
+            <option value="luxury">Luxury</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Project Start Date</label>
+          <input type="date" class="form-control" [(ngModel)]="timeStartDate" id="time-start">
+        </div>
+        <div class="form-group">
+          <label>Project Type</label>
+          <select class="form-control" [(ngModel)]="timeType" id="time-type">
+            <option value="residential">Residential Home</option>
+            <option value="villa">Villa</option>
+            <option value="apartment">Apartment</option>
+            <option value="commercial">Commercial</option>
+          </select>
+        </div>
+        <div class="form-group form-submit">
+          <button class="btn btn-ai" (click)="runTimeline()" [disabled]="timeLoading" id="btn-timeline">
+            <i class="fa-solid" [class]="timeLoading ? 'fa-spinner fa-spin' : 'fa-wand-magic-sparkles'"></i>
+            {{ timeLoading ? 'Predicting...' : 'Generate Timeline' }}
+          </button>
+        </div>
+      </div>
+
+      <p *ngIf="timeError" class="error-msg"><i class="fa-solid fa-triangle-exclamation"></i> {{ timeError }}</p>
+
+      <!-- RESULT -->
+      <div *ngIf="timeResult" class="result-panel">
+
+        <div class="timeline-summary">
+          <div class="tl-stat">
+            <i class="fa-solid fa-clock"></i>
+            <div class="tl-val">{{ timeResult.summary.totalMonths }}</div>
+            <div class="tl-lbl">Total Duration</div>
+          </div>
+          <div class="tl-stat">
+            <i class="fa-solid fa-calendar-check"></i>
+            <div class="tl-val">{{ timeResult.summary.projectStart }}</div>
+            <div class="tl-lbl">Start Date</div>
+          </div>
+          <div class="tl-stat">
+            <i class="fa-solid fa-flag-checkered"></i>
+            <div class="tl-val">{{ timeResult.summary.projectedHandover }}</div>
+            <div class="tl-lbl">Projected Handover</div>
+          </div>
+          <div class="tl-stat">
+            <i class="fa-solid fa-list-check"></i>
+            <div class="tl-val">{{ timeResult.phases.length }}</div>
+            <div class="tl-lbl">Phases</div>
+          </div>
+        </div>
+
+        <!-- Gantt-style Phase Bars -->
+        <div class="gantt-chart">
+          <h3>Construction Phases</h3>
+          <div class="gantt-row" *ngFor="let phase of timeResult.phases; let i = index">
+            <div class="gantt-label">
+              <i class="fa-solid" [class]="phase.icon"></i>
+              <span>{{ phase.name }}</span>
+            </div>
+            <div class="gantt-bar-track">
+              <div
+                class="gantt-bar"
+                [style.width.%]="phaseWidth(phase.duration, timeResult.summary.totalDays)"
+                [style.animation-delay]="(i * 0.1) + 's'"
+              ></div>
+            </div>
+            <div class="gantt-meta">
+              <span>{{ phase.duration }}</span>
+              <span class="gantt-dates">{{ phase.startDate }} → {{ phase.endDate }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="ai-insights">
+          <h3><i class="fa-solid fa-lightbulb"></i> AI Insights</h3>
+          <ul>
+            <li *ngFor="let insight of timeResult.aiInsights">{{ insight }}</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ─────────────── 5. ARCHITECTURE RECOMMENDER ─────────────── -->
+    <div *ngIf="activeTab === 'arch'" class="tab-panel" id="panel-arch">
+
+      <div class="panel-header">
+        <h2><i class="fa-solid fa-compass-drafting"></i> AI Architecture Recommender</h2>
+        <p>Get top architecture styles ranked for your budget, region and taste</p>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Budget Range</label>
+          <select class="form-control" [(ngModel)]="archBudget" id="arch-budget">
+            <option value="low">Low / Budget</option>
+            <option value="medium">Medium</option>
+            <option value="high">High / Premium</option>
+            <option value="luxury">Luxury / Ultra Premium</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Region / Location Type</label>
+          <select class="form-control" [(ngModel)]="archRegion" id="arch-region">
+            <option value="urban">Urban / Metro City</option>
+            <option value="suburban">Suburban / Outskirts</option>
+            <option value="coastal">Coastal</option>
+            <option value="south">South India</option>
+            <option value="north">North India</option>
+            <option value="rural">Rural / Tier-3 City</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Style Preference</label>
+          <select class="form-control" [(ngModel)]="archPreference" id="arch-pref">
+            <option value="modern">Modern / Contemporary</option>
+            <option value="traditional">Traditional / Classic</option>
+            <option value="vastu">Vastu Compliant</option>
+            <option value="eco">Eco / Sustainable</option>
+            <option value="budget">Budget Friendly</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Plot Size (Sq. Ft)</label>
+          <input type="number" class="form-control" [(ngModel)]="archPlotSize" id="arch-plot" min="300">
+        </div>
+        <div class="form-group form-submit">
+          <button class="btn btn-ai" (click)="runArchRecs()" [disabled]="archLoading" id="btn-arch">
+            <i class="fa-solid" [class]="archLoading ? 'fa-spinner fa-spin' : 'fa-wand-magic-sparkles'"></i>
+            {{ archLoading ? 'Analyzing...' : 'Get AI Recommendations' }}
+          </button>
+        </div>
+      </div>
+
+      <p *ngIf="archError" class="error-msg"><i class="fa-solid fa-triangle-exclamation"></i> {{ archError }}</p>
+
+      <!-- RESULT -->
+      <div *ngIf="archResult" class="result-panel">
+
+        <p class="arch-advice">{{ archResult.aiAdvice }}</p>
+
+        <div class="arch-cards">
+          <div class="arch-card" *ngFor="let rec of archResult.recommendations">
+            <div class="arch-rank-badge">{{ rankLabel(rec.rank) }}</div>
+            <div class="arch-image-wrap">
+              <img [src]="rec.image" [alt]="rec.style" class="arch-image" loading="lazy">
+              <div class="arch-match-score">
+                <span>{{ rec.matchScore }}% Match</span>
+              </div>
+            </div>
+            <div class="arch-card-body">
+              <h3>{{ rec.style }}</h3>
+              <div class="arch-cost">{{ rec.estimatedCostPerSqft }}/sqft · {{ rec.totalEstimate }}</div>
+
+              <div class="arch-features">
+                <span class="feat-tag" *ngFor="let f of rec.features">{{ f }}</span>
+              </div>
+
+              <div class="pros-cons-grid">
+                <div class="pros-col">
+                  <strong><i class="fa-solid fa-thumbs-up"></i> Pros</strong>
+                  <ul>
+                    <li *ngFor="let p of rec.pros">{{ p }}</li>
+                  </ul>
+                </div>
+                <div class="cons-col">
+                  <strong><i class="fa-solid fa-thumbs-down"></i> Cons</strong>
+                  <ul>
+                    <li *ngFor="let c of rec.cons">{{ c }}</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─────────────── 6. MATERIAL PRICE TRACKER ─────────────── -->
+    <div *ngIf="activeTab === 'material'" class="tab-panel" id="panel-material">
+
+      <div class="panel-header">
+        <h2><i class="fa-solid fa-chart-line"></i> AI Material Price Tracker</h2>
+        <p>Current prices, 90-day forecasts and buying tips for construction materials</p>
+      </div>
+
+      <div class="material-selector">
+        <label>Select Materials to Track</label>
+        <div class="material-chips">
+          <button
+            *ngFor="let m of availableMaterials"
+            class="chip"
+            [class.chip-active]="isMaterialSelected(m)"
+            (click)="toggleMaterial(m)"
+            [id]="'chip-' + m"
+          >
+            {{ m | titlecase }}
+          </button>
+        </div>
+        <button class="btn btn-ai" (click)="runMaterialPrice()" [disabled]="matLoading" id="btn-material-price" style="margin-top: 1.5rem">
+          <i class="fa-solid" [class]="matLoading ? 'fa-spinner fa-spin' : 'fa-wand-magic-sparkles'"></i>
+          {{ matLoading ? 'Fetching...' : 'Get Price Predictions' }}
+        </button>
+      </div>
+
+      <p *ngIf="matError" class="error-msg"><i class="fa-solid fa-triangle-exclamation"></i> {{ matError }}</p>
+
+      <!-- RESULT -->
+      <div *ngIf="matResult" class="result-panel">
+
+        <!-- Market Summary -->
+        <div class="market-summary">
+          <div class="ms-item ms-rising" *ngIf="matResult.marketSummary.rising.length > 0">
+            <i class="fa-solid fa-arrow-trend-up"></i>
+            <span><strong>Rising:</strong> {{ matResult.marketSummary.rising.join(', ') }}</span>
+          </div>
+          <div class="ms-item ms-falling" *ngIf="matResult.marketSummary.falling.length > 0">
+            <i class="fa-solid fa-arrow-trend-down"></i>
+            <span><strong>Falling:</strong> {{ matResult.marketSummary.falling.join(', ') }}</span>
+          </div>
+          <div class="ms-item ms-stable" *ngIf="matResult.marketSummary.stable.length > 0">
+            <i class="fa-solid fa-minus"></i>
+            <span><strong>Stable:</strong> {{ matResult.marketSummary.stable.join(', ') }}</span>
+          </div>
+        </div>
+
+        <p class="ai-market-insight"><i class="fa-solid fa-brain"></i> {{ matResult.aiInsight }}</p>
+
+        <div class="price-cards">
+          <div class="price-card" *ngFor="let mat of matResult.materials; let i = index" [style.animation-delay]="(i * 0.07) + 's'">
+            <div class="price-card-top">
+              <div class="price-icon">
+                <i class="fa-solid" [class]="mat.icon"></i>
+              </div>
+              <div class="price-trend-badge" [class]="trendClass(mat.trend)">
+                <i class="fa-solid" [class]="trendIcon(mat.trend)"></i>
+                {{ mat.trendPct > 0 ? '+' : '' }}{{ mat.trendPct }}%
+              </div>
+            </div>
+            <div class="price-name">{{ mat.name }}</div>
+            <div class="price-current">{{ mat.currentPrice }} <span class="price-unit">{{ mat.unit }}</span></div>
+            <div class="price-forecast-row">
+              <div class="forecast-chip">
+                <span class="fc-label">30d Forecast</span>
+                <span class="fc-val">{{ mat.forecast.next30Days }}</span>
+              </div>
+              <div class="forecast-chip">
+                <span class="fc-label">90d Forecast</span>
+                <span class="fc-val">{{ mat.forecast.next90Days }}</span>
+              </div>
+            </div>
+            <div class="price-volatility">
+              <span class="vol-badge" [class]="volatilityClass(mat.volatility)">{{ mat.volatility }} Volatility</span>
+            </div>
+            <div class="price-brands">
+              <span class="brand-tag" *ngFor="let b of mat.topBrands.slice(0, 3)">{{ b }}</span>
+            </div>
+            <div class="buy-tip">
+              <i class="fa-solid fa-lightbulb"></i> {{ mat.buyTip }}
+            </div>
+          </div>
+        </div>
+
+        <p class="updated-on">Data as of: {{ matResult.lastUpdated }}</p>
+      </div>
+    </div>
+
+  </div><!-- /tab-content -->
+
+</div><!-- /ai-hub-wrapper -->

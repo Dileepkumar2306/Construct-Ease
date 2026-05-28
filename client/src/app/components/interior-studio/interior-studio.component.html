@@ -1,0 +1,590 @@
+<div class="dashboard-container">
+    <div class="dashboard-header animate">
+        <h1>Interior <span>Design Studio</span></h1>
+        <p style="color: var(--muted-color);">Calculate costs, find affordable materials, hire local experts, and shop from top design websites.</p>
+    </div>
+
+    <!-- Top Showroom Quick Redirects -->
+    <div class="glass-card animate" style="margin-bottom: 3rem; padding: 1.5rem; background: linear-gradient(135deg, rgba(224, 169, 109, 0.08), rgba(255,255,255,0.02)); border-color: rgba(224,169,109,0.25);">
+        <h3 style="font-size: 1.1rem; color: var(--accent-color); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; font-weight: 700;">
+            <i class="fa-solid fa-plane-departure"></i> Quick Website Redirects to Top Interior Showrooms &amp; Studios:
+        </h3>
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
+            <a href="https://www.livspace.com" target="_blank" rel="noopener" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.9rem; border-color: #ff6b35; color: #ff6b35; display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(255,107,53,0.05); text-decoration: none; border-radius: 8px;">
+                <i class="fa-solid fa-house-chimney"></i> Livspace (Design Studio)
+            </a>
+            <a href="https://www.homelane.com" target="_blank" rel="noopener" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.9rem; border-color: #2563eb; color: #3b82f6; display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(37,99,235,0.05); text-decoration: none; border-radius: 8px;">
+                <i class="fa-solid fa-layer-group"></i> HomeLane (Custom Interiors)
+            </a>
+            <a href="https://www.pepperfry.com" target="_blank" rel="noopener" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.9rem; border-color: #ea580c; color: #f97316; display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(234,88,12,0.05); text-decoration: none; border-radius: 8px;">
+                <i class="fa-solid fa-chair"></i> Pepperfry (Showroom)
+            </a>
+            <a href="https://www.ikea.com/in/en/" target="_blank" rel="noopener" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.9rem; border-color: #fbbf24; color: #fbbf24; display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(251,191,36,0.05); text-decoration: none; border-radius: 8px;">
+                <i class="fa-solid fa-table"></i> IKEA (Budget Furniture)
+            </a>
+            <a href="https://www.urbanladder.com" target="_blank" rel="noopener" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.9rem; border-color: #16a34a; color: #22c55e; display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(22,163,74,0.05); text-decoration: none; border-radius: 8px;">
+                <i class="fa-solid fa-couch"></i> Urban Ladder (Premium)
+            </a>
+            <a href="https://www.asianpaints.com" target="_blank" rel="noopener" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.9rem; border-color: #dc2626; color: #ef4444; display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(220,38,38,0.05); text-decoration: none; border-radius: 8px;">
+                <i class="fa-solid fa-paint-roller"></i> Asian Paints (Colors)
+            </a>
+        </div>
+    </div>
+
+    <!-- Tabs Navigation -->
+    <div style="display: flex; justify-content: center; gap: 1rem; margin-bottom: 3rem; flex-wrap: wrap;" class="animate">
+        <button class="btn" [ngClass]="{'btn-outline': activeTab !== 'estimator'}" (click)="setTab('estimator')">
+            <i class="fa-solid fa-calculator"></i> Cost Estimator
+        </button>
+        <button class="btn" [ngClass]="{'btn-outline': activeTab !== 'vendors'}" (click)="setTab('vendors')">
+            <i class="fa-solid fa-store"></i> Local Materials
+        </button>
+        <button class="btn" [ngClass]="{'btn-outline': activeTab !== 'professionals'}" (click)="setTab('professionals')">
+            <i class="fa-solid fa-user-tie"></i> Professionals
+        </button>
+        <button class="btn" [ngClass]="{'btn-outline': activeTab !== 'shop'}" (click)="setTab('shop')">
+            <i class="fa-solid fa-globe"></i> Shop Online
+        </button>
+        <button class="btn" [ngClass]="{'btn-outline': activeTab !== 'portfolio'}" (click)="setTab('portfolio')">
+            <i class="fa-solid fa-couch"></i> Studio Portfolio
+        </button>
+    </div>
+
+    <!-- Tab 1: Estimator -->
+    <section *ngIf="activeTab === 'estimator'" class="glass-card animate">
+        <h2><i class="fa-solid fa-calculator" style="color:var(--accent-color); margin-right:10px;"></i> Custom Interior Estimator</h2>
+        <p style="color: var(--muted-color); margin-bottom: 2rem;">Get an itemized breakdown for painting, flooring, furniture, and lighting.</p>
+        
+        <form (ngSubmit)="calculateInteriorCost()" class="split-layout" style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+            <div class="form-group">
+                <label for="area">Floor Area (in Sq. Ft)</label>
+                <input type="number" id="area" name="area" [(ngModel)]="area" class="form-control" placeholder="e.g., 500" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="style">Interior Style</label>
+                <select id="style" name="style" [(ngModel)]="style" class="form-control" required>
+                    <option value="minimalist">Minimalist (Cost Effective)</option>
+                    <option value="modern">Modern (Standard)</option>
+                    <option value="classic">Classic (Detailed)</option>
+                    <option value="luxury">Luxury (Premium Materials)</option>
+                </select>
+            </div>
+
+            <div class="form-group" style="grid-column: 1 / -1; text-align: center;">
+                <button type="submit" class="btn" [disabled]="isEstimating">
+                    <i class="fa-solid fa-bolt" *ngIf="!isEstimating"></i>
+                    <i class="fa-solid fa-spinner fa-spin" *ngIf="isEstimating"></i>
+                    {{ isEstimating ? 'Calculating...' : 'Calculate Cost' }}
+                </button>
+            </div>
+        </form>
+
+        <div *ngIf="estimateError" style="margin-top: 2rem; color:red; text-align: center;">
+            <p>Error calculating cost. Please try again.</p>
+        </div>
+
+        <div *ngIf="estimateResult && !isEstimating" class="glass-card animate" style="margin-top: 3rem; background: rgba(0,0,0,0.3);">
+            <h3 style="color:var(--accent-color); font-size: 2rem; margin-bottom: 2rem; text-align: center;">
+                Total Estimated Cost: {{ estimateResult.totalCost | currency:'INR':'symbol':'1.0-0' }}
+            </h3>
+            
+            <div class="grid-2" style="align-items: stretch; gap: 2rem;">
+                <!-- Furniture Card -->
+                <div style="background: rgba(255, 255, 255, 0.02); padding: 1.5rem; border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.06); display: flex; flex-direction: column; justify-content: space-between; text-align: center;">
+                    <div>
+                        <i class="fa-solid fa-couch feature-icon" style="font-size: 2.2rem; margin: 0 auto 0.75rem; display: block; color: var(--accent-color);"></i>
+                        <h4 style="font-size: 1.1rem; margin-bottom: 0.25rem;">Furniture (40%)</h4>
+                        <p style="color: var(--text-color); font-weight: 600; font-size: 1.3rem; margin-bottom: 1.25rem;">{{ estimateResult.breakdown.furniture | currency:'INR':'symbol':'1.0-0' }}</p>
+                    </div>
+                    <div style="border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 1rem; margin-top: auto; text-align: left;">
+                        <span style="font-size: 0.8rem; color: var(--muted-color); display: block; margin-bottom: 0.5rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;"><i class="fa-solid fa-store" style="color:var(--accent-color); margin-right: 4px;"></i> Showrooms &amp; Design:</span>
+                        <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+                            <a href="https://www.livspace.com" target="_blank" rel="noopener" class="budget-showroom-link">
+                                <i class="fa-solid fa-arrow-up-right-from-square"></i> Livspace (Showroom)
+                            </a>
+                            <a href="https://www.pepperfry.com" target="_blank" rel="noopener" class="budget-showroom-link">
+                                <i class="fa-solid fa-arrow-up-right-from-square"></i> Pepperfry (Furniture)
+                            </a>
+                            <a href="https://www.ikea.com/in/en/" target="_blank" rel="noopener" class="budget-showroom-link">
+                                <i class="fa-solid fa-arrow-up-right-from-square"></i> IKEA (Budget Furnishings)
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Flooring Card -->
+                <div style="background: rgba(255, 255, 255, 0.02); padding: 1.5rem; border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.06); display: flex; flex-direction: column; justify-content: space-between; text-align: center;">
+                    <div>
+                        <i class="fa-solid fa-layer-group feature-icon" style="font-size: 2.2rem; margin: 0 auto 0.75rem; display: block; color: var(--accent-color);"></i>
+                        <h4 style="font-size: 1.1rem; margin-bottom: 0.25rem;">Flooring (25%)</h4>
+                        <p style="color: var(--text-color); font-weight: 600; font-size: 1.3rem; margin-bottom: 1.25rem;">{{ estimateResult.breakdown.flooring | currency:'INR':'symbol':'1.0-0' }}</p>
+                    </div>
+                    <div style="border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 1rem; margin-top: auto; text-align: left;">
+                        <span style="font-size: 0.8rem; color: var(--muted-color); display: block; margin-bottom: 0.5rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;"><i class="fa-solid fa-cubes" style="color:var(--accent-color); margin-right: 4px;"></i> Flooring Materials:</span>
+                        <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+                            <a href="https://www.kajariaceramics.com" target="_blank" rel="noopener" class="budget-showroom-link">
+                                <i class="fa-solid fa-arrow-up-right-from-square"></i> Kajaria Ceramics (Tiles)
+                            </a>
+                            <a href="https://www.royale-touche.com" target="_blank" rel="noopener" class="budget-showroom-link">
+                                <i class="fa-solid fa-arrow-up-right-from-square"></i> Royale Touché (Laminates)
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lighting Card -->
+                <div style="background: rgba(255, 255, 255, 0.02); padding: 1.5rem; border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.06); display: flex; flex-direction: column; justify-content: space-between; text-align: center;">
+                    <div>
+                        <i class="fa-regular fa-lightbulb feature-icon" style="font-size: 2.2rem; margin: 0 auto 0.75rem; display: block; color: var(--accent-color);"></i>
+                        <h4 style="font-size: 1.1rem; margin-bottom: 0.25rem;">Lighting (20%)</h4>
+                        <p style="color: var(--text-color); font-weight: 600; font-size: 1.3rem; margin-bottom: 1.25rem;">{{ estimateResult.breakdown.lighting | currency:'INR':'symbol':'1.0-0' }}</p>
+                    </div>
+                    <div style="border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 1rem; margin-top: auto; text-align: left;">
+                        <span style="font-size: 0.8rem; color: var(--muted-color); display: block; margin-bottom: 0.5rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;"><i class="fa-regular fa-lightbulb" style="color:var(--accent-color); margin-right: 4px;"></i> Lighting &amp; Appliances:</span>
+                        <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+                            <a href="https://www.industrybuying.com/lighting/" target="_blank" rel="noopener" class="budget-showroom-link">
+                                <i class="fa-solid fa-arrow-up-right-from-square"></i> Industry Buying (LEDs)
+                            </a>
+                            <a href="https://www.amazon.in/s?k=home+furniture+interior" target="_blank" rel="noopener" class="budget-showroom-link">
+                                <i class="fa-solid fa-arrow-up-right-from-square"></i> Amazon Home Furnishings
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Painting Card -->
+                <div style="background: rgba(255, 255, 255, 0.02); padding: 1.5rem; border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.06); display: flex; flex-direction: column; justify-content: space-between; text-align: center;">
+                    <div>
+                        <i class="fa-solid fa-paint-roller feature-icon" style="font-size: 2.2rem; margin: 0 auto 0.75rem; display: block; color: var(--accent-color);"></i>
+                        <h4 style="font-size: 1.1rem; margin-bottom: 0.25rem;">Painting (15%)</h4>
+                        <p style="color: var(--text-color); font-weight: 600; font-size: 1.3rem; margin-bottom: 1.25rem;">{{ estimateResult.breakdown.painting | currency:'INR':'symbol':'1.0-0' }}</p>
+                    </div>
+                    <div style="border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 1rem; margin-top: auto; text-align: left;">
+                        <span style="font-size: 0.8rem; color: var(--muted-color); display: block; margin-bottom: 0.5rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;"><i class="fa-solid fa-paint-roller" style="color:var(--accent-color); margin-right: 4px;"></i> Paint &amp; Walls:</span>
+                        <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+                            <a href="https://www.asianpaints.com" target="_blank" rel="noopener" class="budget-showroom-link">
+                                <i class="fa-solid fa-arrow-up-right-from-square"></i> Asian Paints Studio
+                            </a>
+                            <a href="https://www.bergerpaints.com" target="_blank" rel="noopener" class="budget-showroom-link">
+                                <i class="fa-solid fa-arrow-up-right-from-square"></i> Berger Paints Studio
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tab 2: Vendors -->
+    <section *ngIf="activeTab === 'vendors'" class="animate">
+        <h2 style="margin-bottom: 2rem;"><i class="fa-solid fa-store" style="color:var(--accent-color); margin-right:10px;"></i> Affordable Local Materials</h2>
+        
+        <div *ngIf="isLoadingVendors" style="text-align: center; color: var(--accent-color);">
+            <i class="fa-solid fa-spinner fa-spin fa-2x"></i>
+        </div>
+
+        <div *ngIf="!isLoadingVendors" class="grid-3">
+            <div *ngFor="let vendor of vendors; let i = index" class="glass-card animate" [style.animation-delay]="(i * 0.1) + 's'" style="padding: 1.5rem;">
+                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                    <h3 style="margin-bottom: 0;">{{ vendor.name }}</h3>
+                    <span style="background: var(--accent-color); color: #000; padding: 2px 8px; border-radius: 12px; font-weight: bold; font-size: 0.8rem;">
+                        {{ vendor.priceRating }}
+                    </span>
+                </div>
+                <p style="color: var(--muted-color); font-size: 0.9rem; margin-bottom: 0.5rem;">
+                    <i class="fa-solid fa-location-dot"></i> {{ vendor.location }} | <i class="fa-solid fa-tag"></i> {{ vendor.category }}
+                </p>
+                <p style="font-size: 0.95rem; margin-bottom: 1rem;">{{ vendor.description }}</p>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto;">
+                    <span style="color: #ffd700;"><i class="fa-solid fa-star"></i> {{ vendor.rating }}</span>
+                    <button class="btn btn-outline" style="padding: 0.4rem 1rem; font-size: 0.9rem;">View Shop</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tab 3: Professionals -->
+    <section *ngIf="activeTab === 'professionals'" class="animate">
+        <h2 style="margin-bottom: 2rem;"><i class="fa-solid fa-user-tie" style="color:var(--accent-color); margin-right:10px;"></i> Local Designers &amp; Workers</h2>
+        
+        <div *ngIf="isLoadingProfessionals" style="text-align: center; color: var(--accent-color);">
+            <i class="fa-solid fa-spinner fa-spin fa-2x"></i>
+        </div>
+
+        <div *ngIf="!isLoadingProfessionals" class="grid-3">
+            <div *ngFor="let prof of professionals; let i = index" class="glass-card animate" [style.animation-delay]="(i * 0.1) + 's'" style="padding: 1.5rem; text-align: center;">
+                <div style="width: 80px; height: 80px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+                    <i class="fa-solid fa-user feature-icon" style="margin: 0; font-size: 2.5rem;"></i>
+                </div>
+                <h3>{{ prof.name }}</h3>
+                <p style="color: var(--accent-color); font-weight: 600; margin-bottom: 0.5rem;">{{ prof.role }}</p>
+                
+                <p style="color: var(--muted-color); font-size: 0.9rem; margin-bottom: 0.5rem;">
+                    <i class="fa-solid fa-location-dot"></i> {{ prof.location }}
+                </p>
+                <p style="font-size: 0.9rem; margin-bottom: 1rem;">
+                    <strong>Exp:</strong> {{ prof.experience }} | <span style="color: #ffd700;"><i class="fa-solid fa-star"></i> {{ prof.rating }}</span>
+                </p>
+                
+                <button class="btn" style="width: 100%;">Hire Now</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tab 4: SHOP ONLINE — Interior Website Links -->
+    <section *ngIf="activeTab === 'shop'" class="animate">
+
+        <div class="shop-header">
+            <h2><i class="fa-solid fa-globe" style="color:var(--accent-color); margin-right:10px;"></i> Shop from Top Interior Websites</h2>
+            <p style="color: var(--muted-color); margin-bottom: 2.5rem;">Click any card to open the website in a new tab. All links verified — browse, compare prices, and buy!</p>
+        </div>
+
+        <!-- Premium / Top Design Sites -->
+        <div class="shop-category">
+            <div class="shop-cat-header">
+                <i class="fa-solid fa-crown"></i>
+                <h3>🏆 Top Interior Design Platforms</h3>
+                <span class="cat-badge cat-premium">Premium</span>
+            </div>
+            <div class="shop-grid">
+                <a href="https://www.livspace.com" target="_blank" rel="noopener" class="shop-card">
+                    <div class="shop-logo-wrap" style="--sc: #ff6b35;"><i class="fa-solid fa-house-chimney"></i></div>
+                    <div class="shop-info">
+                        <h4>Livspace</h4>
+                        <p>India's #1 home interiors platform — modular kitchens, wardrobes, full home interiors with professional installation</p>
+                        <div class="shop-tags"><span>Full Home</span><span>Modular Kitchen</span><span>Design + Install</span></div>
+                    </div>
+                    <div class="shop-visit"><i class="fa-solid fa-arrow-up-right-from-square"></i> Visit</div>
+                </a>
+
+                <a href="https://www.homelane.com" target="_blank" rel="noopener" class="shop-card">
+                    <div class="shop-logo-wrap" style="--sc: #2563eb;"><i class="fa-solid fa-layer-group"></i></div>
+                    <div class="shop-info">
+                        <h4>HomeLane</h4>
+                        <p>Custom interior designs for your home with 3D visualizations, modular furniture and full project management</p>
+                        <div class="shop-tags"><span>3D Design</span><span>Custom</span><span>Project Managed</span></div>
+                    </div>
+                    <div class="shop-visit"><i class="fa-solid fa-arrow-up-right-from-square"></i> Visit</div>
+                </a>
+
+                <a href="https://www.urbanladder.com" target="_blank" rel="noopener" class="shop-card">
+                    <div class="shop-logo-wrap" style="--sc: #16a34a;"><i class="fa-solid fa-couch"></i></div>
+                    <div class="shop-info">
+                        <h4>Urban Ladder</h4>
+                        <p>Premium furniture & home décor — sofas, beds, dining sets, lighting and décor accessories. Free delivery across India</p>
+                        <div class="shop-tags"><span>Furniture</span><span>Décor</span><span>Free Delivery</span></div>
+                    </div>
+                    <div class="shop-visit"><i class="fa-solid fa-arrow-up-right-from-square"></i> Visit</div>
+                </a>
+
+                <a href="https://www.pepperfry.com" target="_blank" rel="noopener" class="shop-card">
+                    <div class="shop-logo-wrap" style="--sc: #ea580c;"><i class="fa-solid fa-chair"></i></div>
+                    <div class="shop-info">
+                        <h4>Pepperfry</h4>
+                        <p>India's largest online furniture marketplace — 1.5 lakh+ products, 200+ brands, EMI options available</p>
+                        <div class="shop-tags"><span>1.5L+ Products</span><span>EMI</span><span>200+ Brands</span></div>
+                    </div>
+                    <div class="shop-visit"><i class="fa-solid fa-arrow-up-right-from-square"></i> Visit</div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Budget Friendly -->
+        <div class="shop-category">
+            <div class="shop-cat-header">
+                <i class="fa-solid fa-tag"></i>
+                <h3>💰 Budget-Friendly Furniture & Materials</h3>
+                <span class="cat-badge cat-budget">Budget</span>
+            </div>
+            <div class="shop-grid">
+                <a href="https://www.ikea.com/in/en/" target="_blank" rel="noopener" class="shop-card">
+                    <div class="shop-logo-wrap" style="--sc: #fbbf24;"><i class="fa-solid fa-table"></i></div>
+                    <div class="shop-info">
+                        <h4>IKEA India</h4>
+                        <p>Affordable, ready-to-assemble furniture with Scandinavian design. Great for compact homes and budget-conscious buyers</p>
+                        <div class="shop-tags"><span>Affordable</span><span>DIY Assembly</span><span>Flat Pack</span></div>
+                    </div>
+                    <div class="shop-visit"><i class="fa-solid fa-arrow-up-right-from-square"></i> Visit</div>
+                </a>
+
+                <a href="https://www.amazon.in/s?k=home+furniture+interior" target="_blank" rel="noopener" class="shop-card">
+                    <div class="shop-logo-wrap" style="--sc: #f97316;"><i class="fa-brands fa-amazon"></i></div>
+                    <div class="shop-info">
+                        <h4>Amazon Home</h4>
+                        <p>Huge variety of home furniture, décor, lighting and materials at competitive prices with fast delivery and easy returns</p>
+                        <div class="shop-tags"><span>Fast Delivery</span><span>Easy Returns</span><span>All Budgets</span></div>
+                    </div>
+                    <div class="shop-visit"><i class="fa-solid fa-arrow-up-right-from-square"></i> Visit</div>
+                </a>
+
+                <a href="https://www.flipkart.com/home-furniture-store" target="_blank" rel="noopener" class="shop-card">
+                    <div class="shop-logo-wrap" style="--sc: #2563eb;"><i class="fa-solid fa-store"></i></div>
+                    <div class="shop-info">
+                        <h4>Flipkart Furniture</h4>
+                        <p>Affordable furniture, home appliances and interior accessories with No-cost EMI and exchange offers available</p>
+                        <div class="shop-tags"><span>No-Cost EMI</span><span>Exchange</span><span>Budget Range</span></div>
+                    </div>
+                    <div class="shop-visit"><i class="fa-solid fa-arrow-up-right-from-square"></i> Visit</div>
+                </a>
+
+                <a href="https://www.wakefit.co" target="_blank" rel="noopener" class="shop-card">
+                    <div class="shop-logo-wrap" style="--sc: #7c3aed;"><i class="fa-solid fa-bed"></i></div>
+                    <div class="shop-info">
+                        <h4>Wakefit</h4>
+                        <p>Best-value mattresses, beds, sofas and wardrobes. Direct-to-consumer brand with 100-night trial and lifetime warranty</p>
+                        <div class="shop-tags"><span>100-Night Trial</span><span>Lifetime Warranty</span><span>Direct Brand</span></div>
+                    </div>
+                    <div class="shop-visit"><i class="fa-solid fa-arrow-up-right-from-square"></i> Visit</div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Tiles, Paints & Materials -->
+        <div class="shop-category">
+            <div class="shop-cat-header">
+                <i class="fa-solid fa-paint-roller"></i>
+                <h3>🪟 Tiles, Paints &amp; Building Materials</h3>
+                <span class="cat-badge cat-material">Materials</span>
+            </div>
+            <div class="shop-grid">
+                <a href="https://www.asianpaints.com" target="_blank" rel="noopener" class="shop-card">
+                    <div class="shop-logo-wrap" style="--sc: #dc2626;"><i class="fa-solid fa-paint-roller"></i></div>
+                    <div class="shop-info">
+                        <h4>Asian Paints</h4>
+                        <p>India's #1 paint brand. Wide range of interior & exterior paints, texture finishes and colour visualization tools</p>
+                        <div class="shop-tags"><span>Interior Paint</span><span>Texture</span><span>Colour Tool</span></div>
+                    </div>
+                    <div class="shop-visit"><i class="fa-solid fa-arrow-up-right-from-square"></i> Visit</div>
+                </a>
+
+                <a href="https://www.kajariaceramics.com" target="_blank" rel="noopener" class="shop-card">
+                    <div class="shop-logo-wrap" style="--sc: #0891b2;"><i class="fa-solid fa-border-all"></i></div>
+                    <div class="shop-info">
+                        <h4>Kajaria Ceramics</h4>
+                        <p>India's largest ceramic tile company — floor tiles, wall tiles, GVT, polished vitrified tiles with 3D designs</p>
+                        <div class="shop-tags"><span>Floor Tiles</span><span>Wall Tiles</span><span>GVT</span></div>
+                    </div>
+                    <div class="shop-visit"><i class="fa-solid fa-arrow-up-right-from-square"></i> Visit</div>
+                </a>
+
+                <a href="https://www.royale-touche.com" target="_blank" rel="noopener" class="shop-card">
+                    <div class="shop-logo-wrap" style="--sc: #b45309;"><i class="fa-solid fa-layer-group"></i></div>
+                    <div class="shop-info">
+                        <h4>Royale Touche</h4>
+                        <p>Premium laminates, engineered wood flooring and decorative surfaces for interiors. Wide range of wood finishes</p>
+                        <div class="shop-tags"><span>Laminates</span><span>Wood Flooring</span><span>Surfaces</span></div>
+                    </div>
+                    <div class="shop-visit"><i class="fa-solid fa-arrow-up-right-from-square"></i> Visit</div>
+                </a>
+
+                <a href="https://www.bergerpaints.com" target="_blank" rel="noopener" class="shop-card">
+                    <div class="shop-logo-wrap" style="--sc: #16a34a;"><i class="fa-solid fa-droplet"></i></div>
+                    <div class="shop-info">
+                        <h4>Berger Paints</h4>
+                        <p>Premium quality paints for walls, wood & metal. Silk, Weathercoat and Luxol ranges for every surface</p>
+                        <div class="shop-tags"><span>Wall Paint</span><span>Weathercoat</span><span>Luxury Range</span></div>
+                    </div>
+                    <div class="shop-visit"><i class="fa-solid fa-arrow-up-right-from-square"></i> Visit</div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Lighting & Decor -->
+        <div class="shop-category">
+            <div class="shop-cat-header">
+                <i class="fa-solid fa-lightbulb"></i>
+                <h3>💡 Lighting &amp; Home Décor</h3>
+                <span class="cat-badge cat-decor">Décor</span>
+            </div>
+            <div class="shop-grid">
+                <a href="https://www.godrejinterio.com" target="_blank" rel="noopener" class="shop-card">
+                    <div class="shop-logo-wrap" style="--sc: #1d4ed8;"><i class="fa-solid fa-building"></i></div>
+                    <div class="shop-info">
+                        <h4>Godrej Interio</h4>
+                        <p>Trusted Indian furniture brand with ergonomic designs for home & office. Beds, sofas, storage and modular solutions</p>
+                        <div class="shop-tags"><span>Trusted Brand</span><span>Ergonomic</span><span>Office + Home</span></div>
+                    </div>
+                    <div class="shop-visit"><i class="fa-solid fa-arrow-up-right-from-square"></i> Visit</div>
+                </a>
+
+                <a href="https://www.industrybuying.com/lighting/" target="_blank" rel="noopener" class="shop-card">
+                    <div class="shop-logo-wrap" style="--sc: #fbbf24;"><i class="fa-solid fa-lightbulb"></i></div>
+                    <div class="shop-info">
+                        <h4>Industry Buying — Lighting</h4>
+                        <p>B2B marketplace for LED lights, chandeliers, panel lights and all types of interior & exterior lighting at wholesale prices</p>
+                        <div class="shop-tags"><span>LED</span><span>Wholesale</span><span>B2B Prices</span></div>
+                    </div>
+                    <div class="shop-visit"><i class="fa-solid fa-arrow-up-right-from-square"></i> Visit</div>
+                </a>
+
+                <a href="https://www.myntra.com/home-furnishing" target="_blank" rel="noopener" class="shop-card">
+                    <div class="shop-logo-wrap" style="--sc: #db2777;"><i class="fa-solid fa-heart"></i></div>
+                    <div class="shop-info">
+                        <h4>Myntra Home Furnishing</h4>
+                        <p>Trendy curtains, cushions, bedsheets, rugs and home textile décor at great prices with fast fashion-like delivery</p>
+                        <div class="shop-tags"><span>Curtains</span><span>Cushions</span><span>Textiles</span></div>
+                    </div>
+                    <div class="shop-visit"><i class="fa-solid fa-arrow-up-right-from-square"></i> Visit</div>
+                </a>
+
+                <a href="https://www.nykaa.com/home-decor" target="_blank" rel="noopener" class="shop-card">
+                    <div class="shop-logo-wrap" style="--sc: #ec4899;"><i class="fa-solid fa-spa"></i></div>
+                    <div class="shop-info">
+                        <h4>Nykaa Home Décor</h4>
+                        <p>Aesthetic home accessories, scented candles, planters, wall art and bathroom décor for a stylish modern home</p>
+                        <div class="shop-tags"><span>Aesthetic</span><span>Wall Art</span><span>Accessories</span></div>
+                    </div>
+                    <div class="shop-visit"><i class="fa-solid fa-arrow-up-right-from-square"></i> Visit</div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Tip Banner -->
+        <div class="shop-tip-banner animate">
+            <i class="fa-solid fa-lightbulb"></i>
+            <div>
+                <strong>💡 Pro Tip:</strong> Use our <strong>AI Cost Estimator</strong> first to know your budget, then browse the websites above to shop within your range. All links open in a new tab — your page stays open!
+            </div>
+        </div>
+
+    </section>
+
+    <!-- Tab 5: Portfolio (CRUD) -->
+    <section *ngIf="activeTab === 'portfolio'" class="animate">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; flex-wrap: wrap; gap: 1rem;">
+            <div>
+                <h2><i class="fa-solid fa-couch" style="color:var(--accent-color); margin-right:10px;"></i> Studio Design Portfolio</h2>
+                <p style="color: var(--muted-color);">Add, edit, or remove your interior design concepts, catalog items, and completed kitchen/living room showrooms.</p>
+            </div>
+            <button class="btn" (click)="showForm = !showForm; cancelEdit()">
+                <i class="fa-solid" [ngClass]="showForm ? 'fa-xmark' : 'fa-plus'"></i> 
+                {{ showForm ? 'Cancel' : 'Add Design Concept' }}
+            </button>
+        </div>
+
+        <!-- Add Form -->
+        <div *ngIf="showForm" class="glass-card animate" style="margin-bottom: 2rem; border-color: var(--accent-color);">
+            <h3 style="margin-bottom: 1.5rem; color: var(--accent-color);"><i class="fa-solid fa-plus-circle"></i> Add Design Concept</h3>
+            <form (ngSubmit)="savePortfolioItem()">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+                    <div>
+                        <div class="form-group">
+                            <label>Concept Name</label>
+                            <input type="text" name="newTitle" [(ngModel)]="newPortfolioItem.title" class="form-control" placeholder="e.g. Scandinavian Cozy Bedroom" required>
+                        </div>
+                        <div class="form-group" style="margin-top: 1rem;">
+                            <label>Design Specs & Materials</label>
+                            <textarea name="newDesc" [(ngModel)]="newPortfolioItem.description" class="form-control" rows="5" placeholder="E.g., materials used, paint codes, furniture suppliers, total square feet details..." required></textarea>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="form-group">
+                            <label>Design Image / Render</label>
+                            <input type="file" (change)="onFileSelected($event, 'new')" class="form-control" accept="image/*" style="padding: 0.6rem;">
+                        </div>
+                        <div style="text-align: center; margin: 1rem 0; font-weight: bold; color: var(--muted-color);">OR</div>
+                        <div class="form-group">
+                            <label>Render Image URL</label>
+                            <input type="text" name="newImgUrl" [(ngModel)]="newPortfolioItem.imageUrl" class="form-control" placeholder="https://example.com/render.jpg">
+                        </div>
+                        <div *ngIf="newPortfolioItem.imageUrl" style="margin-top: 1rem; border-radius: 8px; overflow: hidden; height: 120px; text-align: center; background: rgba(0,0,0,0.2);">
+                            <img [src]="newPortfolioItem.imageUrl" style="height: 100%; max-width: 100%; object-fit: contain;">
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align: right;">
+                    <button type="submit" class="btn" [disabled]="isSubmitting">
+                        <i class="fa-solid fa-circle-check"></i> {{ isSubmitting ? 'Saving...' : 'Save Concept' }}
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Edit Form -->
+        <div *ngIf="editingItem" class="glass-card animate" style="margin-bottom: 2rem; border-color: #f1c40f;">
+            <h3 style="margin-bottom: 1.5rem; color: #f1c40f;"><i class="fa-solid fa-pen-to-square"></i> Edit Design Concept</h3>
+            <form (ngSubmit)="updatePortfolioItem()">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+                    <div>
+                        <div class="form-group">
+                            <label>Concept Name</label>
+                            <input type="text" name="editTitle" [(ngModel)]="editingItem.title" class="form-control" required>
+                        </div>
+                        <div class="form-group" style="margin-top: 1rem;">
+                            <label>Design Specs & Materials</label>
+                            <textarea name="editDesc" [(ngModel)]="editingItem.description" class="form-control" rows="5" required></textarea>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="form-group">
+                            <label>Update Image File</label>
+                            <input type="file" (change)="onFileSelected($event, 'edit')" class="form-control" accept="image/*" style="padding: 0.6rem;">
+                        </div>
+                        <div style="text-align: center; margin: 1rem 0; font-weight: bold; color: var(--muted-color);">OR</div>
+                        <div class="form-group">
+                            <label>Render Image URL</label>
+                            <input type="text" name="editImgUrl" [(ngModel)]="editingItem.imageUrl" class="form-control">
+                        </div>
+                        <div *ngIf="editingItem.imageUrl" style="margin-top: 1rem; border-radius: 8px; overflow: hidden; height: 120px; text-align: center; background: rgba(0,0,0,0.2);">
+                            <img [src]="editingItem.imageUrl" style="height: 100%; max-width: 100%; object-fit: contain;">
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align: right; display: flex; justify-content: flex-end; gap: 1rem;">
+                    <button type="button" class="btn btn-outline" (click)="cancelEdit()">Cancel</button>
+                    <button type="submit" class="btn" style="background-color: #f1c40f; border-color: #f1c40f; color: #1a1a2e;" [disabled]="isSubmitting">
+                        <i class="fa-solid fa-check"></i> {{ isSubmitting ? 'Updating...' : 'Update Concept' }}
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Portfolio Listing Grid -->
+        <div *ngIf="isLoadingPortfolio" style="text-align: center; padding: 2rem;">
+            <p style="color:var(--accent-color);"><i class="fa-solid fa-spinner fa-spin"></i> Loading design board...</p>
+        </div>
+
+        <div *ngIf="portfolioError" class="glass-card" style="text-align: center; border-color: #e74c3c; padding: 2rem;">
+            <p style="color: #e74c3c;">Failed to load portfolio items. Falling back to local data.</p>
+        </div>
+
+        <div *ngIf="!isLoadingPortfolio && portfolioItems.length === 0" class="glass-card" style="text-align: center; padding: 3rem; background: rgba(255,255,255,0.02);">
+            <i class="fa-solid fa-couch" style="font-size: 3rem; color: var(--muted-color); margin-bottom: 1.5rem;"></i>
+            <h3>No Portfolio Concepts</h3>
+            <p style="color: var(--muted-color); margin-bottom: 2rem;">Showcase your interior design catalog, living room setups, and styling work to visitors.</p>
+            <button class="btn btn-outline" (click)="showForm = true">Add Your First Concept</button>
+        </div>
+
+        <div *ngIf="!isLoadingPortfolio && portfolioItems.length > 0" class="grid-3">
+            <div *ngFor="let item of portfolioItems" class="glass-card animate" style="overflow: hidden; padding: 0; display: flex; flex-direction: column;">
+                <div style="position: relative; height: 200px; overflow: hidden; background: #000;">
+                    <img [src]="item.imageUrl" [alt]="item.title" style="width:100%; height: 100%; object-fit: cover; opacity: 0.85; transition: transform 0.3s;">
+                    <div style="position: absolute; top: 10px; right: 10px; display: flex; gap: 0.5rem;">
+                        <button class="btn" style="padding: 0.4rem 0.6rem; font-size: 0.8rem; background: rgba(26, 26, 46, 0.8); border: var(--glass-border); color: #f1c40f; min-width: auto; width: auto;" (click)="startEdit(item); showForm = false" title="Edit">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+                        <button class="btn" style="padding: 0.4rem 0.6rem; font-size: 0.8rem; background: rgba(26, 26, 46, 0.8); border: var(--glass-border); color: #e74c3c; min-width: auto; width: auto;" (click)="deleteItem(item._id)" title="Delete">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
+                </div>
+                <div style="padding: 1.5rem; display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between;">
+                    <div>
+                        <h3 style="margin-bottom: 0.5rem; font-size: 1.25rem;">{{ item.title }}</h3>
+                        <p style="color: var(--muted-color); font-size: 0.9rem; line-height: 1.4; margin-bottom: 1rem;">
+                            {{ item.description }}
+                        </p>
+                    </div>
+                    <div style="border-top: var(--glass-border); padding-top: 0.75rem; display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--muted-color);">
+                        <span><i class="fa-solid fa-couch"></i> {{ item.author }}</span>
+                        <span><i class="fa-solid fa-calendar"></i> {{ item.createdAt | date:'shortDate' }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>
+

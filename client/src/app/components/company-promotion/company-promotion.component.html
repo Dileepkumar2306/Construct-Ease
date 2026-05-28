@@ -1,0 +1,313 @@
+<div class="promotion-container">
+  <div class="glass-main-panel">
+    
+    <!-- Top Nav Header -->
+    <div class="promo-header">
+      <div class="header-titles">
+        <h1><i class="fa-brands fa-instagram" style="color: #e0a96d; margin-right: 8px;"></i> Social Showrooms</h1>
+        <p class="tagline">Explore properties through high-impact visual stories, video walkthroughs, and direct chat interactions.</p>
+      </div>
+      
+      <div class="mode-toggle">
+        <label class="switch-container">
+          <input type="checkbox" [checked]="isPromoterMode" (change)="togglePromoterMode()">
+          <span class="switch-slider"></span>
+        </label>
+        <span class="mode-label"><i class="fa-solid fa-user-gear"></i> Promoter Mode</span>
+      </div>
+    </div>
+
+    <!-- Filter & Search Toolbar -->
+    <div class="promo-toolbar">
+      <div class="search-box">
+        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+        <input 
+          type="text" 
+          [(ngModel)]="searchQuery" 
+          (ngModelChange)="onSearchChange()" 
+          placeholder="Search by location, builder, style..." 
+          class="search-input">
+      </div>
+
+      <div class="filter-tabs">
+        <button class="tab-btn" [class.active]="selectedType === ''" (click)="filterByType('')">All</button>
+        <button class="tab-btn" [class.active]="selectedType === 'Villa'" (click)="filterByType('Villa')">Villas</button>
+        <button class="tab-btn" [class.active]="selectedType === 'Apartment'" (click)="filterByType('Apartment')">Apartments</button>
+        <button class="tab-btn" [class.active]="selectedType === 'House'" (click)="filterByType('House')">Houses</button>
+      </div>
+    </div>
+
+    <!-- ==================== PROMOTERS CRUD PANEL ==================== -->
+    <div class="promoter-panel animate" *ngIf="isPromoterMode">
+      <div class="panel-header">
+        <h2><i class="fa-solid fa-sliders"></i> Promoter Dashboard</h2>
+        <button class="btn-primary" *ngIf="!showForm && !editingPromo" (click)="showForm = true">
+          <i class="fa-solid fa-plus"></i> Upload New Story/Post
+        </button>
+      </div>
+
+      <!-- Add Promotion Form -->
+      <div class="crud-form-card glass-form animate" *ngIf="showForm">
+        <h3><i class="fa-solid fa-bullhorn" style="color: var(--accent-color);"></i> Publish New Real Estate Story</h3>
+        <form (ngSubmit)="savePromotion()">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Property Name / Project Title *</label>
+              <input type="text" name="title" [(ngModel)]="newPromo.title" placeholder="e.g. GK Luxury Villa & Pool" class="glass-input" required>
+            </div>
+            
+            <div class="form-group">
+              <label>Property Type *</label>
+              <select name="propertyType" [(ngModel)]="newPromo.propertyType" class="glass-input">
+                <option value="Villa">Villa</option>
+                <option value="Apartment">Apartment</option>
+                <option value="House">Independent House</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Location / City *</label>
+              <input type="text" name="location" [(ngModel)]="newPromo.location" placeholder="e.g. Jubilee Hills, Hyderabad" class="glass-input" required>
+            </div>
+
+            <div class="form-group">
+              <label>Price (INR) *</label>
+              <input type="number" name="price" [(ngModel)]="newPromo.price" placeholder="e.g. 45000000" class="glass-input" required>
+            </div>
+
+            <div class="form-group">
+              <label>Total Plot Area (Sq.Ft) *</label>
+              <input type="number" name="area" [(ngModel)]="newPromo.area" placeholder="e.g. 4200" class="glass-input" required>
+            </div>
+
+            <div class="form-group">
+              <label>Owner/Company Name *</label>
+              <input type="text" name="ownerName" [(ngModel)]="newPromo.ownerName" placeholder="e.g. GK Luxury Company" class="glass-input" required>
+            </div>
+
+            <div class="form-group">
+              <label>Contact/WhatsApp Number *</label>
+              <input type="text" name="ownerPhone" [(ngModel)]="newPromo.ownerPhone" placeholder="e.g. 7013241482" class="glass-input" required>
+            </div>
+            
+            <div class="form-group">
+              <label>Upload Media (Image / Poster)</label>
+              <input type="file" (change)="onFileSelected($event, 'image', 'new')" accept="image/*" class="glass-input" style="padding: 0.5rem;">
+              <small class="help-text">OR enter direct URL</small>
+              <input type="text" name="imageUrl" [(ngModel)]="newPromo.imageUrl" placeholder="Image URL (e.g. https://...)" class="glass-input" style="margin-top: 5px;">
+            </div>
+
+            <div class="form-group">
+              <label>Upload Walkthrough Video</label>
+              <input type="file" (change)="onFileSelected($event, 'video', 'new')" accept="video/*" class="glass-input" style="padding: 0.5rem;">
+              <small class="help-text">OR enter direct URL</small>
+              <input type="text" name="videoUrl" [(ngModel)]="newPromo.videoUrl" placeholder="Video URL (e.g. https://...)" class="glass-input" style="margin-top: 5px;">
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-top: 1rem;">
+            <label>Promotional Description / Highlights *</label>
+            <textarea name="description" [(ngModel)]="newPromo.description" placeholder="Include highlights like modular kitchen, private pool, location advantage, etc." class="glass-input" rows="4" required></textarea>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn-secondary" (click)="showForm = false; resetNewForm()">Cancel</button>
+            <button type="submit" class="btn-accent" [disabled]="isSubmitting">
+              <i class="fa-solid fa-circle-check"></i> {{ isSubmitting ? 'Uploading...' : 'Publish Post' }}
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Edit Promotion Form -->
+      <div class="crud-form-card glass-form edit-form animate" *ngIf="editingPromo">
+        <h3><i class="fa-solid fa-pen-to-square" style="color: #f1c40f;"></i> Edit Property Post</h3>
+        <form (ngSubmit)="updatePromotion()">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Property Name / Project Title *</label>
+              <input type="text" name="editTitle" [(ngModel)]="editingPromo.title" class="glass-input" required>
+            </div>
+            
+            <div class="form-group">
+              <label>Property Type *</label>
+              <select name="editPropertyType" [(ngModel)]="editingPromo.propertyType" class="glass-input">
+                <option value="Villa">Villa</option>
+                <option value="Apartment">Apartment</option>
+                <option value="House">Independent House</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Location / City *</label>
+              <input type="text" name="editLocation" [(ngModel)]="editingPromo.location" class="glass-input" required>
+            </div>
+
+            <div class="form-group">
+              <label>Price (INR) *</label>
+              <input type="number" name="editPrice" [(ngModel)]="editingPromo.price" class="glass-input" required>
+            </div>
+
+            <div class="form-group">
+              <label>Total Plot Area (Sq.Ft) *</label>
+              <input type="number" name="editArea" [(ngModel)]="editingPromo.area" class="glass-input" required>
+            </div>
+
+            <div class="form-group">
+              <label>Owner/Company Name *</label>
+              <input type="text" name="editOwnerName" [(ngModel)]="editingPromo.ownerName" class="glass-input" required>
+            </div>
+
+            <div class="form-group">
+              <label>Contact/WhatsApp Number *</label>
+              <input type="text" name="editOwnerPhone" [(ngModel)]="editingPromo.ownerPhone" class="glass-input" required>
+            </div>
+            
+            <div class="form-group">
+              <label>Update Media (Image / Poster)</label>
+              <input type="file" (change)="onFileSelected($event, 'image', 'edit')" accept="image/*" class="glass-input" style="padding: 0.5rem;">
+              <input type="text" name="editImageUrl" [(ngModel)]="editingPromo.imageUrl" class="glass-input" style="margin-top: 5px;">
+            </div>
+
+            <div class="form-group">
+              <label>Update Walkthrough Video</label>
+              <input type="file" (change)="onFileSelected($event, 'video', 'edit')" accept="video/*" class="glass-input" style="padding: 0.5rem;">
+              <input type="text" name="editVideoUrl" [(ngModel)]="editingPromo.videoUrl" class="glass-input" style="margin-top: 5px;">
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-top: 1rem;">
+            <label>Promotional Description & Highlights *</label>
+            <textarea name="editDescription" [(ngModel)]="editingPromo.description" class="glass-input" rows="4" required></textarea>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn-secondary" (click)="cancelEdit()">Cancel</button>
+            <button type="submit" class="btn-accent" style="background: #f1c40f; color: #000;" [disabled]="isSubmitting">
+              <i class="fa-solid fa-circle-check"></i> {{ isSubmitting ? 'Updating...' : 'Save Changes' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ==================== INSTAGRAM-STYLE FEED ==================== -->
+    <div *ngIf="isLoading" class="loading-state">
+      <i class="fa-solid fa-circle-notch fa-spin"></i>
+      <p>Loading Property Feed...</p>
+    </div>
+
+    <div *ngIf="error" class="error-state">
+      <i class="fa-solid fa-circle-exclamation"></i>
+      <p>Failed to load feed. Displaying cached showroom.</p>
+    </div>
+
+    <div *ngIf="!isLoading && filteredPromotions.length === 0" class="empty-state">
+      <i class="fa-solid fa-video-slash"></i>
+      <h3>No Showroom Stories Found</h3>
+      <p>Try searching for a different builder or location filter.</p>
+    </div>
+
+    <!-- Instagram Feed Centered Container -->
+    <div *ngIf="!isLoading && filteredPromotions.length > 0" class="instagram-feed">
+      
+      <!-- Instagram Card -->
+      <div *ngFor="let promo of filteredPromotions" class="instagram-post glass-card animate">
+        
+        <!-- Post Header -->
+        <div class="post-header">
+          <div class="user-profile">
+            <div class="profile-avatar"><i class="fa-solid fa-user-tie"></i></div>
+            <div class="user-meta">
+              <span class="user-name">{{ promo.ownerName }}</span>
+              <span class="post-location"><i class="fa-solid fa-location-dot"></i> {{ promo.location }}</span>
+            </div>
+          </div>
+          <div class="post-header-right">
+            <span class="category-badge">{{ promo.propertyType }}</span>
+            
+            <!-- Promoter Menu Controls -->
+            <div class="post-menu" *ngIf="isPromoterMode">
+              <button class="menu-btn edit" (click)="startEdit(promo)" title="Edit Post"><i class="fa-solid fa-pen"></i></button>
+              <button class="menu-btn delete" (click)="deletePromotion(promo._id)" title="Delete Post"><i class="fa-solid fa-trash-can"></i></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Post Media Container (4:5 Aspect Ratio) -->
+        <div class="post-media-container">
+          <!-- Video walkthrough player -->
+          <video 
+            *ngIf="promo.videoUrl" 
+            controls 
+            preload="metadata" 
+            loop
+            [src]="promo.videoUrl" 
+            class="post-video">
+          </video>
+          
+          <!-- Image post poster -->
+          <img 
+            *ngIf="!promo.videoUrl" 
+            [src]="promo.imageUrl || '/assets/images/template1.png'" 
+            [alt]="promo.title" 
+            class="post-image">
+
+          <!-- Sponsored / Send WhatsApp Overlay Bar -->
+          <a 
+            [href]="getWhatsAppUrl(promo)" 
+            target="_blank" 
+            class="sponsored-banner-bar">
+            <span>Learn More (Chat on WhatsApp)</span>
+            <i class="fa-brands fa-whatsapp"></i>
+          </a>
+        </div>
+
+        <!-- Post Actions Toolbar -->
+        <div class="post-actions">
+          <div class="left-actions">
+            <!-- Like button heart -->
+            <button class="action-icon-btn like" (click)="likePromotion(promo)" title="Like Post">
+              <i class="fa-solid fa-heart"></i>
+            </button>
+            
+            <!-- Direct call button -->
+            <a href="tel:{{ promo.ownerPhone }}" class="action-icon-btn call" title="Call Promoter">
+              <i class="fa-solid fa-phone"></i>
+            </a>
+
+            <!-- Direct whatsapp icon button -->
+            <a [href]="getWhatsAppUrl(promo)" target="_blank" class="action-icon-btn whatsapp" title="Chat on WhatsApp">
+              <i class="fa-brands fa-whatsapp"></i>
+            </a>
+          </div>
+
+          <div class="right-actions">
+            <span class="likes-text"><strong>{{ promo.likes }}</strong> likes</span>
+          </div>
+        </div>
+
+        <!-- Post Description & Details -->
+        <div class="post-content-body">
+          <h3 class="post-title">{{ promo.title }}</h3>
+          
+          <!-- Property Specs Row -->
+          <div class="specs-chips">
+            <span class="spec-chip price-chip">₹{{ promo.price >= 10000000 ? ((promo.price / 10000000) | number:'1.1-2') + ' Cr' : ((promo.price / 100000) | number:'1.1-2') + ' L' }}</span>
+            <span class="spec-chip area-chip"><i class="fa-solid fa-vector-square"></i> {{ promo.area }} sqft</span>
+          </div>
+
+          <p class="post-desc">
+            <span class="user-caption-name">{{ promo.ownerName }}</span> 
+            {{ promo.description }}
+          </p>
+
+          <span class="post-date">Posted on {{ promo.createdAt | date:'mediumDate' }}</span>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</div>

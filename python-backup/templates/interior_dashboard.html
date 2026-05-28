@@ -1,0 +1,299 @@
+{% extends "base.html" %}
+{% block title %}Interior Design - Construct Ease{% endblock %}
+
+{% block head %}
+<style>
+    .design-card { cursor: pointer; border: 2px solid transparent; transition: all 0.35s ease; }
+    .design-card.selected { border-color: var(--accent-color); box-shadow: 0 0 30px rgba(224,169,109,0.3); }
+    .design-card img { width: 100%; height: 200px; object-fit: cover; border-radius: 10px; margin-bottom: 1rem; }
+    .palette-dot { width: 18px; height: 18px; border-radius: 50%; display: inline-block; border: 2px solid rgba(255,255,255,0.2); }
+    .result-box { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; }
+    .result-row { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .result-row:last-child { border-bottom: none; }
+    .result-row span:last-child { font-weight: 700; color: var(--accent-color); }
+    .pro-card { padding: 1.5rem; }
+    .rating-star { color: #f5c518; }
+    .store-card { padding: 1.5rem; }
+    .badge { display: inline-block; padding: 0.25rem 0.7rem; border-radius: 50px; font-size: 0.75rem; font-weight: 600; background: rgba(224,169,109,0.15); color: var(--accent-color); border: 1px solid rgba(224,169,109,0.3); margin-bottom: 0.8rem; }
+    .tab-bar { display: flex; gap: 0.5rem; margin-bottom: 2rem; flex-wrap: wrap; }
+    .tab-btn { padding: 0.6rem 1.4rem; border-radius: 50px; border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.05); color: var(--muted-color); cursor: pointer; font-size: 0.9rem; transition: all 0.3s; }
+    .tab-btn.active, .tab-btn:hover { background: rgba(224,169,109,0.15); border-color: rgba(224,169,109,0.4); color: var(--accent-color); }
+    .room-checkbox { display: none; }
+    .room-label { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 50px; border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.04); cursor: pointer; font-size: 0.85rem; color: var(--muted-color); transition: all 0.3s; margin: 0.3rem; }
+    .room-checkbox:checked + .room-label { background: rgba(224,169,109,0.15); border-color: rgba(224,169,109,0.5); color: var(--accent-color); }
+    .split-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+    @media(max-width: 768px) { .split-layout { grid-template-columns: 1fr; } }
+    .material-tag { display: inline-block; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 0.3rem 0.7rem; font-size: 0.8rem; color: var(--muted-color); margin: 0.2rem; }
+    .hero-interior { text-align: center; padding: 4rem 5% 2rem; }
+    .hero-interior h1 { font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 800; letter-spacing: -1px; background: linear-gradient(135deg, #fff 30%, var(--accent-color)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0.8rem; }
+    .hero-interior p { color: var(--muted-color); font-size: 1.05rem; max-width: 600px; margin: 0 auto 2rem; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+
+    <!-- Hero -->
+    <div class="hero-interior animate">
+        <div class="hero-badge"><i class="fa-solid fa-couch"></i> Interior Design Studio</div>
+        <h1>Design Your Perfect Home</h1>
+        <p>Pick a style, enter your room details, and get instant cost estimates, nearby designers, and the best furniture stores in your budget.</p>
+    </div>
+
+    <!-- STEP 1: Choose Style -->
+    <section class="glass-card animate" style="margin-bottom: 2.5rem;">
+        <h2 style="margin-bottom: 0.5rem;"><span style="color:var(--accent-color);">Step 1</span> — Choose Your Interior Style</h2>
+        <p style="color: var(--muted-color); margin-bottom: 2rem; font-size: 0.95rem;">Click a style to select it and see cost ranges instantly.</p>
+        <div class="grid-2" id="design-cards-container" style="gap: 1.5rem;">
+            <div style="text-align:center; color: var(--muted-color); padding: 2rem;"><i class="fa-solid fa-spinner fa-spin"></i> Loading designs...</div>
+        </div>
+    </section>
+
+    <!-- STEP 2: Cost Estimator -->
+    <section class="glass-card animate" style="margin-bottom: 2.5rem;">
+        <h2 style="margin-bottom: 0.5rem;"><span style="color:var(--accent-color);">Step 2</span> — Estimate Your Interior Cost</h2>
+        <p style="color: var(--muted-color); margin-bottom: 2rem; font-size: 0.95rem;">Get a detailed room-wise cost breakdown instantly.</p>
+        <div class="split-layout">
+            <div>
+                <div class="form-group">
+                    <label>Total Carpet Area (Sq. Ft)</label>
+                    <input type="number" id="int-area" class="form-control" placeholder="e.g. 1000" min="100">
+                </div>
+                <div class="form-group">
+                    <label>Home Type</label>
+                    <select id="int-bhk" class="form-control" style="background:rgba(0,0,0,0.35);">
+                        <option value="1BHK">1 BHK</option>
+                        <option value="2BHK" selected>2 BHK</option>
+                        <option value="3BHK">3 BHK</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Budget Level</label>
+                    <select id="int-budget" class="form-control" style="background:rgba(0,0,0,0.35);">
+                        <option value="budget">Budget (Affordable)</option>
+                        <option value="standard" selected>Standard (Mid-range)</option>
+                        <option value="premium">Premium (Luxury)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Rooms to Design</label>
+                    <div>
+                        <input type="checkbox" id="r1" class="room-checkbox" value="Living Room" checked><label for="r1" class="room-label"><i class="fa-solid fa-couch"></i> Living Room</label>
+                        <input type="checkbox" id="r2" class="room-checkbox" value="Master Bedroom" checked><label for="r2" class="room-label"><i class="fa-solid fa-bed"></i> Master Bedroom</label>
+                        <input type="checkbox" id="r3" class="room-checkbox" value="Kitchen" checked><label for="r3" class="room-label"><i class="fa-solid fa-kitchen-set"></i> Kitchen</label>
+                        <input type="checkbox" id="r4" class="room-checkbox" value="Bedroom"><label for="r4" class="room-label"><i class="fa-solid fa-door-open"></i> Bedroom</label>
+                        <input type="checkbox" id="r5" class="room-checkbox" value="Bathroom"><label for="r5" class="room-label"><i class="fa-solid fa-shower"></i> Bathroom</label>
+                        <input type="checkbox" id="r6" class="room-checkbox" value="Dining"><label for="r6" class="room-label"><i class="fa-solid fa-utensils"></i> Dining</label>
+                        <input type="checkbox" id="r7" class="room-checkbox" value="Pooja Room"><label for="r7" class="room-label"><i class="fa-solid fa-om"></i> Pooja Room</label>
+                        <input type="checkbox" id="r8" class="room-checkbox" value="Home Office"><label for="r8" class="room-label"><i class="fa-solid fa-laptop"></i> Home Office</label>
+                    </div>
+                </div>
+                <button class="btn" id="estimate-btn" style="width:100%; margin-top:1rem;" onclick="runEstimate()"><i class="fa-solid fa-calculator"></i> Calculate Interior Cost</button>
+            </div>
+            <div id="estimate-results">
+                <div style="text-align:center; color:var(--muted-color); padding:3rem 1rem;">
+                    <i class="fa-solid fa-chart-pie" style="font-size:3rem; opacity:0.3; display:block; margin-bottom:1rem;"></i>
+                    Fill in the details and click Calculate to see your cost breakdown
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- STEP 3: Nearby Professionals -->
+    <section class="glass-card animate" style="margin-bottom: 2.5rem;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:1.5rem;">
+            <div>
+                <h2 style="margin-bottom: 0.3rem;"><span style="color:var(--accent-color);">Step 3</span> — Find Interior Designers Near You</h2>
+                <p style="color: var(--muted-color); font-size: 0.95rem;">Verified professionals filtered by your selected style.</p>
+            </div>
+            <div class="tab-bar" id="pro-filter-tabs" style="margin-bottom:0;">
+                <button class="tab-btn active" onclick="loadProfessionals('')">All</button>
+                <button class="tab-btn" onclick="loadProfessionals('Modern')">Modern</button>
+                <button class="tab-btn" onclick="loadProfessionals('Traditional')">Traditional</button>
+                <button class="tab-btn" onclick="loadProfessionals('Scandinavian')">Scandinavian</button>
+                <button class="tab-btn" onclick="loadProfessionals('Luxury')">Luxury</button>
+            </div>
+        </div>
+        <div class="grid-3" id="professionals-container">
+            <div style="color:var(--muted-color);"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>
+        </div>
+    </section>
+
+    <!-- STEP 4: Furniture Stores -->
+    <section class="glass-card animate" style="margin-bottom: 2.5rem;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:1.5rem;">
+            <div>
+                <h2 style="margin-bottom: 0.3rem;"><span style="color:var(--accent-color);">Step 4</span> — Affordable Furniture Stores Near You</h2>
+                <p style="color: var(--muted-color); font-size: 0.95rem;">Buy furniture, fittings, and decor at the best prices.</p>
+            </div>
+            <div class="tab-bar" style="margin-bottom:0;">
+                <button class="tab-btn active" onclick="loadStores('', '')">All Stores</button>
+                <button class="tab-btn" onclick="loadStores('', 'budget')">Budget Only</button>
+                <button class="tab-btn" onclick="loadStores('Modern', '')">Modern Style</button>
+                <button class="tab-btn" onclick="loadStores('Scandinavian', '')">Scandinavian</button>
+            </div>
+        </div>
+        <div class="grid-3" id="stores-container">
+            <div style="color:var(--muted-color);"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>
+        </div>
+    </section>
+
+</div>
+
+<script>
+    const INR = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 });
+    let selectedDesign = 'modern';
+    let allDesigns = [];
+
+    async function loadDesigns() {
+        const res = await fetch('/api/interior/designs');
+        allDesigns = await res.json();
+        const container = document.getElementById('design-cards-container');
+        container.style.gridTemplateColumns = 'repeat(2, 1fr)';
+        container.innerHTML = '';
+        allDesigns.forEach(d => {
+            const card = document.createElement('div');
+            card.className = 'glass-card design-card' + (d.id === selectedDesign ? ' selected' : '');
+            card.id = 'card-' + d.id;
+            const dots = d.color_palette.map(c => `<span class="palette-dot" style="background:${c};"></span>`).join('');
+            card.innerHTML = `
+                <img src="${d.image_url}" alt="${d.name}" onerror="this.style.display='none'">
+                <div class="badge">${d.tag}</div>
+                <h3 style="margin-bottom:0.5rem;">${d.name}</h3>
+                <p style="color:var(--muted-color);font-size:0.88rem;margin-bottom:1rem;">${d.description}</p>
+                <div style="display:flex; gap:6px; margin-bottom:1rem;">${dots}</div>
+                <div style="display:flex; justify-content:space-between; font-size:0.85rem; color:var(--muted-color);">
+                    <span>Budget: <strong style="color:#6ee7b7;">${INR.format(d.cost_per_sqft.budget)}/sqft</strong></span>
+                    <span>Premium: <strong style="color:var(--accent-color);">${INR.format(d.cost_per_sqft.premium)}/sqft</strong></span>
+                </div>
+                <div style="margin-top:1rem; display:flex; flex-wrap:wrap;">${d.key_materials.map(m => `<span class="material-tag">${m}</span>`).join('')}</div>
+            `;
+            card.onclick = () => selectDesign(d.id);
+            container.appendChild(card);
+        });
+    }
+
+    function selectDesign(id) {
+        selectedDesign = id;
+        document.querySelectorAll('.design-card').forEach(c => c.classList.remove('selected'));
+        const el = document.getElementById('card-' + id);
+        if (el) el.classList.add('selected');
+    }
+
+    async function runEstimate() {
+        const area = parseFloat(document.getElementById('int-area').value);
+        if (!area || area < 100) { alert('Please enter a valid area (minimum 100 sq ft)'); return; }
+        const bhk = document.getElementById('int-bhk').value;
+        const budget = document.getElementById('int-budget').value;
+        const rooms = [...document.querySelectorAll('.room-checkbox:checked')].map(c => c.value);
+        const btn = document.getElementById('estimate-btn');
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Calculating...';
+        btn.disabled = true;
+
+        try {
+            const res = await fetch('/api/interior/estimate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ design_id: selectedDesign, area, budget_level: budget, rooms, bhk })
+            });
+            const d = await res.json();
+            const design = allDesigns.find(x => x.id === selectedDesign) || {};
+
+            let roomRows = '';
+            if (d.room_wise && d.room_wise.length) {
+                roomRows = `<h4 style="margin:1rem 0 0.5rem; color:var(--muted-color); font-size:0.85rem; text-transform:uppercase; letter-spacing:1px;">Room-wise Estimate</h4>`;
+                d.room_wise.forEach(r => {
+                    roomRows += `<div class="result-row"><span>${r.room}</span><span>${INR.format(r.cost)}</span></div>`;
+                });
+            }
+
+            document.getElementById('estimate-results').innerHTML = `
+                <div class="animate">
+                    <div style="text-align:center; margin-bottom:1.5rem; padding:1.2rem; background:rgba(224,169,109,0.08); border-radius:12px; border:1px solid rgba(224,169,109,0.2);">
+                        <p style="color:var(--muted-color); font-size:0.85rem; margin-bottom:0.3rem;">${d.design_name} · ${budget.charAt(0).toUpperCase()+budget.slice(1)} · ${area} sqft</p>
+                        <p style="font-size:2.2rem; font-weight:800; color:var(--accent-color);">${INR.format(d.total_cost)}</p>
+                        <p style="color:var(--muted-color); font-size:0.85rem;">${INR.format(d.cost_per_sqft)}/sqft · Est. ${d.estimated_days} days</p>
+                    </div>
+                    <h4 style="margin-bottom:0.5rem; color:var(--muted-color); font-size:0.85rem; text-transform:uppercase; letter-spacing:1px;">Cost Breakdown</h4>
+                    <div class="result-box">
+                        <div class="result-row"><span><i class="fa-solid fa-couch" style="margin-right:8px; opacity:0.6;"></i>Furniture & Fixtures</span><span>${INR.format(d.breakdown.furniture)}</span></div>
+                        <div class="result-row"><span><i class="fa-solid fa-helmet-safety" style="margin-right:8px; opacity:0.6;"></i>Labor & Installation</span><span>${INR.format(d.breakdown.labor)}</span></div>
+                        <div class="result-row"><span><i class="fa-solid fa-cubes" style="margin-right:8px; opacity:0.6;"></i>Materials & Finishes</span><span>${INR.format(d.breakdown.materials)}</span></div>
+                        <div class="result-row"><span><i class="fa-solid fa-lightbulb" style="margin-right:8px; opacity:0.6;"></i>Electrical & Lighting</span><span>${INR.format(d.breakdown.electrical_lighting)}</span></div>
+                        <div class="result-row"><span><i class="fa-solid fa-toolbox" style="margin-right:8px; opacity:0.6;"></i>Miscellaneous</span><span>${INR.format(d.breakdown.miscellaneous)}</span></div>
+                    </div>
+                    ${roomRows ? `<div class="result-box">${roomRows}</div>` : ''}
+                    <p style="font-size:0.78rem; color:var(--muted-color); margin-top:0.5rem;">* Estimates based on current market rates. Actual costs may vary by 10-15%.</p>
+                </div>`;
+        } catch(e) {
+            document.getElementById('estimate-results').innerHTML = '<p style="color:#ff6b6b;">Error fetching estimate. Please try again.</p>';
+        }
+        btn.innerHTML = '<i class="fa-solid fa-calculator"></i> Calculate Interior Cost';
+        btn.disabled = false;
+    }
+
+    async function loadProfessionals(style) {
+        document.querySelectorAll('#pro-filter-tabs .tab-btn').forEach(b => b.classList.remove('active'));
+        event && event.target && event.target.classList.add('active');
+        const container = document.getElementById('professionals-container');
+        container.innerHTML = '<div style="color:var(--muted-color);"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>';
+        const res = await fetch('/api/interior/professionals?style=' + encodeURIComponent(style));
+        const data = await res.json();
+        container.innerHTML = '';
+        if (!data.length) { container.innerHTML = '<p style="color:var(--muted-color);">No professionals found for this style.</p>'; return; }
+        data.forEach(p => {
+            const stars = '★'.repeat(Math.round(p.rating)) + '☆'.repeat(5 - Math.round(p.rating));
+            const div = document.createElement('div');
+            div.className = 'glass-card pro-card';
+            div.innerHTML = `
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:0.8rem;">
+                    <div>
+                        <h3 style="font-size:1rem; margin-bottom:0.3rem;">${p.name}</h3>
+                        <p style="color:var(--muted-color); font-size:0.85rem;"><i class="fa-solid fa-location-dot" style="color:var(--accent-color);"></i> ${p.area}, ${p.city}</p>
+                    </div>
+                    <div style="text-align:right;">
+                        <p style="color:#f5c518; font-size:0.9rem;">${stars}</p>
+                        <p style="color:var(--muted-color); font-size:0.78rem;">${p.rating}/5</p>
+                    </div>
+                </div>
+                <div style="display:flex; flex-wrap:wrap; gap:0.4rem; margin-bottom:1rem;">${p.specialties.map(s => `<span class="material-tag">${s}</span>`).join('')}</div>
+                <div class="result-row"><span style="color:var(--muted-color); font-size:0.85rem;">Experience</span><span style="font-size:0.85rem;">${p.experience_yrs} yrs</span></div>
+                <div class="result-row"><span style="color:var(--muted-color); font-size:0.85rem;">Projects Done</span><span style="font-size:0.85rem;">${p.projects_done}+</span></div>
+                <div class="result-row" style="border:none;"><span style="color:var(--muted-color); font-size:0.85rem;">Starting From</span><span style="font-size:0.85rem;">${INR.format(p.price_per_sqft_from)}/sqft</span></div>
+                <a href="tel:${p.phone}" class="btn" style="width:100%; text-align:center; margin-top:1rem; font-size:0.85rem; padding:0.7rem;"><i class="fa-solid fa-phone"></i> ${p.phone}</a>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    async function loadStores(style, budget) {
+        const container = document.getElementById('stores-container');
+        container.innerHTML = '<div style="color:var(--muted-color);"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>';
+        const res = await fetch(`/api/interior/stores?style=${encodeURIComponent(style)}&budget=${encodeURIComponent(budget)}`);
+        const data = await res.json();
+        container.innerHTML = '';
+        data.forEach(s => {
+            const div = document.createElement('div');
+            div.className = 'glass-card store-card';
+            div.innerHTML = `
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:0.8rem;">
+                    <h3 style="font-size:1.05rem;">${s.name}</h3>
+                    <span style="background:rgba(110,231,183,0.1); color:#6ee7b7; border:1px solid rgba(110,231,183,0.25); border-radius:50px; padding:0.2rem 0.6rem; font-size:0.75rem; font-weight:600;">${s.price_range}</span>
+                </div>
+                <p style="color:var(--muted-color); font-size:0.85rem; margin-bottom:0.8rem;"><i class="fa-solid fa-location-dot" style="color:var(--accent-color);"></i> ${s.address}, ${s.city}</p>
+                <p style="color:var(--muted-color); font-size:0.85rem; margin-bottom:0.8rem;">${s.specialty}</p>
+                <div style="display:flex; flex-wrap:wrap; gap:0.3rem; margin-bottom:1rem;">${s.styles.map(st => `<span class="material-tag">${st}</span>`).join('')}</div>
+                <div class="result-row" style="border:none; padding:0;"><span style="color:var(--muted-color); font-size:0.85rem;"><i class="fa-solid fa-star" style="color:#f5c518;"></i> ${s.rating} · ${s.distance_km} km away</span></div>
+                <a href="${s.website}" target="_blank" class="btn btn-outline" style="width:100%; text-align:center; margin-top:1rem; font-size:0.85rem; padding:0.7rem;"><i class="fa-solid fa-arrow-up-right-from-square"></i> Visit Website</a>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        loadDesigns();
+        loadProfessionals('');
+        loadStores('', '');
+    });
+</script>
+{% endblock %}
