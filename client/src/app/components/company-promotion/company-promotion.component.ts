@@ -43,8 +43,18 @@ export class CompanyPromotionComponent implements OnInit {
 
   editingPromo: any = null;
 
+  // Interactive comments, likes, and copy-link share states
+  commentUser: { [key: string]: string } = {};
+  commentText: { [key: string]: string } = {};
+  likedPromotions: string[] = [];
+  copiedPromoId: string | null = null;
+
   ngOnInit(): void {
     this.fetchPromotions();
+    const storedLikes = localStorage.getItem('construct_ease_liked_promos');
+    if (storedLikes) {
+      this.likedPromotions = JSON.parse(storedLikes);
+    }
   }
 
   fetchPromotions(): void {
@@ -52,7 +62,12 @@ export class CompanyPromotionComponent implements OnInit {
     this.error = false;
     this.apiService.getPromotions().subscribe({
       next: (data) => {
-        this.promotions = data;
+        this.promotions = data.map((promo: any) => {
+          if (promo.propertyType === 'Land' && !promo.videoUrl) {
+            promo.videoUrl = 'https://assets.mixkit.co/videos/preview/mixkit-drone-shot-of-a-green-field-and-trees-40431-large.mp4';
+          }
+          return promo;
+        });
         this.applyFilters();
         this.isLoading = false;
       },
@@ -134,6 +149,10 @@ export class CompanyPromotionComponent implements OnInit {
       return;
     }
 
+    if (this.newPromo.propertyType === 'Land' && !this.newPromo.videoUrl) {
+      this.newPromo.videoUrl = 'https://assets.mixkit.co/videos/preview/mixkit-drone-shot-of-a-green-field-and-trees-40431-large.mp4';
+    }
+
     this.isSubmitting = true;
     this.apiService.createPromotion(this.newPromo).subscribe({
       next: (saved) => {
@@ -166,6 +185,10 @@ export class CompanyPromotionComponent implements OnInit {
         !this.editingPromo.price || !this.editingPromo.area || !this.editingPromo.ownerName || !this.editingPromo.ownerPhone) {
       alert('Please fill out all required fields.');
       return;
+    }
+
+    if (this.editingPromo.propertyType === 'Land' && !this.editingPromo.videoUrl) {
+      this.editingPromo.videoUrl = 'https://assets.mixkit.co/videos/preview/mixkit-drone-shot-of-a-green-field-and-trees-40431-large.mp4';
     }
 
     this.isSubmitting = true;
@@ -201,7 +224,6 @@ export class CompanyPromotionComponent implements OnInit {
       }
     });
   }
-
   likePromotion(promo: any): void {
     this.apiService.likePromotion(promo._id).subscribe({
       next: (updated) => {
@@ -210,6 +232,66 @@ export class CompanyPromotionComponent implements OnInit {
       error: (err) => {
         console.error('Error liking promotion:', err);
       }
+    });
+  }
+
+  toggleMedia(promo: any): void {
+    if (promo.imageUrl && promo.videoUrl) {
+      promo.showingVideo = !promo.showingVideo;
+    }
+  }
+
+  isLiked(promoId: string): boolean {
+    return this.likedPromotions.includes(promoId);
+  }
+
+  toggleLike(promo: any): void {
+    const promoId = promo._id;
+    if (this.likedPromotions.includes(promoId)) {
+      this.likedPromotions = this.likedPromotions.filter(id => id !== promoId);
+      localStorage.setItem('construct_ease_liked_promos', JSON.stringify(this.likedPromotions));
+      promo.likes = Math.max(0, promo.likes - 1);
+    } else {
+      this.likedPromotions.push(promoId);
+      localStorage.setItem('construct_ease_liked_promos', JSON.stringify(this.likedPromotions));
+      this.likePromotion(promo);
+    }
+  }
+
+  toggleComments(promo: any): void {
+    promo.showComments = !promo.showComments;
+  }
+
+  submitComment(promo: any): void {
+    const username = this.commentUser[promo._id]?.trim();
+    const text = this.commentText[promo._id]?.trim();
+
+    if (!username || !text) {
+      alert('Please enter your name and comment/inquiry text.');
+      return;
+    }
+
+    this.apiService.addComment(promo._id, username, text).subscribe({
+      next: (updated) => {
+        promo.comments = updated.comments;
+        this.commentText[promo._id] = ''; // clear input
+      },
+      error: (err) => {
+        console.error('Error submitting comment:', err);
+        alert('Failed to post comment. Make sure server is running.');
+      }
+    });
+  }
+
+  sharePromo(promo: any): void {
+    const url = `${window.location.origin}/#/promote?id=${promo._id}`;
+    navigator.clipboard.writeText(url).then(() => {
+      this.copiedPromoId = promo._id;
+      setTimeout(() => {
+        if (this.copiedPromoId === promo._id) {
+          this.copiedPromoId = null;
+        }
+      }, 3000);
     });
   }
 

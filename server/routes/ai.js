@@ -763,6 +763,195 @@ router.post('/material-price', async (req, res) => {
     }
 });
 
+router.post('/design-suggest', async (req, res) => {
+    try {
+        const { image, roomType = 'living-room', style = 'modern' } = req.body;
+
+        if (!image) {
+            return res.status(400).json({ error: 'Construction photo is required' });
+        }
+
+        const suggestionsLibrary = {
+            'living-room': {
+                modern: {
+                    colors: [
+                        { name: 'Warm Alabaster', hex: '#F2EFE9', percentage: '60% (Base)', brand: 'Asian Paints Royale Luxury', description: 'Gives a spacious and clean canvas, maximizing ambient light.' },
+                        { name: 'Urban Slate', hex: '#4A525A', percentage: '30% (Accent Wall)', brand: 'Asian Paints Royale Luxury', description: 'Creates a striking modern contrast behind the TV unit or sofa.' },
+                        { name: 'Burnt Ochre', hex: '#C16E5A', percentage: '10% (Niches/Trims)', brand: 'Berger Silk Glamor', description: 'Injects a pop of warm energy into key design features.' }
+                    ],
+                    tiles: [
+                        { name: 'Carara Gold Polished Vitrified', size: '800×800 mm', finish: 'High Glossy', brand: 'Kajaria Eternity', costEstimate: '₹75–₹120 / sq ft', description: 'Luxurious white marble look with gold veins to elevate the living room stature.' }
+                    ],
+                    image: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=800',
+                    summary: 'For a modern living room, we recommend a soft neutral backdrop paired with a bold slate accent wall. High-gloss vitrified tiles mimic Italian marble, reflecting natural light and expanding the space visually.'
+                },
+                minimalist: {
+                    colors: [
+                        { name: 'Soft Linen', hex: '#EAE6DF', percentage: '70% (Walls)', brand: 'Nerolac Impression', description: 'Calm, organic base coat that feels warm and airy.' },
+                        { name: 'Warm Taupe', hex: '#B3A394', percentage: '20% (Ceiling/Niche)', brand: 'Nerolac Impression', description: 'Adds subtle depth without cluttering the visual field.' },
+                        { name: 'Chalk White', hex: '#FEFCF8', percentage: '10% (Trims)', brand: 'Asian Paints Royale', description: 'Crisp highlight for windows and baseboards.' }
+                    ],
+                    tiles: [
+                        { name: 'Satin Crema Porcelain', size: '600×1200 mm', finish: 'Matte/Satin', brand: 'Somany Slip-Shield', costEstimate: '₹60–₹85 / sq ft', description: 'Seamless beige porcelain tiles that create a calm, unified floor layout.' }
+                    ],
+                    image: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=800',
+                    summary: 'Minimalist spaces thrive on simplicity. We recommend muted earth tones on the walls and a matte satin floor. The focus is on clean lines and texture over high-contrast colors.'
+                },
+                default: {
+                    colors: [
+                        { name: 'Pearly White', hex: '#F6F6F6', percentage: '60% (Walls)', brand: 'Asian Paints', description: 'Bright neutral base.' },
+                        { name: 'Muted Teal', hex: '#2F5C64', percentage: '30% (Accent)', brand: 'Berger Silk', description: 'A cozy, contemporary color for your main wall.' },
+                        { name: 'Soft Gold', hex: '#D4AF37', percentage: '10% (Trims)', brand: 'Dulux Velvet', description: 'Elegant metallic details.' }
+                    ],
+                    tiles: [
+                        { name: 'Classic Travertine Vitrified', size: '800×800 mm', finish: 'Polished', brand: 'Kajaria', costEstimate: '₹70–₹95 / sq ft', description: 'Timeless stone appearance suited for family gathering spaces.' }
+                    ],
+                    image: 'https://images.unsplash.com/photo-1618219908412-a29a1bb7b86e?w=800',
+                    summary: 'A versatile contemporary scheme combining clean white surfaces with a deep, sophisticated teal accent wall and high-quality travertine floor tiles.'
+                }
+            },
+            'kitchen': {
+                modern: {
+                    colors: [
+                        { name: 'Pure White', hex: '#FFFFFF', percentage: '50% (Walls)', brand: 'Asian Paints Royale Apcolite', description: 'Keeps the cooking area looking sanitary, bright, and hygienic.' },
+                        { name: 'Charcoal Matte', hex: '#2C302E', percentage: '40% (Cabinet Background)', brand: 'Berger Silk Glamor', description: 'Stunning premium backing for modular cabinetry.' },
+                        { name: 'Lime Zest', hex: '#D0F176', percentage: '10% (Accents)', brand: 'Dulux', description: 'Playful culinary highlight.' }
+                    ],
+                    tiles: [
+                        { name: 'Marquina Black Backsplash Ceramic', size: '300×600 mm', finish: 'Super Glossy', brand: 'Kajaria Eternity', costEstimate: '₹80–₹130 / sq ft', description: 'Stunning splash protection featuring deep black marble veins.' },
+                        { name: 'Anti-Skid Ash Ceramic (Floor)', size: '600×600 mm', finish: 'Matte Anti-Skid', brand: 'Somany', costEstimate: '₹55–₹75 / sq ft', description: 'Safe, moisture-resistant flooring for active kitchens.' }
+                    ],
+                    image: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=800',
+                    summary: 'For a modern kitchen, a high-contrast palette of white and charcoal creates a high-end feel. Slip-resistant floor tiles are essential, paired with a glossy backsplash that is easy to wipe clean.'
+                },
+                default: {
+                    colors: [
+                        { name: 'Ivory Cream', hex: '#FFFFF0', percentage: '60% (Walls)', brand: 'Nerolac', description: 'Warm and inviting.' },
+                        { name: 'Warm Terracotta', hex: '#C36241', percentage: '30% (Cabinets)', brand: 'Berger', description: 'A cozy, earth-connected kitchen vibe.' },
+                        { name: 'Dusty Green', hex: '#879D8E', percentage: '10% (Island)', brand: 'Dulux', description: 'A touch of nature.' }
+                    ],
+                    tiles: [
+                        { name: 'Mediterranean Hexagonal Ceramic', size: '200×200 mm', finish: 'Satin', brand: 'Kajaria', costEstimate: '₹90–₹140 / sq ft', description: 'Charming pattern-work for kitchen walls or backsplashes.' }
+                    ],
+                    image: 'https://images.unsplash.com/photo-1556912173-3bb406ef7e77?w=800',
+                    summary: 'A rustic-modern hybrid kitchen using warm, appetizing terracotta highlights alongside beautiful patterned hexagonal tiling.'
+                }
+            },
+            'bedroom': {
+                modern: {
+                    colors: [
+                        { name: 'Eco Sage Green', hex: '#7A8F7D', percentage: '50% (Behind Bed)', brand: 'Berger Breath Easy', description: 'Promotes deep relaxation and high-quality sleep.' },
+                        { name: 'Muted Taupe', hex: '#9A8F80', percentage: '40% (Surrounds)', brand: 'Asian Paints Royale', description: 'Warm neutral that wraps the room in cozy comfort.' },
+                        { name: 'Warm Cream', hex: '#FAF9F6', percentage: '10% (Ceiling)', brand: 'Asian Paints', description: 'Soft reflection of night lights without harsh glares.' }
+                    ],
+                    tiles: [
+                        { name: 'Natural Oak Wood-Plank Vitrified', size: '200×1200 mm', finish: 'Textured Wooden', brand: 'Kajaria Eternity', costEstimate: '₹85–₹140 / sq ft', description: 'Provides the warmth of real hardwood flooring with the durability and cooling properties of vitrified tiles.' }
+                    ],
+                    image: 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=800',
+                    summary: 'Bedrooms are sanctuaries. A soothing sage green accent wall behind the bed combined with wood-textured floor planks creates an organic, restful sanctuary.'
+                },
+                default: {
+                    colors: [
+                        { name: 'Royal Velvet', hex: '#4B3E5C', percentage: '40% (Accent)', brand: 'Asian Paints Royale', description: 'Deep, rich purple for a luxurious master bedroom feel.' },
+                        { name: 'Blush Cream', hex: '#FFF2F2', percentage: '50% (Walls)', brand: 'Berger Silk', description: 'Gentle, soothing companion color.' },
+                        { name: 'Soft Gold', hex: '#E6C280', percentage: '10% (Trims)', brand: 'Dulux', description: 'Elegant metallic details.' }
+                    ],
+                    tiles: [
+                        { name: 'Statuary White Marble Vitrified', size: '800×800 mm', finish: 'High Glossy', brand: 'Somany', costEstimate: '₹75–₹110 / sq ft', description: 'Gleaming, bright, premium marble replica floors.' }
+                    ],
+                    image: 'https://images.unsplash.com/photo-1540518614846-7eded433c457?w=800',
+                    summary: 'A luxurious master bedroom layout utilizing rich royal purple accents, warm ambient lighting, and white polished marble replica tiling.'
+                }
+            },
+            'bathroom': {
+                modern: {
+                    colors: [
+                        { name: 'Clean Mint', hex: '#E2EFE9', percentage: '40% (Ceiling & Shelving)', brand: 'Asian Paints Royale Smart', description: 'Anti-fungal formula that adds a clean, spa-like splash.' },
+                        { name: 'Dark Slate', hex: '#3E4447', percentage: '60% (Feature Wall)', brand: 'Berger Silk Waterproof', description: 'Dramatically frames vanity mirrors and metallic fixtures.' }
+                    ],
+                    tiles: [
+                        { name: 'Anti-Skid Charcoal Ceramic (Floor)', size: '300×300 mm', finish: 'Matte Anti-Slip', brand: 'Somany Slip-Shield', costEstimate: '₹50–₹70 / sq ft', description: 'Critical water-shedding tiles to prevent slips and falls.' },
+                        { name: 'Calacatta White Glazed Vitrified (Walls)', size: '600×1200 mm', finish: 'Glossy', brand: 'Kajaria Eternity', costEstimate: '₹80–₹125 / sq ft', description: 'Large slab tiles that minimize grout lines, making cleaning soap scum easy.' }
+                    ],
+                    image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=800',
+                    summary: 'Bathrooms require high functionality. We recommend large white glossy wall slabs to maximize brightness and minimize grout lines, paired with charcoal anti-slip flooring.'
+                },
+                default: {
+                    colors: [
+                        { name: 'Soft Ivory', hex: '#FFFFF0', percentage: '70% (Ceiling/Trim)', brand: 'Nerolac', description: 'Warm and bright.' },
+                        { name: 'Clay Blush', hex: '#E3C1B4', percentage: '30% (Cabinetry)', brand: 'Asian Paints', description: 'Comforting, modern terracotta touch.' }
+                    ],
+                    tiles: [
+                        { name: 'Hexagonal Terrazzo Ceramic', size: '300×300 mm', finish: 'Matte', brand: 'Kajaria', costEstimate: '₹75–₹110 / sq ft', description: 'Playful, modern terrazzo chips in a hexagonal format.' }
+                    ],
+                    image: 'https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=800',
+                    summary: 'A cozy bathroom aesthetic combining terrazzo tiling patterns with matte black brassware and clean ivory paint.'
+                }
+            },
+            'exterior': {
+                modern: {
+                    colors: [
+                        { name: 'Desert Sand (Weatherproof)', hex: '#D2C1B0', percentage: '60% (Main Body)', brand: 'Asian Paints Apex Ultima', description: 'Extremely durable, dust-repellent color that masks road grime.' },
+                        { name: 'Deep Espresso (Weatherproof)', hex: '#3E2723', percentage: '30% (Architectural Pillars)', brand: 'Asian Paints Apex Ultima', description: 'Frames windows and columns beautifully under sunlight.' },
+                        { name: 'Terracotta Rust (Weatherproof)', hex: '#C25A3F', percentage: '10% (Entry/Highlights)', brand: 'Berger WeatherCoat', description: 'Gives the main entrance a welcoming, premium identity.' }
+                    ],
+                    tiles: [
+                        { name: 'Heavy-Duty Rustic Slate Wall Cladding', size: '150×600 mm', finish: 'Rough Stone / Textured', brand: 'Kajaria Outdoor', costEstimate: '₹95–₹150 / sq ft', description: 'Natural stone slate cladding that withstands rain, heat, and UV degradation.' }
+                    ],
+                    image: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800',
+                    summary: 'Exterior walls require weathering protection. We recommend a dirt-repellent desert sand base color paired with natural stone slate cladding on front pillars for a luxurious street view.'
+                },
+                default: {
+                    colors: [
+                        { name: 'Granite Gray (Weatherproof)', hex: '#70777A', percentage: '60% (Facade)', brand: 'Berger WeatherCoat', description: 'Sleek, modern exterior base.' },
+                        { name: 'Snow White (Weatherproof)', hex: '#F2F5F8', percentage: '30% (Borders/Trim)', brand: 'Nerolac Excel', description: 'Crisp framing highlights.' },
+                        { name: 'Crimson Accent', hex: '#991B1B', percentage: '10% (Gate/Door)', brand: 'Asian Paints Apex', description: 'Bold entrance statement.' }
+                    ],
+                    tiles: [
+                        { name: 'Rustic Terracotta Brick Cladding', size: '200×400 mm', finish: 'Textured Matt', brand: 'Somany Outdoor', costEstimate: '₹75–₹110 / sq ft', description: 'Rich brick veneers that give an industrial-modern facade.' }
+                    ],
+                    image: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800',
+                    summary: 'A premium exterior facade combining dark granite gray paint with natural brick accent cladding to provide a strong architectural presence.'
+                }
+            },
+            'office': {
+                default: {
+                    colors: [
+                        { name: 'Corporate Steel', hex: '#BACAD6', percentage: '60% (Open Workspace)', brand: 'Asian Paints Professional', description: 'Keeps staff alert and neutralizes distracting reflections.' },
+                        { name: 'Deep Navy Blue', hex: '#1E3A8A', percentage: '30% (Conference Accent)', brand: 'Berger Professional', description: 'Exudes confidence, trustworthiness, and corporate strength.' },
+                        { name: 'Lime Bright', hex: '#84CC16', percentage: '10% (Breakroom Accent)', brand: 'Dulux Professional', description: 'Energizes creative breaks and relaxation zones.' }
+                    ],
+                    tiles: [
+                        { name: 'Double Charge Matte Vitrified', size: '600×1200 mm', finish: 'Matte Anti-Scratch', brand: 'Kajaria Eternity', costEstimate: '₹65–₹95 / sq ft', description: 'Extremely durable, scratch-resistant floor tiles built for high foot-traffic office use.' }
+                    ],
+                    image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800',
+                    summary: 'For commercial environments, a highly durable scratch-resistant double-charge floor tile is essential. We pair this with calming steel-blue and confidence-boosting navy blue accents.'
+                }
+            }
+        };
+
+        const roomData = suggestionsLibrary[roomType] || suggestionsLibrary['living-room'];
+        const selection = roomData[style] || roomData['default'] || roomData['modern'] || suggestionsLibrary['living-room']['default'];
+
+        const output = {
+            roomType,
+            style,
+            colors: selection.colors,
+            tiles: selection.tiles,
+            image: selection.image,
+            summary: selection.summary,
+            uploadedImage: image
+        };
+
+        await saveResult('design-suggest', { roomType, style }, output);
+
+        res.json(output);
+    } catch (err) {
+        console.error('Design Suggestion error:', err);
+        res.status(500).json({ error: 'Failed to generate design suggestions' });
+    }
+});
+
 // ─────────────────────────────────────────────
 // 7. AI MANAGEMENT DASHBOARD (Stats)
 //    GET /api/ai/dashboard
@@ -770,11 +959,12 @@ router.post('/material-price', async (req, res) => {
 router.get('/dashboard', async (req, res) => {
     try {
         let stats = {
-            totalAnalyses: 247,
+            totalAnalyses: 262,
             contractsScanned: 38,
             estimatesGenerated: 94,
             roomsPlanned: 61,
             timelinesCreated: 29,
+            designsVisualized: 15,
             avgRiskScore: 42,
             recentActivity: [
                 { feature: 'cost-estimate',  time: '2 min ago',  summary: '2400 sqft Premium, Mumbai' },
@@ -794,6 +984,7 @@ router.get('/dashboard', async (req, res) => {
                 stats.estimatesGenerated = await AIResult.countDocuments({ feature: 'cost-estimate' });
                 stats.roomsPlanned = await AIResult.countDocuments({ feature: 'room-planner' });
                 stats.timelinesCreated = await AIResult.countDocuments({ feature: 'timeline' });
+                stats.designsVisualized = await AIResult.countDocuments({ feature: 'design-suggest' });
 
                 const recent = await AIResult.find().sort({ createdAt: -1 }).limit(5);
                 if (recent.length > 0) {
@@ -829,6 +1020,7 @@ function getSummary(result) {
     if (f === 'timeline') return `${o?.summary?.totalMonths} timeline`;
     if (f === 'arch-recs') return o?.recommendations?.[0]?.style || 'Style recommended';
     if (f === 'material-price') return `${o?.materials?.length} materials tracked`;
+    if (f === 'design-suggest') return `${result.input?.style || ''} ${result.input?.roomType || ''} Visualized`;
     return 'AI Analysis';
 }
 

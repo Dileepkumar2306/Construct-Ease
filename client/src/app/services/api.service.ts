@@ -8,9 +8,20 @@ import { Observable } from 'rxjs';
 export class ApiService {
   private http = inject(HttpClient);
   private baseUrl = 'http://localhost:5000/api';
+  isQuoteModalOpen = false;
+  activeLocation = localStorage.getItem('user_location') || 'Hyderabad';
+
+  setActiveLocation(location: string) {
+    this.activeLocation = location;
+    localStorage.setItem('user_location', location);
+  }
 
   getTemplates(): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/templates`);
+  }
+
+  getBhkDetails(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/bhk-details`);
   }
 
   uploadTemplate(template: any): Observable<any> {
@@ -39,6 +50,10 @@ export class ApiService {
 
   likePromotion(id: string): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/promotions/${id}/like`, {});
+  }
+
+  addComment(id: string, username: string, text: string): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/promotions/${id}/comment`, { username, text });
   }
 
   estimateCost(area: number, quality: string): Observable<any> {
@@ -104,6 +119,10 @@ export class ApiService {
     return this.http.get<any>(`${this.baseUrl}/ai/dashboard`);
   }
 
+  aiDesignSuggest(payload: { image: string; roomType: string; style: string }): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/ai/design-suggest`, payload);
+  }
+
   // ── PORTFOLIO CRUD METHODS ──────────────────────────────────────────────────
 
   getPortfolio(role?: string, category?: string): Observable<any[]> {
@@ -127,5 +146,28 @@ export class ApiService {
 
   deletePortfolioItem(id: string): Observable<any> {
     return this.http.delete<any>(`${this.baseUrl}/portfolio/${id}`);
+  }
+
+  getProfessionalsList(location?: string, role?: string): Observable<any[]> {
+    let url = `${this.baseUrl}/professionals`;
+    const params: string[] = [];
+    if (location) params.push(`location=${encodeURIComponent(location)}`);
+    if (role && role !== 'All') params.push(`role=${encodeURIComponent(role)}`);
+    if (params.length > 0) {
+      url += `?${params.join('&')}`;
+    }
+    return this.http.get<any[]>(url);
+  }
+
+  sendInquiry(inquiryData: any): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/inquiries`, inquiryData);
+  }
+
+  sendQuoteRequest(quoteData: any): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/quotes`, quoteData);
+  }
+
+  getQuoteRequests(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/quotes`);
   }
 }

@@ -703,6 +703,140 @@
       </div>
     </div>
 
+    <div *ngIf="activeTab === 'design'" class="tab-panel" id="panel-design">
+
+      <div class="panel-header">
+        <h2><i class="fa-solid fa-palette"></i> AI Paint & Tiles Visualizer</h2>
+        <p>Upload a photo of your under-construction space to get customized tile and wall paint recommendations</p>
+      </div>
+
+      <div class="form-grid design-input-layout">
+        <div class="form-group upload-area-container">
+          <label>Upload Construction Photo</label>
+          <div class="upload-dropzone" (click)="fileInput.click()" [class.has-preview]="!!designImage">
+            <input #fileInput type="file" (change)="onDesignImageSelected($event)" accept="image/*" style="display: none;">
+            <div *ngIf="!designImage" class="upload-placeholder">
+              <i class="fa-solid fa-cloud-arrow-up"></i>
+              <p>Drag & drop or click to upload</p>
+              <span>Supports JPG, PNG, WEBP</span>
+            </div>
+            <div *ngIf="designImage" class="upload-preview-container">
+              <img [src]="designImage" class="upload-preview" alt="Construction site preview">
+              <div class="upload-overlay">
+                <i class="fa-solid fa-rotate"></i> Change Photo
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="design-selections">
+          <div class="form-group">
+            <label>Space / Room Type</label>
+            <select class="form-control" [(ngModel)]="designRoomType" id="design-room-type">
+              <option value="living-room">Living Room</option>
+              <option value="kitchen">Kitchen / Dining</option>
+              <option value="bedroom">Bedroom</option>
+              <option value="bathroom">Bathroom</option>
+              <option value="exterior">Exterior Facade / Wall</option>
+              <option value="office">Commercial Office Space</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Design Style Preference</label>
+            <select class="form-control" [(ngModel)]="designStyle" id="design-style">
+              <option value="modern">Modern Minimalist</option>
+              <option value="minimalist">Eco-Organic / Earthy</option>
+              <option value="contemporary">Contemporary Bold</option>
+              <option value="industrial">Raw Industrial</option>
+              <option value="traditional">Vastu / Classic Traditional</option>
+            </select>
+          </div>
+
+          <div class="form-submit" style="margin-top: 2rem;">
+            <button class="btn btn-ai w-full" (click)="runDesignSuggest()" [disabled]="designLoading || !designImage" id="btn-design-suggest">
+              <i class="fa-solid" [class]="designLoading ? 'fa-spinner fa-spin' : 'fa-wand-magic-sparkles'"></i>
+              {{ designLoading ? 'Visualizing with AI...' : 'Generate AI Suggestions' }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <p *ngIf="designError" class="error-msg"><i class="fa-solid fa-triangle-exclamation"></i> {{ designError }}</p>
+
+      <div *ngIf="designResult" class="result-panel design-result-section">
+
+        <div class="ai-recommendation-summary">
+          <h3><i class="fa-solid fa-brain"></i> AI Aesthetic Analysis</h3>
+          <p>{{ designResult.summary }}</p>
+        </div>
+
+        <div class="split-visualization">
+          <div class="vis-half animate">
+            <div class="vis-label"><i class="fa-solid fa-camera"></i> Your Uploaded Photo</div>
+            <div class="vis-frame">
+              <img [src]="designResult.uploadedImage" alt="Original Site">
+            </div>
+          </div>
+          <div class="vis-half animate">
+            <div class="vis-label vis-label-ai"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Generated Visualization</div>
+            <div class="vis-frame vis-frame-ai">
+              <img [src]="designResult.image" alt="AI Visualized Finished Room">
+            </div>
+          </div>
+        </div>
+
+        <div class="paint-section">
+          <h3><i class="fa-solid fa-fill-drip"></i> Recommended Wall Paint Palette</h3>
+          <div class="paint-chips-grid">
+            <div class="paint-chip-card" *ngFor="let color of designResult.colors">
+              <div class="chip-color-block" [style.background-color]="color.hex"></div>
+              <div class="chip-details">
+                <div class="chip-name-row">
+                  <span class="chip-name">{{ color.name }}</span>
+                  <span class="chip-hex">{{ color.hex }}</span>
+                </div>
+                <div class="chip-meta">
+                  <span class="chip-pct"><i class="fa-solid fa-chart-pie"></i> {{ color.percentage }}</span>
+                  <span class="chip-brand"><i class="fa-solid fa-tag"></i> {{ color.brand }}</span>
+                </div>
+                <p class="chip-desc">{{ color.description }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tiles-section" style="margin-top: 2.5rem;">
+          <h3><i class="fa-solid fa-border-all"></i> Recommended Floor & Wall Tiles</h3>
+          <div class="tiles-table-wrapper">
+            <table class="tiles-table">
+              <thead>
+                <tr>
+                  <th>Tile Specification</th>
+                  <th>Dimensions</th>
+                  <th>Finish</th>
+                  <th>Brand</th>
+                  <th>Est. Cost</th>
+                  <th>Aesthetic Fit</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let tile of designResult.tiles">
+                  <td class="tile-spec"><strong>{{ tile.name }}</strong></td>
+                  <td>{{ tile.size }}</td>
+                  <td><span class="tile-finish">{{ tile.finish }}</span></td>
+                  <td>{{ tile.brand }}</td>
+                  <td class="tile-cost">{{ tile.costEstimate }}</td>
+                  <td class="tile-desc">{{ tile.description }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
   </div><!-- /tab-content -->
 
 </div><!-- /ai-hub-wrapper -->

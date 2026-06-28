@@ -77,6 +77,12 @@ There shall be no cap on liability for damages incurred.`;
   matLoading = false;
   matResult: any = null;
   matError   = '';
+  designImage      = '';
+  designRoomType   = 'living-room';
+  designStyle      = 'modern';
+  designLoading    = false;
+  designResult: any = null;
+  designError      = '';
 
   readonly tabs = [
     { id: 'dashboard',  label: 'AI Dashboard',       icon: 'fa-gauge-high'      },
@@ -85,7 +91,8 @@ There shall be no cap on liability for damages incurred.`;
     { id: 'room',       label: 'Room Planner',        icon: 'fa-house-chimney'   },
     { id: 'timeline',   label: 'Timeline',            icon: 'fa-calendar-days'   },
     { id: 'arch',       label: 'Arch. Recommender',  icon: 'fa-compass-drafting' },
-    { id: 'material',   label: 'Material Prices',     icon: 'fa-chart-line'      }
+    { id: 'material',   label: 'Material Prices',     icon: 'fa-chart-line'      },
+    { id: 'design',     label: 'Paint & Tiles AI',    icon: 'fa-palette'         }
   ];
 
   ngOnInit() {
@@ -121,7 +128,8 @@ There shall be no cap on liability for damages incurred.`;
     const map: any = {
       'cost-estimate': '🏗️ Cost Estimate', 'contract-risk': '📄 Contract Scan',
       'room-planner':  '🏠 Room Plan',     'timeline': '📅 Timeline',
-      'arch-recs':     '🏛️ Arch. Rec',    'material-price': '📈 Material Price'
+      'arch-recs':     '🏛️ Arch. Rec',    'material-price': '📈 Material Price',
+      'design-suggest': '🎨 Paint & Tiles AI'
     };
     return map[f] || f;
   }
@@ -248,5 +256,42 @@ There shall be no cap on liability for damages incurred.`;
 
   volatilityClass(v: string): string {
     return v === 'HIGH' ? 'vol-high' : v === 'MEDIUM' ? 'vol-medium' : 'vol-low';
+  }
+
+  onDesignImageSelected(event: any) {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.designImage = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  runDesignSuggest() {
+    if (!this.designImage) {
+      this.designError = 'Please upload or snap a photo of the area under construction.';
+      return;
+    }
+    this.designLoading = true;
+    this.designResult = null;
+    this.designError = '';
+
+    this.api.aiDesignSuggest({
+      image: this.designImage,
+      roomType: this.designRoomType,
+      style: this.designStyle
+    }).subscribe({
+      next: (r) => {
+        this.designResult = r;
+        this.designLoading = false;
+        this.loadDashboard();
+      },
+      error: (e) => {
+        this.designError = 'AI generation failed. Please try again.';
+        this.designLoading = false;
+      }
+    });
   }
 }

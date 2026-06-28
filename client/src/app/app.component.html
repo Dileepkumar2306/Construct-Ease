@@ -1,7 +1,63 @@
+<div class="utility-bar">
+    <div class="utility-container">
+        <div class="utility-left">
+            <span class="utility-welcome"><i class="fa-solid fa-hard-hat text-accent"></i> Welcome to Construct Ease</span>
+        </div>
+        <div class="utility-right">
+            <div class="utility-item location-item-container">
+                <div class="location-trigger" (click)="toggleLocationSelector($event)">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <span>Serving: <strong class="text-accent">{{apiService.activeLocation}}</strong></span>
+                    <i class="fa-solid fa-chevron-down caret-icon"></i>
+                </div>
+                
+                <!-- Glassmorphic Location Selector Dropdown -->
+                <div class="location-dropdown glass-card animate" *ngIf="showLocationSelector" (click)="$event.stopPropagation()">
+                    <div class="location-dropdown-header">
+                        <h3>Select Serving Location</h3>
+                        <p>Set manual or auto-detect via GPS</p>
+                    </div>
+                    
+                    <button class="btn btn-gps-detect" (click)="detectLocation()" [disabled]="isDetectingLocation">
+                        <span *ngIf="!isDetectingLocation"><i class="fa-solid fa-location-crosshairs"></i> Auto-Detect My Location</span>
+                        <span *ngIf="isDetectingLocation"><i class="fa-solid fa-circle-notch fa-spin"></i> Geolocating...</span>
+                    </button>
+                    
+                    <div class="divider-line"><span>OR SELECT MANUALLY</span></div>
+                    
+                    <div class="location-search-box">
+                        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                        <input type="text" [(ngModel)]="locationSearchQuery" placeholder="Type city name..." (keyup.enter)="selectLocation(locationSearchQuery)" class="form-control">
+                        <button class="btn-search-go" (click)="selectLocation(locationSearchQuery)"><i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                    
+                    <div class="quick-cities-grid">
+                        <button class="city-pill" (click)="selectLocation('Hyderabad')" [class.active-pill]="apiService.activeLocation === 'Hyderabad'">Hyderabad</button>
+                        <button class="city-pill" (click)="selectLocation('Bangalore')" [class.active-pill]="apiService.activeLocation === 'Bangalore'">Bangalore</button>
+                        <button class="city-pill" (click)="selectLocation('Mumbai')" [class.active-pill]="apiService.activeLocation === 'Mumbai'">Mumbai</button>
+                        <button class="city-pill" (click)="selectLocation('Delhi')" [class.active-pill]="apiService.activeLocation === 'Delhi'">Delhi</button>
+                        <button class="city-pill" (click)="selectLocation('Chennai')" [class.active-pill]="apiService.activeLocation === 'Chennai'">Chennai</button>
+                        <button class="city-pill" (click)="selectLocation('Kolkata')" [class.active-pill]="apiService.activeLocation === 'Kolkata'">Kolkata</button>
+                    </div>
+                </div>
+            </div>
+            <div class="utility-item">
+                <i class="fa-solid fa-clock"></i>
+                <span>Mon - Sat: 9:00 AM - 6:00 PM</span>
+            </div>
+            <div class="utility-item">
+                <i class="fa-solid fa-phone-volume"></i>
+                <a href="tel:+919000089996" style="color: inherit; font-weight: inherit;">+91 90000 89996</a>
+            </div>
+            <button class="btn-utility-quote" (click)="openQuoteModal()">Get a Quote</button>
+        </div>
+    </div>
+</div>
+
 <nav class="navbar">
     <div class="logo">
         <a routerLink="/">
-            <i class="fa-solid fa-helmet-safety"></i> Construct Ease
+            <img src="/assets/images/gk_logo.png" alt="GK logo" class="navbar-logo-img"> Construct Ease
         </a>
     </div>
     <ul class="nav-links" [class.nav-active]="isMenuOpen">
@@ -19,10 +75,155 @@
     </div>
 </nav>
 
-<main class="main-content">
+<!-- Floating Connect Sidebar (Bollanos Reference) -->
+<div class="floating-sidebar">
+    <div class="sidebar-label">CONNECT</div>
+    <div class="sidebar-links">
+        <a href="mailto:dillu2354@gmail.com" class="sidebar-icon icon-email" title="Email Us">
+            <i class="fa-solid fa-envelope"></i>
+        </a>
+        <a href="https://wa.me/919000089996" target="_blank" class="sidebar-icon icon-whatsapp" title="WhatsApp Chat">
+            <i class="fa-brands fa-whatsapp"></i>
+        </a>
+        <a href="tel:+919000089996" class="sidebar-icon icon-phone" title="Call Us">
+            <i class="fa-solid fa-phone-flip"></i>
+        </a>
+        <a href="https://www.facebook.com/kondal.chowdary.3" target="_blank" class="sidebar-icon icon-facebook" title="Facebook Page">
+            <i class="fa-brands fa-facebook"></i>
+        </a>
+        <a href="https://www.facebook.com/kondal.chowdary.3" target="_blank" class="sidebar-icon icon-messenger" title="Messenger Chat">
+            <i class="fa-brands fa-facebook-messenger"></i>
+        </a>
+        <a href="https://www.instagram.com/kondalrachem/" target="_blank" class="sidebar-icon icon-instagram" title="Instagram Profile">
+            <i class="fa-brands fa-instagram"></i>
+        </a>
+        <a href="sms:+919000089996" class="sidebar-icon icon-sms" title="Send SMS">
+            <i class="fa-solid fa-message"></i>
+        </a>
+    </div>
+</div>
+
+<main class="main-content" [class.home-theme]="isHome">
     <router-outlet></router-outlet>
 </main>
 
-<footer>
-    <p>&copy; 2026 Construct Ease. All Rights Reserved.</p>
+<footer class="footer-new">
+    <div class="footer-container">
+        <!-- Column 1: Logo & Company -->
+        <div class="footer-col footer-brand-col">
+            <img src="/assets/images/gk_logo.png" alt="GK Constructions Logo" class="footer-logo">
+            <h2 class="footer-brand-title">GK CONSTRUCTIONS</h2>
+        </div>
+
+        <!-- Column 2: Contact Info -->
+        <div class="footer-col footer-contact-col">
+            <h3>CONTACT US TODAY</h3>
+            <div class="footer-contact-item">
+                <i class="fa-solid fa-location-dot"></i>
+                <span>Kandukur, Prakasam District, Andhra Pradesh</span>
+            </div>
+            <div class="footer-contact-item">
+                <i class="fa-solid fa-envelope"></i>
+                <a href="mailto:dillu2354@gmail.com">dillu2354&#64;gmail.com</a>
+            </div>
+            <div class="footer-contact-item">
+                <i class="fa-solid fa-phone"></i>
+                <a href="tel:+919000089996">+91 90000 89996</a>
+            </div>
+        </div>
+
+        <!-- Column 3: Social Media Links -->
+        <div class="footer-col footer-social-col">
+            <h3>LET'S CONNECT</h3>
+            <div class="footer-social-links">
+                <a href="https://www.facebook.com/kondal.chowdary.3" target="_blank" class="social-icon-box btn-facebook" title="Facebook">
+                    <i class="fa-brands fa-facebook-f"></i>
+                </a>
+                <a href="https://www.instagram.com/kondalrachem/" target="_blank" class="social-icon-box btn-instagram" title="Instagram">
+                    <i class="fa-brands fa-instagram"></i>
+                </a>
+                <a href="https://www.linkedin.com" target="_blank" class="social-icon-box btn-linkedin" title="LinkedIn">
+                    <i class="fa-brands fa-linkedin-in"></i>
+                </a>
+                <a href="mailto:dillu2354@gmail.com" class="social-icon-box btn-email-social" title="Email">
+                    <i class="fa-solid fa-envelope"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2026 GK Constructions. All Rights Reserved.</p>
+    </div>
 </footer>
+
+<!-- Quote Request Glassmorphic Modal -->
+<div class="modal-overlay" *ngIf="apiService.isQuoteModalOpen" (click)="closeQuoteModal()">
+    <div class="glass-modal animate" (click)="$event.stopPropagation()">
+        <button class="modal-close-btn" (click)="closeQuoteModal()">&times;</button>
+        <div class="modal-header">
+            <h2><i class="fa-solid fa-file-invoice-dollar text-accent"></i> Request a Custom Quote</h2>
+            <p>Connect with our backend database. Enter your construction details below.</p>
+        </div>
+        
+        <form (ngSubmit)="submitQuoteForm()" #quoteForm="ngForm" class="modal-form">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="clientName">Your Name *</label>
+                    <input type="text" id="clientName" name="clientName" [(ngModel)]="quoteData.clientName" required class="form-control" placeholder="e.g. Dileep Kumar" #nameInput="ngModel">
+                    <span class="error-msg" *ngIf="nameInput.invalid && nameInput.touched">Name is required</span>
+                </div>
+                <div class="form-group">
+                    <label for="clientPhone">Phone Number *</label>
+                    <input type="tel" id="clientPhone" name="clientPhone" [(ngModel)]="quoteData.clientPhone" required class="form-control" placeholder="e.g. +91 90000 89996" #phoneInput="ngModel">
+                    <span class="error-msg" *ngIf="phoneInput.invalid && phoneInput.touched">Phone is required</span>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="clientEmail">Email Address *</label>
+                    <input type="email" id="clientEmail" name="clientEmail" [(ngModel)]="quoteData.clientEmail" required email class="form-control" placeholder="e.g. dileep@example.com" #emailInput="ngModel">
+                    <span class="error-msg" *ngIf="emailInput.invalid && emailInput.touched">Valid email is required</span>
+                </div>
+                <div class="form-group">
+                    <label for="serviceType">Service Required *</label>
+                    <select id="serviceType" name="serviceType" [(ngModel)]="quoteData.serviceType" required class="form-control">
+                        <option value="Construction">Construction / Turnkey Building</option>
+                        <option value="Architecture">Architectural Consultation</option>
+                        <option value="Interior Design">Interior Studio & Decor</option>
+                        <option value="Renovation">Home Renovation & Expansion</option>
+                        <option value="Other">Other Services</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="projectArea">Project Plot Area (Sq.Ft.) *</label>
+                <input type="number" id="projectArea" name="projectArea" [(ngModel)]="quoteData.projectArea" required min="100" class="form-control" placeholder="e.g. 1500" #areaInput="ngModel">
+                <span class="error-msg" *ngIf="areaInput.invalid && areaInput.touched">Area must be at least 100 sq.ft.</span>
+            </div>
+            
+            <div class="form-group">
+                <label for="message">Message / Project Requirements *</label>
+                <textarea id="message" name="message" [(ngModel)]="quoteData.message" required minlength="10" rows="3" class="form-control" placeholder="Describe your dream project..." #msgInput="ngModel"></textarea>
+                <span class="error-msg" *ngIf="msgInput.invalid && msgInput.touched">Requirement details are required</span>
+            </div>
+            
+            <button type="submit" class="btn btn-submit" [disabled]="quoteForm.invalid || isSubmitting">
+                <span *ngIf="!isSubmitting"><i class="fa-solid fa-paper-plane"></i> Submit Request</span>
+                <span *ngIf="isSubmitting"><i class="fa-solid fa-circle-notch fa-spin"></i> Saving to Database...</span>
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- Success Toast Notification -->
+<div class="success-toast" *ngIf="showSuccessToast">
+    <div class="toast-content">
+        <i class="fa-solid fa-circle-check toast-icon"></i>
+        <div class="toast-text">
+            <h3>Quote Saved Successfully!</h3>
+            <p>Saved with ID: <span class="toast-id">{{savedQuoteId}}</span> in MongoDB.</p>
+        </div>
+    </div>
+</div>

@@ -25,15 +25,30 @@ const getDefaultPromotions = () => [
         title: "Prestige High-Rise Apartments",
         description: "Spacious 3BHK premium apartment on the 24th floor offering panoramic city views. Multi-level car parking, clubhouse access, indoor gym, and round-the-clock power backup.",
         propertyType: "Apartment",
-        location: "Gachibowli, Hyderabad",
+        location: "Uppal, Hyderabad",
         price: 18500000,
         area: 2200,
         imageUrl: "/assets/images/high_rise.png",
         videoUrl: "",
         ownerName: "Elite Construction Builders",
-        ownerPhone: "9876543210",
+        ownerPhone: "7013241482",
         likes: 84,
         createdAt: new Date("2026-05-28T00:00:00Z")
+    },
+    {
+        _id: "default_promo3",
+        title: "Premium Construction Plot in Uppal",
+        description: "East-facing 300 Sq.Yards (2700 Sq.Ft.) premium residential plot with direct 40ft wide road access. GHMC approved layout, fully cleared titles, ready for immediate construction. Excellent location near metro station.",
+        propertyType: "Land",
+        location: "Uppal, Hyderabad",
+        price: 13500000,
+        area: 2700,
+        imageUrl: "/assets/images/urban_house.png",
+        videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-drone-shot-of-a-green-field-and-trees-40431-large.mp4",
+        ownerName: "Kondal Chowdary",
+        ownerPhone: "7013241482",
+        likes: 42,
+        createdAt: new Date("2026-06-01T00:00:00Z")
     }
 ];
 
@@ -166,6 +181,35 @@ router.post('/:id/like', async (req, res) => {
         }
     } catch (err) {
         console.error("Error liking promotion:", err);
+        res.status(500).json({ error: "Server error" });
+    }
+});
+
+// POST /api/promotions/:id/comment - Add a comment to a promotion
+router.post('/:id/comment', async (req, res) => {
+    try {
+        const promoId = req.params.id;
+        const { username, text } = req.body;
+        if (!username || !text) {
+            return res.status(400).json({ error: "Username and text are required" });
+        }
+
+        if (mongoose.connection.readyState === 1) {
+            const promo = await Promotion.findById(promoId);
+            if (!promo) {
+                return res.status(404).json({ error: "Promotion not found" });
+            }
+            
+            promo.comments.push({ username, text, createdAt: new Date() });
+            const updatedPromo = await promo.save();
+            res.json(updatedPromo);
+        } else {
+            // Mock response
+            const mockComment = { _id: 'c_' + Math.random().toString(36).substr(2, 9), username, text, createdAt: new Date() };
+            res.json({ _id: promoId, comments: [mockComment] });
+        }
+    } catch (err) {
+        console.error("Error adding comment:", err);
         res.status(500).json({ error: "Server error" });
     }
 });

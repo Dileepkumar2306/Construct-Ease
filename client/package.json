@@ -1,12 +1,17 @@
 {
   "name": "client",
   "version": "0.0.0",
+  "main": "electron-main.js",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "desktop": "ng build && electron .",
+    "cap:sync": "cap sync",
+    "cap:add-android": "cap add android",
+    "cap:open-android": "cap open android"
   },
   "private": true,
   "dependencies": {
@@ -26,7 +31,11 @@
     "@angular-devkit/build-angular": "^17.3.17",
     "@angular/cli": "^17.3.17",
     "@angular/compiler-cli": "^17.3.0",
+    "@capacitor/android": "^8.4.0",
+    "@capacitor/cli": "^8.4.0",
+    "@capacitor/core": "^8.4.0",
     "@types/jasmine": "~5.1.0",
+    "electron": "^42.3.3",
     "jasmine-core": "~5.1.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",

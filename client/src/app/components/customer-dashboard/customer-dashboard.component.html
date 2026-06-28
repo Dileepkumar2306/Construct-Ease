@@ -64,7 +64,7 @@
         <div class="bhk-grid">
 
             <!-- 1BHK -->
-            <div class="bhk-card animate" style="animation-delay: 0.1s;">
+            <div class="bhk-card animate" style="animation-delay: 0.1s;" (click)="selectBhk('1BHK')">
                 <div class="bhk-image-wrap">
                     <img src="/assets/images/bhk1.png" alt="1BHK Home" class="bhk-img">
                     <div class="bhk-badge">1 BHK</div>
@@ -86,14 +86,14 @@
                         <span>Low Maintenance</span>
                         <span>Urban Living</span>
                     </div>
-                    <button class="btn btn-outline bhk-btn" (click)="selectBhk('1BHK')">
+                    <button class="btn btn-outline bhk-btn">
                         <i class="fa-solid fa-eye"></i> View Details
                     </button>
                 </div>
             </div>
 
             <!-- 2BHK -->
-            <div class="bhk-card animate" style="animation-delay: 0.2s;">
+            <div class="bhk-card animate" style="animation-delay: 0.2s;" (click)="selectBhk('2BHK')">
                 <div class="bhk-image-wrap">
                     <img src="/assets/images/bhk2.png" alt="2BHK Home" class="bhk-img">
                     <div class="bhk-badge bhk-badge-blue">2 BHK</div>
@@ -115,14 +115,14 @@
                         <span>Family Ready</span>
                         <span>Good Resale</span>
                     </div>
-                    <button class="btn btn-outline bhk-btn" (click)="selectBhk('2BHK')">
+                    <button class="btn btn-outline bhk-btn">
                         <i class="fa-solid fa-eye"></i> View Details
                     </button>
                 </div>
             </div>
 
             <!-- 3BHK -->
-            <div class="bhk-card animate" style="animation-delay: 0.3s;">
+            <div class="bhk-card animate" style="animation-delay: 0.3s;" (click)="selectBhk('3BHK')">
                 <div class="bhk-image-wrap">
                     <img src="/assets/images/bhk3.png" alt="3BHK Home" class="bhk-img">
                     <div class="bhk-badge bhk-badge-gold">3 BHK</div>
@@ -144,14 +144,14 @@
                         <span>Study Room</span>
                         <span>High Value</span>
                     </div>
-                    <button class="btn btn-outline bhk-btn" (click)="selectBhk('3BHK')">
+                    <button class="btn btn-outline bhk-btn">
                         <i class="fa-solid fa-eye"></i> View Details
                     </button>
                 </div>
             </div>
 
             <!-- 4BHK -->
-            <div class="bhk-card animate" style="animation-delay: 0.4s;">
+            <div class="bhk-card animate" style="animation-delay: 0.4s;" (click)="selectBhk('4BHK')">
                 <div class="bhk-image-wrap">
                     <img src="/assets/images/bhk4.png" alt="4BHK Home" class="bhk-img">
                     <div class="bhk-badge bhk-badge-purple">4 BHK</div>
@@ -173,7 +173,7 @@
                         <span>Villa Style</span>
                         <span>Top Resale</span>
                     </div>
-                    <button class="btn btn-outline bhk-btn" (click)="selectBhk('4BHK')">
+                    <button class="btn btn-outline bhk-btn">
                         <i class="fa-solid fa-eye"></i> View Details
                     </button>
                 </div>
@@ -181,16 +181,187 @@
 
         </div>
 
-        <!-- BHK Detail Panel -->
-        <div *ngIf="selectedBhk" class="bhk-detail-panel animate glass-card" style="margin-top: 2.5rem;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
-                <h3 style="color:var(--accent-color);"><i class="fa-solid fa-circle-info"></i> {{ selectedBhk }} Details</h3>
-                <button class="btn btn-outline" style="padding:0.4rem 1rem;" (click)="selectedBhk = null">✕ Close</button>
+        <!-- BHK Detail Panel (Real-life Construction Breakdown) -->
+        <div id="bhk-detail-panel" *ngIf="selectedBhk && bhkDetails" class="bhk-detail-panel animate glass-card" style="margin-top: 2.5rem; padding: 2.5rem;">
+            <!-- Panel Header -->
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 2rem; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
+                <div>
+                    <h3 style="color:var(--accent-color); font-size: 1.6rem; margin: 0;"><i class="fa-solid fa-circle-info"></i> {{ bhkDetails.title }}</h3>
+                    <span style="font-size: 0.9rem; color: var(--muted-color);">Recommended Area: <strong>{{ bhkDetails.areaRange }}</strong> | Construction Duration: <strong>{{ bhkDetails.duration }}</strong></span>
+                </div>
+                <button class="btn btn-outline" style="padding:0.5rem 1.2rem;" (click)="selectedBhk = null">✕ Close Details</button>
             </div>
-            <p style="color:var(--muted-color);">
-                Want a precise cost estimate for your {{ selectedBhk }}? Use our <strong style="color:var(--accent-color);">Auto Cost Estimator</strong> above or visit the
-                <strong style="color:var(--accent-color);">AI Hub → Cost Estimator</strong> for city-specific pricing, material quantities and AI insights.
-            </p>
+
+            <!-- Details Content Grid -->
+            <div class="grid-2" style="margin-bottom: 2rem;">
+                <!-- Left Column: Rooms & Sizes -->
+                <div>
+                    <h4 style="color: var(--accent-color); margin-bottom: 1.25rem; font-size: 1.15rem;"><i class="fa-solid fa-bed"></i> Room Dimensions & Setup</h4>
+                    <div style="display: flex; flex-direction: column; gap: 1rem;">
+                        <div *ngFor="let room of bhkDetails.rooms" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 1rem; border-radius: 12px;">
+                            <div style="display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 4px;">
+                                <span style="color: #fff;">{{ room.name }}</span>
+                                <span style="color: var(--accent-color);">{{ room.size }}</span>
+                            </div>
+                            <p style="color: var(--muted-color); font-size: 0.88rem; margin: 0; line-height: 1.4;">{{ room.description }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Civil Engineering Material Estimation -->
+                <div>
+                    <h4 style="color: var(--accent-color); margin-bottom: 1.25rem; font-size: 1.15rem;"><i class="fa-solid fa-truck-ramp-box"></i> Estimated Materials (Standard Build)</h4>
+                    <div style="background: rgba(224, 169, 109, 0.04); border: 1px solid rgba(224, 169, 109, 0.2); padding: 1.5rem; border-radius: 16px; margin-bottom: 1.5rem;">
+                        <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.95rem;">
+                            <tbody>
+                                <tr style="border-bottom: 1px solid rgba(224, 169, 109, 0.15); height: 40px;">
+                                    <th style="color: var(--muted-color); font-weight: 500;">Cement Required</th>
+                                    <td style="text-align: right; font-weight: bold; color: #fff;">{{ bhkDetails.materials.cement }}</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid rgba(224, 169, 109, 0.15); height: 40px;">
+                                    <th style="color: var(--muted-color); font-weight: 500;">Steel Reinforcement</th>
+                                    <td style="text-align: right; font-weight: bold; color: #fff;">{{ bhkDetails.materials.steel }}</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid rgba(224, 169, 109, 0.15); height: 40px;">
+                                    <th style="color: var(--muted-color); font-weight: 500;">River / M-Sand</th>
+                                    <td style="text-align: right; font-weight: bold; color: #fff;">{{ bhkDetails.materials.sand }}</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid rgba(224, 169, 109, 0.15); height: 40px;">
+                                    <th style="color: var(--muted-color); font-weight: 500;">Aggregate (Gravel)</th>
+                                    <td style="text-align: right; font-weight: bold; color: #fff;">{{ bhkDetails.materials.aggregate }}</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid rgba(224, 169, 109, 0.15); height: 40px;">
+                                    <th style="color: var(--muted-color); font-weight: 500;">Bricks / Blocks</th>
+                                    <td style="text-align: right; font-weight: bold; color: #fff;">{{ bhkDetails.materials.bricks }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Specifications List -->
+                    <h4 style="color: var(--accent-color); margin-bottom: 1rem; font-size: 1.1rem;"><i class="fa-solid fa-list-check"></i> Standard Technical Specs</h4>
+                    <ul style="list-style-type: none; padding-left: 0; display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.88rem; color: var(--muted-color);">
+                        <li *ngFor="let spec of bhkDetails.specifications" style="display: flex; align-items: flex-start; gap: 0.5rem;">
+                            <i class="fa-solid fa-circle-chevron-right" style="color: var(--accent-color); margin-top: 3px;"></i>
+                            <span>{{ spec }}</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Detail Actions -->
+            <div style="border-top: 1px solid rgba(255,255,255,0.08); padding-top: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                <p style="color: var(--muted-color); font-size: 0.88rem; margin: 0;">
+                    * All quantities are estimates based on standard residential structural guidelines.
+                </p>
+                <button class="btn" (click)="loadBhkIntoEstimator(selectedBhk)">
+                    <i class="fa-solid fa-calculator"></i> Calculate Exact Cost for this Plan
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Find Professionals Near You -->
+    <section class="animate" style="margin-top: 4rem;">
+        <h2><i class="fa-solid fa-user-tie" style="color:var(--accent-color); margin-right:10px;"></i> Find Professionals Near You</h2>
+        <p style="color: var(--muted-color); margin-bottom: 2rem;">Auto-detect your location or search manually to connect with local Builders, Architects, and Interior Designers.</p>
+
+        <!-- Location Search Bar -->
+        <div class="glass-card location-search-bar" style="margin-bottom: 2rem; padding: 1.5rem; display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 250px; position: relative;">
+                <i class="fa-solid fa-map-pin" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--accent-color);"></i>
+                <input type="text" [(ngModel)]="searchLocation" (ngModelChange)="fetchProfessionals()" placeholder="Enter your city or area (e.g. Hyderabad, Indiranagar)..." class="form-control" style="padding-left: 2.8rem; width: 100%;">
+            </div>
+            
+            <button type="button" class="btn btn-outline" (click)="detectLocation()" [disabled]="isDetectingLocation" style="display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fa-solid fa-location-crosshairs" [class.fa-spin]="isDetectingLocation"></i>
+                {{ isDetectingLocation ? 'Detecting...' : 'Detect Location' }}
+            </button>
+        </div>
+
+        <div *ngIf="locationError" class="alert alert-warning" style="margin-bottom: 1.5rem; background: rgba(243, 156, 18, 0.1); border: 1px solid #f39c12; color: #f39c12; padding: 0.75rem 1.25rem; border-radius: 8px;">
+            <i class="fa-solid fa-triangle-exclamation"></i> {{ locationError }}
+        </div>
+
+        <!-- Role Filter Tabs -->
+        <div class="role-filter-tabs" style="display: flex; gap: 1rem; margin-bottom: 2rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem; overflow-x: auto;">
+            <button class="tab-btn" [class.active]="selectedRoleFilter === 'All'" (click)="setRoleFilter('All')">All Professionals</button>
+            <button class="tab-btn" [class.active]="selectedRoleFilter === 'Builder'" (click)="setRoleFilter('Builder')">Builders</button>
+            <button class="tab-btn" [class.active]="selectedRoleFilter === 'Architect'" (click)="setRoleFilter('Architect')">Architects</button>
+            <button class="tab-btn" [class.active]="selectedRoleFilter === 'Interior Designer'" (click)="setRoleFilter('Interior Designer')">Interior Designers</button>
+        </div>
+
+        <!-- Loading / Error States -->
+        <div *ngIf="isLoadingProfessionals" style="text-align: center; padding: 3rem;">
+            <i class="fa-solid fa-spinner fa-spin fa-2x" style="color: var(--accent-color); margin-bottom: 1rem;"></i>
+            <p style="color: var(--muted-color);">Searching for professionals near you...</p>
+        </div>
+
+        <div *ngIf="professionalsError" class="glass-card" style="text-align: center; padding: 2rem; border-color: #e74c3c;">
+            <p style="color: #e74c3c;"><i class="fa-solid fa-circle-exclamation"></i> Failed to retrieve professional listings. Please try again later.</p>
+        </div>
+
+        <!-- Empty State -->
+        <div *ngIf="!isLoadingProfessionals && !professionalsError && professionalsList.length === 0" class="glass-card" style="text-align: center; padding: 3rem;">
+            <i class="fa-solid fa-user-slash" style="font-size: 3rem; color: var(--muted-color); margin-bottom: 1rem;"></i>
+            <h3>No Professionals Found</h3>
+            <p style="color: var(--muted-color);">We couldn't find any professionals matching "{{ searchLocation || 'your criteria' }}". Try checking the spelling or typing another area.</p>
+        </div>
+
+        <!-- Professionals Grid -->
+        <div *ngIf="!isLoadingProfessionals && !professionalsError && professionalsList.length > 0" class="grid-3">
+            <div *ngFor="let pro of professionalsList; let i = index" class="glass-card professional-card animate" [style.animation-delay]="(i * 0.05) + 's'" style="display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <!-- Card Header / Avatar -->
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem;">
+                        <div class="pro-avatar">
+                            {{ pro.name.charAt(0) }}
+                        </div>
+                        <span class="pro-role-badge" [ngClass]="{
+                            'badge-builder': pro.role === 'Builder',
+                            'badge-architect': pro.role === 'Architect',
+                            'badge-interior': pro.role === 'Interior Designer' || pro.role === 'Interior'
+                        }">
+                            {{ pro.role }}
+                        </span>
+                    </div>
+
+                    <!-- Card Body -->
+                    <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem;">{{ pro.name }}</h3>
+                    
+                    <!-- Rating and Experience -->
+                    <div style="display: flex; gap: 0.8rem; align-items: center; margin-bottom: 1rem; font-size: 0.85rem;">
+                        <span style="color: #fbbf24; font-weight: bold;"><i class="fa-solid fa-star"></i> {{ pro.rating }}</span>
+                        <span style="color: var(--muted-color);">|</span>
+                        <span style="color: var(--text-color); font-weight: 500;">{{ pro.experience }} Exp</span>
+                    </div>
+
+                    <p style="color: var(--muted-color); font-size: 0.88rem; line-height: 1.5; margin-bottom: 1rem;">
+                        {{ pro.description }}
+                    </p>
+
+                    <!-- Location and Specialties -->
+                    <div style="font-size: 0.85rem; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 1rem; margin-bottom: 1.5rem;">
+                        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; color: var(--muted-color);">
+                            <i class="fa-solid fa-location-dot" style="color: var(--accent-color);"></i>
+                            <span>{{ pro.location }}</span>
+                        </div>
+                        <div style="display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.8rem;">
+                            <span *ngFor="let spec of pro.specialties" class="pro-spec-tag">{{ spec }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card Actions -->
+                <div style="display: flex; gap: 0.5rem; align-items: center; justify-content: stretch;">
+                    <a [href]="'tel:' + pro.phone" class="btn btn-outline" style="padding: 0.6rem; min-width: auto; flex-shrink: 0;" title="Call Professional">
+                        <i class="fa-solid fa-phone"></i>
+                    </a>
+                    <button class="btn" style="width: 100%; font-size: 0.9rem; padding: 0.6rem;" (click)="openContactModal(pro)">
+                        <i class="fa-solid fa-envelope"></i> Contact Professional
+                    </button>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -215,7 +386,75 @@
                     <p style="color: var(--muted-color); font-size: 0.9rem; margin-bottom: 1rem;">
                         <strong>Style:</strong> {{ template.style }} | <strong>Area:</strong> {{ template.area }} sqft
                     </p>
-                    <button class="btn btn-outline" style="width:100%;">View Details</button>
+                    <button class="btn btn-outline" style="width:100%;" (click)="viewTemplateDetails(template)">View Details</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Template Detail Modal Drawer -->
+        <div class="modal-overlay" *ngIf="selectedTemplate" (click)="closeTemplateModal()">
+            <div class="glass-card modal-content" (click)="$event.stopPropagation()" style="width: 100%; max-width: 700px; border-color: var(--accent-color); padding: 2.5rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 1rem;">
+                    <h3 style="color: var(--accent-color); margin: 0; display: flex; align-items: center; gap: 0.5rem; font-size: 1.5rem;">
+                        <i class="fa-solid fa-hotel"></i> Design Plan: {{ selectedTemplate.name }}
+                    </h3>
+                    <button type="button" class="btn btn-outline" style="padding: 0.3rem 0.7rem; min-width: auto;" (click)="closeTemplateModal()">✕</button>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+                    <div>
+                        <img [src]="selectedTemplate.image_url" [alt]="selectedTemplate.name" style="width: 100%; height: 220px; object-fit: cover; border-radius: 12px; border: var(--glass-border); box-shadow: var(--glass-shadow); margin-bottom: 1rem;">
+                        
+                        <div style="background: rgba(255,255,255,0.02); padding: 1rem; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); font-size: 0.88rem; color: var(--muted-color); line-height: 1.5;">
+                            <strong>Highlights:</strong>
+                            <ul style="padding-left: 1.2rem; margin-top: 0.5rem; display: flex; flex-direction: column; gap: 0.4rem;">
+                                <li *ngFor="let highlight of selectedTemplate.highlights">{{ highlight }}</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div style="background: rgba(224, 169, 109, 0.05); border: 1px solid rgba(224, 169, 109, 0.25); border-radius: 12px; padding: 1.2rem; margin-bottom: 1.25rem;">
+                            <h4 style="color: var(--accent-color); margin-top:0; margin-bottom: 0.8rem; font-size: 1rem;"><i class="fa-solid fa-clipboard-list"></i> Structure Specifications</h4>
+                            <p style="margin: 0; font-size: 0.9rem; line-height: 1.6;">
+                                <strong>Style:</strong> {{ selectedTemplate.style }}<br>
+                                <strong>Total Area:</strong> {{ selectedTemplate.area }} sqft<br>
+                                <strong>Approx. Rooms:</strong> {{ selectedTemplate.bedrooms }} Bedrooms + Hall + Kitchen<br>
+                                <strong>Duration:</strong> {{ selectedTemplate.duration }} Est.
+                            </p>
+                        </div>
+
+                        <div style="background: rgba(255, 255, 255, 0.03); border: var(--glass-border); border-radius: 12px; padding: 1.2rem;">
+                            <h4 style="color: var(--accent-color); margin-top:0; margin-bottom: 0.8rem; font-size: 1rem;"><i class="fa-solid fa-truck-pickup"></i> Estimated Materials</h4>
+                            <table style="width: 100%; font-size: 0.82rem; line-height: 1.6; border-collapse: collapse;">
+                                <tbody>
+                                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                        <td>Cement</td>
+                                        <td style="text-align:right; font-weight:bold; color: #fff;">{{ selectedTemplate.materials.cement }}</td>
+                                    </tr>
+                                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                        <td>Steel</td>
+                                        <td style="text-align:right; font-weight:bold; color: #fff;">{{ selectedTemplate.materials.steel }}</td>
+                                    </tr>
+                                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                        <td>Sand / Aggregate</td>
+                                        <td style="text-align:right; font-weight:bold; color: #fff;">{{ selectedTemplate.materials.sand }} / {{ selectedTemplate.materials.aggregate }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Bricks</td>
+                                        <td style="text-align:right; font-weight:bold; color: #fff;">{{ selectedTemplate.materials.bricks }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 1rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.2rem;">
+                    <button type="button" class="btn btn-outline" (click)="closeTemplateModal()">Cancel</button>
+                    <button type="button" class="btn" (click)="useTemplateInEstimator(selectedTemplate)">
+                        <i class="fa-solid fa-calculator"></i> Run Cost Estimator for this Design
+                    </button>
                 </div>
             </div>
         </div>
@@ -355,4 +594,62 @@
             </div>
         </div>
     </section>
+
+    <!-- Contact Professional Modal Overlay -->
+    <div class="modal-overlay" *ngIf="showContactModal" (click)="closeContactModal()">
+        <div class="glass-card modal-content" (click)="$event.stopPropagation()" style="width: 100%; max-width: 550px; border-color: var(--accent-color);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 1rem;">
+                <h3 style="color: var(--accent-color); margin: 0; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fa-solid fa-paper-plane"></i> Contact {{ selectedProfessional?.name }}
+                </h3>
+                <button type="button" class="btn btn-outline" style="padding: 0.3rem 0.7rem; min-width: auto;" (click)="closeContactModal()">✕</button>
+            </div>
+
+            <!-- Success message -->
+            <div *ngIf="inquirySubmitted" style="text-align: center; padding: 2rem 0;">
+                <i class="fa-solid fa-circle-check fa-4x" style="color: #2ecc71; margin-bottom: 1.5rem; animation: scaleUp 0.3s ease-out;"></i>
+                <h3 style="color: #2ecc71; margin-bottom: 0.5rem;">Inquiry Submitted Successfully!</h3>
+                <p style="color: var(--muted-color);">{{ selectedProfessional?.name }} has been notified. They will contact you shortly.</p>
+            </div>
+
+            <!-- Form content -->
+            <form *ngIf="!inquirySubmitted" (ngSubmit)="submitInquiry()">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                    <div class="form-group">
+                        <label>Your Name *</label>
+                        <input type="text" name="clientName" [(ngModel)]="inquiryForm.clientName" class="form-control" placeholder="John Doe" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Your Phone *</label>
+                        <input type="tel" name="clientPhone" [(ngModel)]="inquiryForm.clientPhone" class="form-control" placeholder="+91 XXXXX XXXXX" required>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                    <div class="form-group">
+                        <label>Your Email</label>
+                        <input type="email" name="clientEmail" [(ngModel)]="inquiryForm.clientEmail" class="form-control" placeholder="john@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Project Area (Sqft)</label>
+                        <input type="number" name="projectArea" [(ngModel)]="inquiryForm.projectArea" class="form-control" placeholder="1200">
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label>Briefly Describe Your Requirements *</label>
+                    <textarea name="message" [(ngModel)]="inquiryForm.message" class="form-control" rows="4" placeholder="Mention home style, floors, quality details..." required></textarea>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 1rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
+                    <button type="button" class="btn btn-outline" (click)="closeContactModal()">Cancel</button>
+                    <button type="submit" class="btn" [disabled]="isInquirySubmitting">
+                        <i class="fa-solid fa-paper-plane" *ngIf="!isInquirySubmitting"></i>
+                        <i class="fa-solid fa-spinner fa-spin" *ngIf="isInquirySubmitting"></i>
+                        {{ isInquirySubmitting ? 'Sending...' : 'Send Inquiry' }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>

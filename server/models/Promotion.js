@@ -12,6 +12,11 @@ const promotionSchema = new mongoose.Schema({
   ownerName: { type: String, required: true },
   ownerPhone: { type: String, required: true },
   likes: { type: Number, default: 0 },
+  comments: [{
+    username: { type: String, required: true },
+    text: { type: String, required: true },
+    createdAt: { type: Date, default: Date.now }
+  }],
   createdAt: { type: Date, default: Date.now }
 });
 

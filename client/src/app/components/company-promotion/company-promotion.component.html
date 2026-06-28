@@ -34,6 +34,7 @@
         <button class="tab-btn" [class.active]="selectedType === 'Villa'" (click)="filterByType('Villa')">Villas</button>
         <button class="tab-btn" [class.active]="selectedType === 'Apartment'" (click)="filterByType('Apartment')">Apartments</button>
         <button class="tab-btn" [class.active]="selectedType === 'House'" (click)="filterByType('House')">Houses</button>
+        <button class="tab-btn" [class.active]="selectedType === 'Land'" (click)="filterByType('Land')"><i class="fa-solid fa-mountain-sun"></i> Lands & Plots</button>
       </div>
     </div>
 
@@ -62,6 +63,7 @@
                 <option value="Villa">Villa</option>
                 <option value="Apartment">Apartment</option>
                 <option value="House">Independent House</option>
+                <option value="Land">Land</option>
               </select>
             </div>
 
@@ -87,7 +89,7 @@
 
             <div class="form-group">
               <label>Contact/WhatsApp Number *</label>
-              <input type="text" name="ownerPhone" [(ngModel)]="newPromo.ownerPhone" placeholder="e.g. 7013241482" class="glass-input" required>
+              <input type="text" name="ownerPhone" [(ngModel)]="newPromo.ownerPhone" placeholder="e.g. 9000089996" class="glass-input" required>
             </div>
             
             <div class="form-group">
@@ -135,6 +137,7 @@
                 <option value="Villa">Villa</option>
                 <option value="Apartment">Apartment</option>
                 <option value="House">Independent House</option>
+                <option value="Land">Land</option>
               </select>
             </div>
 
@@ -224,7 +227,9 @@
             </div>
           </div>
           <div class="post-header-right">
-            <span class="category-badge">{{ promo.propertyType }}</span>
+            <span class="category-badge" [class.land-badge]="promo.propertyType === 'Land'">
+              <i class="fa-solid fa-mountain-sun" *ngIf="promo.propertyType === 'Land'"></i> {{ promo.propertyType }}
+            </span>
             
             <!-- Promoter Menu Controls -->
             <div class="post-menu" *ngIf="isPromoterMode">
@@ -235,29 +240,60 @@
         </div>
 
         <!-- Post Media Container (4:5 Aspect Ratio) -->
-        <div class="post-media-container">
-          <!-- Video walkthrough player -->
-          <video 
-            *ngIf="promo.videoUrl" 
-            controls 
-            preload="metadata" 
-            loop
-            [src]="promo.videoUrl" 
-            class="post-video">
-          </video>
-          
-          <!-- Image post poster -->
-          <img 
-            *ngIf="!promo.videoUrl" 
-            [src]="promo.imageUrl || '/assets/images/template1.png'" 
-            [alt]="promo.title" 
-            class="post-image">
+        <div class="post-media-container" (click)="toggleMedia(promo)">
+          <!-- If both exist, show image with play overlay or video when clicked -->
+          <ng-container *ngIf="promo.imageUrl && promo.videoUrl; else singleMedia">
+            <div *ngIf="!promo.showingVideo" class="media-wrapper">
+              <img [src]="promo.imageUrl" [alt]="promo.title" class="post-image">
+              <div class="play-overlay">
+                <div class="play-button-circle">
+                  <i class="fa-solid fa-play"></i>
+                </div>
+                <span class="play-text">Watch Walkthrough Video</span>
+              </div>
+            </div>
+            
+            <div *ngIf="promo.showingVideo" class="media-wrapper">
+              <video 
+                controls 
+                autoplay
+                preload="metadata" 
+                loop
+                [src]="promo.videoUrl" 
+                class="post-video"
+                (click)="$event.stopPropagation()">
+              </video>
+              <button class="back-to-image-btn" (click)="promo.showingVideo = false; $event.stopPropagation()">
+                <i class="fa-solid fa-image"></i> View Photo
+              </button>
+            </div>
+          </ng-container>
+
+          <ng-template #singleMedia>
+            <!-- Video walkthrough player only -->
+            <video 
+              *ngIf="promo.videoUrl" 
+              controls 
+              preload="metadata" 
+              loop
+              [src]="promo.videoUrl" 
+              class="post-video">
+            </video>
+            
+            <!-- Image post poster only -->
+            <img 
+              *ngIf="!promo.videoUrl" 
+              [src]="promo.imageUrl || '/assets/images/template1.png'" 
+              [alt]="promo.title" 
+              class="post-image">
+          </ng-template>
 
           <!-- Sponsored / Send WhatsApp Overlay Bar -->
           <a 
             [href]="getWhatsAppUrl(promo)" 
             target="_blank" 
-            class="sponsored-banner-bar">
+            class="sponsored-banner-bar"
+            (click)="$event.stopPropagation()">
             <span>Learn More (Chat on WhatsApp)</span>
             <i class="fa-brands fa-whatsapp"></i>
           </a>
@@ -267,10 +303,25 @@
         <div class="post-actions">
           <div class="left-actions">
             <!-- Like button heart -->
-            <button class="action-icon-btn like" (click)="likePromotion(promo)" title="Like Post">
+            <button 
+              class="action-icon-btn like" 
+              [class.liked]="isLiked(promo._id)"
+              (click)="toggleLike(promo)" 
+              title="Like Post">
               <i class="fa-solid fa-heart"></i>
             </button>
             
+            <!-- Comment toggle button -->
+            <button class="action-icon-btn comment" [class.active]="promo.showComments" (click)="toggleComments(promo)" title="Comments / Inquiry">
+              <i class="fa-solid fa-comment-dots"></i>
+            </button>
+
+            <!-- Share Copy button -->
+            <button class="action-icon-btn share" (click)="sharePromo(promo)" title="Copy Share Link">
+              <i class="fa-solid fa-share-nodes"></i>
+              <span class="share-tooltip" *ngIf="copiedPromoId === promo._id">Copied!</span>
+            </button>
+
             <!-- Direct call button -->
             <a href="tel:{{ promo.ownerPhone }}" class="action-icon-btn call" title="Call Promoter">
               <i class="fa-solid fa-phone"></i>
@@ -280,6 +331,7 @@
             <a [href]="getWhatsAppUrl(promo)" target="_blank" class="action-icon-btn whatsapp" title="Chat on WhatsApp">
               <i class="fa-brands fa-whatsapp"></i>
             </a>
+
           </div>
 
           <div class="right-actions">
@@ -303,6 +355,49 @@
           </p>
 
           <span class="post-date">Posted on {{ promo.createdAt | date:'mediumDate' }}</span>
+          
+          <!-- Comments / Inquiries Glass Drawer -->
+          <div class="comments-drawer animate" *ngIf="promo.showComments">
+            <h4><i class="fa-solid fa-comments"></i> Inquiries & Comments ({{ promo.comments?.length || 0 }})</h4>
+            
+            <div class="comments-list" *ngIf="promo.comments && promo.comments.length > 0">
+              <div class="comment-item" *ngFor="let comment of promo.comments">
+                <div class="comment-user-avatar">{{ comment.username.substring(0,2) | uppercase }}</div>
+                <div class="comment-bubble">
+                  <div class="comment-bubble-header">
+                    <span class="comment-user-name">{{ comment.username }}</span>
+                    <span class="comment-time">{{ comment.createdAt | date:'shortTime' }}</span>
+                  </div>
+                  <p class="comment-text">{{ comment.text }}</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="no-comments-msg" *ngIf="!promo.comments || promo.comments.length === 0">
+              <p>No inquiries yet. Be the first to ask!</p>
+            </div>
+
+            <!-- New Comment Form -->
+            <div class="new-comment-form">
+              <input 
+                type="text" 
+                [(ngModel)]="commentUser[promo._id]" 
+                placeholder="Your Name" 
+                class="glass-comment-input name-input">
+              
+              <div class="comment-input-row">
+                <input 
+                  type="text" 
+                  [(ngModel)]="commentText[promo._id]" 
+                  placeholder="Ask about price, availability..." 
+                  class="glass-comment-input text-input"
+                  (keyup.enter)="submitComment(promo)">
+                <button class="comment-submit-btn" (click)="submitComment(promo)">
+                  <i class="fa-solid fa-paper-plane"></i>
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
 
       </div>

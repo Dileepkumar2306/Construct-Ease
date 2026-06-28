@@ -1,0 +1,25 @@
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Python virtual environment and cache
+venv/
+.venv/
+__pycache__/
+*.pyc
+
+# Environment files (sensitive info!)
+.env
+.env.local
+.env.*.local
+server/.env
+
+# Angular build output
+client/dist/
+/dist
+/tmp
+
+# OS files
+.DS_Store
+Thumbs.db

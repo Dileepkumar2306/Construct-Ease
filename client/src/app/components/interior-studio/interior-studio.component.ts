@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../services/api.service';
@@ -90,9 +90,14 @@ export class InteriorStudioComponent implements OnInit {
     });
   }
 
+  @HostListener('window:locationChanged', ['$event'])
+  onLocationChanged(event: any) {
+    this.fetchProfessionals();
+  }
+
   fetchProfessionals() {
     this.isLoadingProfessionals = true;
-    this.apiService.getProfessionals().subscribe({
+    this.apiService.getProfessionals(this.apiService.activeLocation).subscribe({
       next: (res) => {
         this.professionals = res;
         this.isLoadingProfessionals = false;

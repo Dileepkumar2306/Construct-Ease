@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const AIResultSchema = new mongoose.Schema({
     feature: {
         type: String,
-        enum: ['cost-estimate', 'contract-risk', 'room-planner', 'timeline', 'arch-recs', 'material-price'],
+        enum: ['cost-estimate', 'contract-risk', 'room-planner', 'timeline', 'arch-recs', 'material-price', 'design-suggest'],
         required: true
     },
     input: {
