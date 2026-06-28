@@ -42,7 +42,7 @@ const path = require('path');
 
 app.use(express.static(path.join(__dirname, '../client/dist/client/browser')));
 
-app.get('/api-status', (req, res) => {
+app.get('/api/api-status', (req, res) => {
     res.send('API is running...');
 });
 
