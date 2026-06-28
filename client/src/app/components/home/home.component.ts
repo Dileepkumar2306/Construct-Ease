@@ -12,7 +12,7 @@ import { ApiService } from '../../services/api.service';
 export class HomeComponent {
   apiService = inject(ApiService);
 
-  openQuoteModal() {
-    this.apiService.isQuoteModalOpen = true;
+  openLoginModal() {
+    this.apiService.isLoginModalOpen = true;
   }
 }

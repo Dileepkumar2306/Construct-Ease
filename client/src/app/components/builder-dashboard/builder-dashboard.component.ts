@@ -11,7 +11,7 @@ import { ApiService } from '../../services/api.service';
   styleUrl: './builder-dashboard.component.css'
 })
 export class BuilderDashboardComponent implements OnInit {
-  private apiService = inject(ApiService);
+  public apiService = inject(ApiService);
 
   // Estimator State
   area: number | null = null;

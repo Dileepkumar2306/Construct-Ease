@@ -13,7 +13,7 @@ const UserSchema = new mongoose.Schema({
     passwordHash: { type: String, default: null },
     role: {
         type:    String,
-        enum:    ['customer', 'architect', 'builder', 'interior', 'admin'],
+        enum:    ['customer', 'architect', 'builder', 'interior', 'admin', 'owner'],
         default: 'customer'
     },
     isVerified: { type: Boolean, default: false },

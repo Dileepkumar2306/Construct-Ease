@@ -11,7 +11,7 @@ import { ApiService } from '../../services/api.service';
   styleUrl: './architect-dashboard.component.css'
 })
 export class ArchitectDashboardComponent implements OnInit {
-  private apiService = inject(ApiService);
+  public apiService = inject(ApiService);
 
   portfolioItems: any[] = [];
   isLoadingPortfolio = false;

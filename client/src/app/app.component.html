@@ -49,7 +49,18 @@
                 <i class="fa-solid fa-phone-volume"></i>
                 <a href="tel:+919000089996" style="color: inherit; font-weight: inherit;">+91 90000 89996</a>
             </div>
-            <button class="btn-utility-quote" (click)="openQuoteModal()">Get a Quote</button>
+            
+            <!-- Auth / User Status Button -->
+            <ng-container *ngIf="!apiService.isLoggedIn">
+                <button class="btn-utility-quote" (click)="openLoginModal('customer')"><i class="fa-solid fa-right-to-bracket"></i> Login</button>
+            </ng-container>
+            <ng-container *ngIf="apiService.isLoggedIn">
+                <div class="user-logged-badge">
+                    <i class="fa-solid" [ngClass]="apiService.isOwner ? 'fa-user-gear text-accent' : 'fa-user-check'"></i>
+                    <span>{{ apiService.currentUser?.name }} <strong class="role-chip">({{ apiService.isOwner ? 'Owner' : 'Customer' }})</strong></span>
+                    <button class="btn-logout" (click)="logout()" title="Logout"><i class="fa-solid fa-right-from-bracket"></i></button>
+                </div>
+            </ng-container>
         </div>
     </div>
 </div>
@@ -156,74 +167,75 @@
     </div>
 </footer>
 
-<!-- Quote Request Glassmorphic Modal -->
-<div class="modal-overlay" *ngIf="apiService.isQuoteModalOpen" (click)="closeQuoteModal()">
-    <div class="glass-modal animate" (click)="$event.stopPropagation()">
-        <button class="modal-close-btn" (click)="closeQuoteModal()">&times;</button>
-        <div class="modal-header">
-            <h2><i class="fa-solid fa-file-invoice-dollar text-accent"></i> Request a Custom Quote</h2>
-            <p>Connect with our backend database. Enter your construction details below.</p>
-        </div>
+<!-- Dual-Role Glassmorphic Authentication Modal -->
+<div class="modal-overlay" *ngIf="apiService.isLoginModalOpen" (click)="closeLoginModal()">
+    <div class="glass-modal animate auth-modal" (click)="$event.stopPropagation()">
+        <button class="modal-close-btn" (click)="closeLoginModal()">&times;</button>
         
-        <form (ngSubmit)="submitQuoteForm()" #quoteForm="ngForm" class="modal-form">
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="clientName">Your Name *</label>
-                    <input type="text" id="clientName" name="clientName" [(ngModel)]="quoteData.clientName" required class="form-control" placeholder="e.g. Dileep Kumar" #nameInput="ngModel">
-                    <span class="error-msg" *ngIf="nameInput.invalid && nameInput.touched">Name is required</span>
-                </div>
-                <div class="form-group">
-                    <label for="clientPhone">Phone Number *</label>
-                    <input type="tel" id="clientPhone" name="clientPhone" [(ngModel)]="quoteData.clientPhone" required class="form-control" placeholder="e.g. +91 90000 89996" #phoneInput="ngModel">
-                    <span class="error-msg" *ngIf="phoneInput.invalid && phoneInput.touched">Phone is required</span>
-                </div>
-            </div>
-            
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="clientEmail">Email Address *</label>
-                    <input type="email" id="clientEmail" name="clientEmail" [(ngModel)]="quoteData.clientEmail" required email class="form-control" placeholder="e.g. dileep@example.com" #emailInput="ngModel">
-                    <span class="error-msg" *ngIf="emailInput.invalid && emailInput.touched">Valid email is required</span>
-                </div>
-                <div class="form-group">
-                    <label for="serviceType">Service Required *</label>
-                    <select id="serviceType" name="serviceType" [(ngModel)]="quoteData.serviceType" required class="form-control">
-                        <option value="Construction">Construction / Turnkey Building</option>
-                        <option value="Architecture">Architectural Consultation</option>
-                        <option value="Interior Design">Interior Studio & Decor</option>
-                        <option value="Renovation">Home Renovation & Expansion</option>
-                        <option value="Other">Other Services</option>
-                    </select>
-                </div>
+        <div class="modal-header">
+            <h2><i class="fa-solid fa-shield-halved text-accent"></i> Welcome to Construct Ease</h2>
+            <p>Select your account type to log in or register</p>
+        </div>
+
+        <!-- Role Switcher Tabs -->
+        <div class="auth-tabs">
+            <button class="auth-tab-btn" [class.active]="activeAuthTab === 'customer'" (click)="switchAuthTab('customer')">
+                <i class="fa-solid fa-user"></i> Customer / Visitor
+            </button>
+            <button class="auth-tab-btn owner-tab" [class.active]="activeAuthTab === 'owner'" (click)="switchAuthTab('owner')">
+                <i class="fa-solid fa-building-user"></i> Company Owner
+            </button>
+        </div>
+
+        <!-- Error Message Alert -->
+        <div class="auth-error-alert" *ngIf="authErrorMessage">
+            <i class="fa-solid fa-circle-exclamation"></i> {{ authErrorMessage }}
+        </div>
+
+        <!-- TAB 1: Customer / Visitor Login (Email & Password) -->
+        <form (ngSubmit)="submitCustomerLogin()" *ngIf="activeAuthTab === 'customer'" class="modal-form">
+            <div class="form-group">
+                <label for="custEmail">Email Address *</label>
+                <input type="email" id="custEmail" name="email" [(ngModel)]="customerForm.email" required class="form-control" placeholder="e.g. customer@example.com">
             </div>
             
             <div class="form-group">
-                <label for="projectArea">Project Plot Area (Sq.Ft.) *</label>
-                <input type="number" id="projectArea" name="projectArea" [(ngModel)]="quoteData.projectArea" required min="100" class="form-control" placeholder="e.g. 1500" #areaInput="ngModel">
-                <span class="error-msg" *ngIf="areaInput.invalid && areaInput.touched">Area must be at least 100 sq.ft.</span>
+                <label for="custPassword">Password *</label>
+                <input type="password" id="custPassword" name="password" [(ngModel)]="customerForm.password" required class="form-control" placeholder="Enter your password">
             </div>
-            
+
             <div class="form-group">
-                <label for="message">Message / Project Requirements *</label>
-                <textarea id="message" name="message" [(ngModel)]="quoteData.message" required minlength="10" rows="3" class="form-control" placeholder="Describe your dream project..." #msgInput="ngModel"></textarea>
-                <span class="error-msg" *ngIf="msgInput.invalid && msgInput.touched">Requirement details are required</span>
+                <label for="custName">Your Name (Optional)</label>
+                <input type="text" id="custName" name="name" [(ngModel)]="customerForm.name" class="form-control" placeholder="e.g. John Doe">
             </div>
-            
-            <button type="submit" class="btn btn-submit" [disabled]="quoteForm.invalid || isSubmitting">
-                <span *ngIf="!isSubmitting"><i class="fa-solid fa-paper-plane"></i> Submit Request</span>
-                <span *ngIf="isSubmitting"><i class="fa-solid fa-circle-notch fa-spin"></i> Saving to Database...</span>
+
+            <button type="submit" class="btn btn-submit" [disabled]="isAuthenticating">
+                <span *ngIf="!isAuthenticating"><i class="fa-solid fa-right-to-bracket"></i> Login as Customer</span>
+                <span *ngIf="isAuthenticating"><i class="fa-solid fa-circle-notch fa-spin"></i> Verifying...</span>
             </button>
         </form>
-    </div>
-</div>
 
-<!-- Success Toast Notification -->
-<div class="success-toast" *ngIf="showSuccessToast">
-    <div class="toast-content">
-        <i class="fa-solid fa-circle-check toast-icon"></i>
-        <div class="toast-text">
-            <h3>Quote Saved Successfully!</h3>
-            <p>Saved with ID: <span class="toast-id">{{savedQuoteId}}</span> in MongoDB.</p>
-        </div>
+        <!-- TAB 2: Company Owner Login (Mobile Number & Password) -->
+        <form (ngSubmit)="submitOwnerLogin()" *ngIf="activeAuthTab === 'owner'" class="modal-form">
+            <div class="form-group">
+                <label for="ownerPhone">Mobile Number *</label>
+                <input type="tel" id="ownerPhone" name="phone" [(ngModel)]="ownerForm.phone" required class="form-control" placeholder="e.g. 9000089996">
+            </div>
+            
+            <div class="form-group">
+                <label for="ownerPassword">Password *</label>
+                <input type="password" id="ownerPassword" name="password" [(ngModel)]="ownerForm.password" required class="form-control" placeholder="Enter owner password">
+            </div>
+
+            <div class="form-group">
+                <label for="ownerName">Company / Owner Name (Optional)</label>
+                <input type="text" id="ownerName" name="name" [(ngModel)]="ownerForm.name" class="form-control" placeholder="e.g. GK Constructions Owner">
+            </div>
+
+            <button type="submit" class="btn btn-submit owner-submit-btn" [disabled]="isAuthenticating">
+                <span *ngIf="!isAuthenticating"><i class="fa-solid fa-user-shield"></i> Login as Company Owner</span>
+                <span *ngIf="isAuthenticating"><i class="fa-solid fa-circle-notch fa-spin"></i> Authenticating Owner...</span>
+            </button>
+        </form>
     </div>
 </div>

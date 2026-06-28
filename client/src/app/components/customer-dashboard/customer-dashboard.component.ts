@@ -11,7 +11,7 @@ import { ApiService } from '../../services/api.service';
   styleUrl: './customer-dashboard.component.css'
 })
 export class CustomerDashboardComponent implements OnInit {
-  private apiService = inject(ApiService);
+  public apiService = inject(ApiService);
   
   area: number | null = null;
   quality: string = 'standard';

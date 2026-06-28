@@ -31,21 +31,25 @@ export class AppComponent {
     });
   }
 
-  isSubmitting = false;
-  showSuccessToast = false;
-  savedQuoteId = '';
-
   isDetectingLocation = false;
   showLocationSelector = false;
   locationSearchQuery = '';
 
-  quoteData = {
-    clientName: '',
-    clientEmail: '',
-    clientPhone: '',
-    serviceType: 'Construction',
-    projectArea: null,
-    message: ''
+  // Auth Modal State & Tab Handling
+  activeAuthTab: 'owner' | 'customer' = 'customer';
+  isAuthenticating = false;
+  authErrorMessage = '';
+
+  ownerForm = {
+    name: '',
+    phone: '',
+    password: ''
+  };
+
+  customerForm = {
+    name: '',
+    email: '',
+    password: ''
   };
 
   @HostListener('document:click', ['$event'])
@@ -115,45 +119,68 @@ export class AppComponent {
     this.isMenuOpen = !this.isMenuOpen;
   }
 
-  openQuoteModal() {
-    this.apiService.isQuoteModalOpen = true;
-    this.isMenuOpen = false; // close mobile menu if open
+  openLoginModal(tab: 'owner' | 'customer' = 'customer') {
+    this.activeAuthTab = tab;
+    this.authErrorMessage = '';
+    this.apiService.isLoginModalOpen = true;
+    this.isMenuOpen = false;
   }
 
-  closeQuoteModal() {
-    this.apiService.isQuoteModalOpen = false;
+  closeLoginModal() {
+    this.apiService.isLoginModalOpen = false;
+    this.authErrorMessage = '';
   }
 
-  submitQuoteForm() {
-    this.isSubmitting = true;
-    this.apiService.sendQuoteRequest(this.quoteData).subscribe({
+  switchAuthTab(tab: 'owner' | 'customer') {
+    this.activeAuthTab = tab;
+    this.authErrorMessage = '';
+  }
+
+  submitOwnerLogin() {
+    if (!this.ownerForm.phone || !this.ownerForm.password) {
+      this.authErrorMessage = 'Please enter both Mobile Number and Password.';
+      return;
+    }
+
+    this.isAuthenticating = true;
+    this.authErrorMessage = '';
+
+    this.apiService.ownerLogin(this.ownerForm).subscribe({
       next: (res) => {
-        this.isSubmitting = false;
-        this.savedQuoteId = res.quote?._id || 'mock_id_' + Math.random().toString(36).substring(2, 6);
-        this.closeQuoteModal();
-        this.showSuccessToast = true;
-
-        // Reset form
-        this.quoteData = {
-          clientName: '',
-          clientEmail: '',
-          clientPhone: '',
-          serviceType: 'Construction',
-          projectArea: null,
-          message: ''
-        };
-
-        // Hide toast after 4 seconds
-        setTimeout(() => {
-          this.showSuccessToast = false;
-        }, 4000);
+        this.isAuthenticating = false;
+        this.closeLoginModal();
       },
       error: (err) => {
-        this.isSubmitting = false;
-        console.error('Failed to submit quote:', err);
-        alert('There was an error saving your request. Please try again.');
+        console.error("Owner login error:", err);
+        this.isAuthenticating = false;
+        this.authErrorMessage = err.error?.message || (err.status === 0 ? 'Server is offline. Please restart backend server.' : 'Login failed. Please check your credentials.');
       }
     });
   }
-}
 
+  submitCustomerLogin() {
+    if (!this.customerForm.email || !this.customerForm.password) {
+      this.authErrorMessage = 'Please enter both Email and Password.';
+      return;
+    }
+
+    this.isAuthenticating = true;
+    this.authErrorMessage = '';
+
+    this.apiService.customerLogin(this.customerForm).subscribe({
+      next: (res) => {
+        this.isAuthenticating = false;
+        this.closeLoginModal();
+      },
+      error: (err) => {
+        console.error("Customer login error:", err);
+        this.isAuthenticating = false;
+        this.authErrorMessage = err.error?.message || (err.status === 0 ? 'Server is offline. Please restart backend server.' : 'Login failed. Please check your credentials.');
+      }
+    });
+  }
+
+  logout() {
+    this.apiService.logout();
+  }
+}

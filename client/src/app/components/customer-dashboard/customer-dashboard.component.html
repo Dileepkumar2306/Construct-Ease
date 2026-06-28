@@ -467,7 +467,7 @@
                 <h2><i class="fa-solid fa-lightbulb" style="color:var(--accent-color); margin-right:10px;"></i> My Inspiration & Ideas Board</h2>
                 <p style="color: var(--muted-color);">Add, edit, or remove designs, interior photos, and custom building ideas that inspire you.</p>
             </div>
-            <button class="btn" (click)="showForm = !showForm; cancelEdit()">
+            <button class="btn" *ngIf="apiService.isOwner" (click)="showForm = !showForm; cancelEdit()">
                 <i class="fa-solid" [ngClass]="showForm ? 'fa-xmark' : 'fa-plus'"></i> 
                 {{ showForm ? 'Cancel' : 'Add New Inspiration' }}
             </button>
@@ -563,14 +563,14 @@
             <i class="fa-solid fa-cloud-arrow-up" style="font-size: 3rem; color: var(--muted-color); margin-bottom: 1.5rem;"></i>
             <h3>Your Inspiration Board is Empty</h3>
             <p style="color: var(--muted-color); margin-bottom: 2rem;">Save home styles, construction ideas, or interior layout photos to stay aligned with your architect and builder.</p>
-            <button class="btn btn-outline" (click)="showForm = true">Add Your First Idea</button>
+            <button class="btn btn-outline" *ngIf="apiService.isOwner" (click)="showForm = true">Add Your First Idea</button>
         </div>
 
         <div *ngIf="!isLoadingPortfolio && portfolioItems.length > 0" class="grid-3">
             <div *ngFor="let item of portfolioItems" class="glass-card animate" style="overflow: hidden; padding: 0; display: flex; flex-direction: column;">
                 <div style="position: relative; height: 200px; overflow: hidden; background: #000;">
                     <img [src]="item.imageUrl" [alt]="item.title" style="width:100%; height: 100%; object-fit: cover; opacity: 0.85; transition: transform 0.3s;">
-                    <div style="position: absolute; top: 10px; right: 10px; display: flex; gap: 0.5rem;">
+                    <div style="position: absolute; top: 10px; right: 10px; display: flex; gap: 0.5rem;" *ngIf="apiService.isOwner">
                         <button class="btn" style="padding: 0.4rem 0.6rem; font-size: 0.8rem; background: rgba(26, 26, 46, 0.8); border: var(--glass-border); color: #f1c40f; min-width: auto; width: auto;" (click)="startEdit(item); showForm = false" title="Edit">
                             <i class="fa-solid fa-pen"></i>
                         </button>

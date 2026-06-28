@@ -8,12 +8,12 @@
         <p class="tagline">Explore properties through high-impact visual stories, video walkthroughs, and direct chat interactions.</p>
       </div>
       
-      <div class="mode-toggle">
+      <div class="mode-toggle" *ngIf="apiService.isOwner">
         <label class="switch-container">
           <input type="checkbox" [checked]="isPromoterMode" (change)="togglePromoterMode()">
           <span class="switch-slider"></span>
         </label>
-        <span class="mode-label"><i class="fa-solid fa-user-gear"></i> Promoter Mode</span>
+        <span class="mode-label"><i class="fa-solid fa-user-gear"></i> Owner Control Panel</span>
       </div>
     </div>
 
@@ -39,7 +39,7 @@
     </div>
 
     <!-- ==================== PROMOTERS CRUD PANEL ==================== -->
-    <div class="promoter-panel animate" *ngIf="isPromoterMode">
+    <div class="promoter-panel animate" *ngIf="isPromoterMode && apiService.isOwner">
       <div class="panel-header">
         <h2><i class="fa-solid fa-sliders"></i> Promoter Dashboard</h2>
         <button class="btn-primary" *ngIf="!showForm && !editingPromo" (click)="showForm = true">
@@ -232,7 +232,7 @@
             </span>
             
             <!-- Promoter Menu Controls -->
-            <div class="post-menu" *ngIf="isPromoterMode">
+            <div class="post-menu" *ngIf="isPromoterMode && apiService.isOwner">
               <button class="menu-btn edit" (click)="startEdit(promo)" title="Edit Post"><i class="fa-solid fa-pen"></i></button>
               <button class="menu-btn delete" (click)="deletePromotion(promo._id)" title="Delete Post"><i class="fa-solid fa-trash-can"></i></button>
             </div>

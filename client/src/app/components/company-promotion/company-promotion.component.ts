@@ -11,7 +11,7 @@ import { ApiService } from '../../services/api.service';
   styleUrls: ['./company-promotion.component.css']
 })
 export class CompanyPromotionComponent implements OnInit {
-  private apiService = inject(ApiService);
+  public apiService = inject(ApiService);
 
   promotions: any[] = [];
   filteredPromotions: any[] = [];

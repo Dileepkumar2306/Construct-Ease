@@ -28,8 +28,10 @@ const companyRoutes  = require('./routes/company');
 const aiRoutes       = require('./routes/ai');
 const portfolioRoutes = require('./routes/portfolio');
 const promotionsRoutes = require('./routes/promotions');
+const authRoutes       = require('./routes/auth');
 
 app.use('/api', apiRoutes);
+app.use('/api/auth', authRoutes);
 app.use('/api/interior', interiorRoutes);
 app.use('/api/companies', companyRoutes);
 app.use('/api/ai', aiRoutes);

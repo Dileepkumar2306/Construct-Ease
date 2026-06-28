@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -8,13 +8,58 @@ import { Observable } from 'rxjs';
 export class ApiService {
   private http = inject(HttpClient);
   private baseUrl = 'http://localhost:5000/api';
-  isQuoteModalOpen = false;
+  
+  isLoginModalOpen = false;
   activeLocation = localStorage.getItem('user_location') || 'Hyderabad';
+  
+  currentUser: any = JSON.parse(localStorage.getItem('current_user') || 'null');
+
+  get isOwner(): boolean {
+    return this.currentUser?.role === 'owner' || this.currentUser?.role === 'admin';
+  }
+
+  get isLoggedIn(): boolean {
+    return !!this.currentUser;
+  }
 
   setActiveLocation(location: string) {
     this.activeLocation = location;
     localStorage.setItem('user_location', location);
   }
+
+  // ── AUTHENTICATION METHODS ──────────────────────────────────────────────────
+
+  ownerLogin(credentials: { phone: string; password: string; name?: string }): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/auth/owner-login`, credentials).pipe(
+      tap(res => {
+        if (res.user && res.token) {
+          this.currentUser = res.user;
+          localStorage.setItem('current_user', JSON.stringify(res.user));
+          localStorage.setItem('auth_token', res.token);
+        }
+      })
+    );
+  }
+
+  customerLogin(credentials: { email: string; password: string; name?: string }): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/auth/customer-login`, credentials).pipe(
+      tap(res => {
+        if (res.user && res.token) {
+          this.currentUser = res.user;
+          localStorage.setItem('current_user', JSON.stringify(res.user));
+          localStorage.setItem('auth_token', res.token);
+        }
+      })
+    );
+  }
+
+  logout() {
+    this.currentUser = null;
+    localStorage.removeItem('current_user');
+    localStorage.removeItem('auth_token');
+  }
+
+  // ── DATA METHODS ────────────────────────────────────────────────────────────
 
   getTemplates(): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/templates`);
@@ -76,45 +121,38 @@ export class ApiService {
 
   // ── AI HUB METHODS ──────────────────────────────────────────────────────────
 
-  /** AI Cost Estimator — detailed breakdown with cement, steel, labor */
   aiEstimate(payload: {
     area: number; city: string; floors: number; quality: string; projectType: string;
   }): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/ai/estimate`, payload);
   }
 
-  /** Contract Risk Scanner — detect risky clauses with severity ratings */
   aiRiskScan(contractText: string): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/ai/risk-scan`, { contractText });
   }
 
-  /** AI Room Planner — recommended room dimensions and furniture */
   aiRoomPlanner(payload: {
     totalArea: number; rooms: number; style: string; floors: number;
   }): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/ai/room-planner`, payload);
   }
 
-  /** AI Timeline Predictor — construction phases with milestone dates */
   aiTimeline(payload: {
     area: number; quality: string; startDate: string; projectType: string;
   }): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/ai/timeline`, payload);
   }
 
-  /** Architecture Recommender — top 3 styles with pros/cons */
   aiArchRecs(payload: {
     budget: string; region: string; preference: string; plotSize: number;
   }): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/ai/arch-recs`, payload);
   }
 
-  /** Material Price Predictor — current prices, trends, forecasts */
   aiMaterialPrice(materials: string[]): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/ai/material-price`, { materials });
   }
 
-  /** AI Management Dashboard — stats and recent activity */
   aiDashboard(): Observable<any> {
     return this.http.get<any>(`${this.baseUrl}/ai/dashboard`);
   }
@@ -161,13 +199,5 @@ export class ApiService {
 
   sendInquiry(inquiryData: any): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/inquiries`, inquiryData);
-  }
-
-  sendQuoteRequest(quoteData: any): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}/quotes`, quoteData);
-  }
-
-  getQuoteRequests(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/quotes`);
   }
 }
