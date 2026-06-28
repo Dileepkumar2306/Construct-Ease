@@ -1664,3 +1664,337 @@ a {
     font-weight: 700;
 }
 
+
+/* ══════════════════════════════════════════════
+   COMPREHENSIVE MOBILE-FIRST RESPONSIVE STYLES
+   Targeting: 480px phones (primary), 768px tablets
+══════════════════════════════════════════════ */
+
+/* ── Prevent horizontal scroll ── */
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+/* ── Fix background-attachment on iOS (fixed doesn't work well) ── */
+@media screen and (max-width: 768px) {
+    body {
+        background-attachment: scroll;
+    }
+}
+
+/* ══ 480px — Small Phones ══ */
+@media screen and (max-width: 480px) {
+
+    /* Navbar */
+    .navbar {
+        padding: 1rem 4%;
+    }
+    .logo a {
+        font-size: 1.3rem;
+        gap: 0.5rem;
+    }
+    .logo a img.navbar-logo-img {
+        height: 32px;
+    }
+
+    /* Nav menu overlay full-screen */
+    .nav-links {
+        top: 65px;
+        height: calc(100vh - 65px);
+        gap: 2rem;
+    }
+    .nav-links li a {
+        font-size: 1.2rem;
+    }
+
+    /* Burger icon */
+    .burger div {
+        width: 22px;
+        height: 2.5px;
+    }
+
+    /* Utility bar — hide on very small screens */
+    .utility-bar {
+        display: none;
+    }
+
+    /* Hero section */
+    .hero-container {
+        padding: 5rem 4% 7rem;
+        min-height: 70vh;
+        background-attachment: scroll;
+    }
+    .hero-title-new {
+        font-size: 2.4rem;
+        letter-spacing: 1px;
+        line-height: 1.1;
+    }
+    .hero-tagline-new {
+        font-size: 1rem;
+    }
+    .hero-description-new {
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    .hero-buttons-new {
+        flex-direction: column;
+        width: 100%;
+        max-width: 100%;
+        gap: 1rem;
+    }
+    .hero-buttons-new .btn {
+        width: 100%;
+        padding: 0.9rem 1.5rem;
+        font-size: 0.95rem;
+    }
+
+    /* Highlight grid overlap */
+    .highlight-grid-section {
+        margin-top: -30px;
+        padding: 0 4%;
+    }
+    .highlight-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    .highlight-card {
+        padding: 1.5rem;
+    }
+
+    /* Welcome section */
+    .welcome-section {
+        padding: 4rem 4% 2rem;
+    }
+    .welcome-section h2 {
+        font-size: 1.8rem;
+    }
+    .welcome-lead {
+        font-size: 1rem;
+    }
+    .welcome-header {
+        margin-bottom: 2.5rem;
+    }
+    .welcome-features-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    .welcome-feature-item {
+        flex-direction: row;
+        padding: 1.4rem;
+        gap: 1rem;
+    }
+    .wf-icon {
+        font-size: 2rem;
+    }
+    .wf-text h3 {
+        font-size: 1.1rem;
+    }
+
+    /* Dashboard */
+    .dashboard-container {
+        padding: 3rem 4%;
+    }
+    .dashboard-header h1,
+    .dashboard-header h2 {
+        font-size: 2rem;
+    }
+
+    /* Grids */
+    .grid-2,
+    .grid-3 {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+    }
+
+    /* Glass card */
+    .glass-card {
+        padding: 1.5rem;
+    }
+
+    /* Forms */
+    .form-control {
+        padding: 0.9rem 1rem;
+        font-size: 1rem;
+    }
+    .form-group label {
+        font-size: 0.95rem;
+    }
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    /* Modal */
+    .modal-overlay {
+        padding: 1rem;
+        align-items: flex-end;
+    }
+    .glass-modal {
+        padding: 1.5rem 1.25rem;
+        border-radius: 20px 20px 0 0;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+    .auth-modal {
+        max-width: 100% !important;
+    }
+    .modal-header h2 {
+        font-size: 1.4rem;
+        flex-wrap: wrap;
+        text-align: center;
+    }
+    .auth-tab-btn {
+        font-size: 0.8rem;
+        padding: 8px 10px;
+        gap: 6px;
+    }
+    .btn-submit {
+        padding: 1rem !important;
+        font-size: 1rem !important;
+    }
+
+    /* Footer */
+    .footer-new {
+        padding: 2.5rem 4% 1rem;
+    }
+    .footer-container {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        text-align: center;
+    }
+    .footer-contact-item {
+        justify-content: center;
+    }
+    .footer-social-links {
+        justify-content: center;
+    }
+    .footer-brand-title {
+        font-size: 1.1rem;
+    }
+
+    /* How-to steps */
+    .steps-grid {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+    }
+    .step-card {
+        padding: 1.5rem 1.2rem;
+    }
+
+    /* AI Hub card inner layout */
+    .ai-hub-card-inner {
+        flex-direction: column;
+        text-align: center;
+        gap: 1.25rem;
+    }
+    .ai-hub-card-text {
+        text-align: center;
+    }
+    .ai-feature-pills {
+        justify-content: center;
+    }
+    .ai-hub-card-icon {
+        width: 65px;
+        height: 65px;
+        font-size: 1.8rem;
+    }
+
+    /* Location dropdown — make full width */
+    .location-dropdown {
+        width: calc(100vw - 2rem);
+        right: -4rem;
+        border-radius: 16px !important;
+    }
+
+    /* Toast */
+    .success-toast {
+        bottom: 0.75rem;
+        right: 0.75rem;
+        left: 0.75rem;
+        max-width: calc(100% - 1.5rem);
+        border-radius: 12px;
+        padding: 1.25rem;
+    }
+
+    /* Company promotion layout */
+    .promo-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+    .mode-toggle {
+        width: 100%;
+        justify-content: center;
+    }
+    .promo-toolbar {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    .search-box {
+        max-width: 100%;
+    }
+
+    /* Interior shop grid */
+    .shop-grid {
+        grid-template-columns: 1fr;
+    }
+    .shop-card {
+        padding: 1rem;
+        gap: 1rem;
+    }
+    .shop-logo-wrap {
+        width: 44px;
+        height: 44px;
+    }
+
+    /* Features table */
+    .ft-row {
+        grid-template-columns: 1fr;
+        padding: 0.9rem 1rem;
+    }
+    .ft-row span:not(:first-child) {
+        display: none;
+    }
+    .ft-header span:not(:first-child) {
+        display: none;
+    }
+
+    /* BHK grid in customer dashboard */
+    .bhk-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Floating sidebar — hide on mobile */
+    .floating-sidebar {
+        display: none;
+    }
+
+    /* Navbar link size in open mobile menu */
+    .nav-links.nav-active li a {
+        font-size: 1.15rem;
+    }
+}
+
+/* ══ 375px — Very small phones (iPhone SE etc.) ══ */
+@media screen and (max-width: 375px) {
+    .hero-title-new {
+        font-size: 2rem;
+    }
+    .hero-description-new {
+        font-size: 0.92rem;
+    }
+    .dashboard-header h1,
+    .dashboard-header h2 {
+        font-size: 1.7rem;
+    }
+    .glass-card {
+        padding: 1.25rem;
+    }
+    .welcome-section h2 {
+        font-size: 1.6rem;
+    }
+    .btn {
+        padding: 0.75rem 1.3rem;
+        font-size: 0.9rem;
+    }
+}
