@@ -53,6 +53,10 @@ app.use((req, res, next) => {
     res.sendFile(path.join(__dirname, '../client/dist/client/browser/index.html'));
 });
 
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+    });
+}
+
+module.exports = app;
