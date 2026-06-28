@@ -1,5 +1,6 @@
 {
   "version": 2,
+  "outputDirectory": "client/dist/client/browser",
   "rewrites": [
     {
       "source": "/api/(.*)",
