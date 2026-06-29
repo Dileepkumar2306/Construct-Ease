@@ -2,6 +2,7 @@ import { Component, OnInit, inject, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../services/api.service';
+import { UploadService } from '../../services/upload.service';
 
 @Component({
   selector: 'app-customer-dashboard',
@@ -12,6 +13,8 @@ import { ApiService } from '../../services/api.service';
 })
 export class CustomerDashboardComponent implements OnInit {
   public apiService = inject(ApiService);
+  private uploadService = inject(UploadService);
+  isUploadingFile = false;
   
   area: number | null = null;
   quality: string = 'standard';
@@ -312,15 +315,22 @@ export class CustomerDashboardComponent implements OnInit {
   onFileSelected(event: any, target: 'new' | 'edit' = 'new') {
     const file = event.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        if (target === 'new') {
-          this.newPortfolioItem.imageUrl = reader.result as string;
-        } else if (this.editingItem) {
-          this.editingItem.imageUrl = reader.result as string;
+      this.isUploadingFile = true;
+      this.uploadService.uploadFileSimple(file, 'portfolio').subscribe({
+        next: (url) => {
+          if (target === 'new') {
+            this.newPortfolioItem.imageUrl = url;
+          } else if (this.editingItem) {
+            this.editingItem.imageUrl = url;
+          }
+          this.isUploadingFile = false;
+        },
+        error: (err) => {
+          console.error('Upload failed:', err);
+          alert('Failed to upload image to Supabase storage.');
+          this.isUploadingFile = false;
         }
-      };
-      reader.readAsDataURL(file);
+      });
     }
   }
 

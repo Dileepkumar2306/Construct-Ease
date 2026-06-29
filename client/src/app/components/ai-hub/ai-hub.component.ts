@@ -2,6 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../services/api.service';
+import { UploadService } from '../../services/upload.service';
 
 @Component({
   selector: 'app-ai-hub',
@@ -12,6 +13,8 @@ import { ApiService } from '../../services/api.service';
 })
 export class AiHubComponent implements OnInit {
   private api = inject(ApiService);
+  private uploadService = inject(UploadService);
+  isUploadingDesignImage = false;
 
   activeTab = 'dashboard';
 
@@ -261,11 +264,18 @@ There shall be no cap on liability for damages incurred.`;
   onDesignImageSelected(event: any) {
     const file = event.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = (e: any) => {
-        this.designImage = e.target.result;
-      };
-      reader.readAsDataURL(file);
+      this.isUploadingDesignImage = true;
+      this.uploadService.uploadFileSimple(file, 'ai-uploads').subscribe({
+        next: (url) => {
+          this.designImage = url;
+          this.isUploadingDesignImage = false;
+        },
+        error: (err) => {
+          console.error('Upload failed:', err);
+          alert('Failed to upload photo to Supabase storage.');
+          this.isUploadingDesignImage = false;
+        }
+      });
     }
   }
 

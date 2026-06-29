@@ -2,6 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../services/api.service';
+import { UploadService } from '../../services/upload.service';
 
 @Component({
   selector: 'app-company-promotion',
@@ -12,6 +13,8 @@ import { ApiService } from '../../services/api.service';
 })
 export class CompanyPromotionComponent implements OnInit {
   public apiService = inject(ApiService);
+  private uploadService = inject(UploadService);
+  isUploadingMedia = false;
 
   promotions: any[] = [];
   filteredPromotions: any[] = [];
@@ -107,12 +110,11 @@ export class CompanyPromotionComponent implements OnInit {
     this.showForm = false;
   }
 
-  // Handle local image and video uploads -> convert to Base64
+  // Upload file directly to Supabase storage
   onFileSelected(event: any, mediaType: 'image' | 'video', mode: 'new' | 'edit'): void {
     const file = event.target.files[0];
     if (!file) return;
 
-    // Optional validation
     if (mediaType === 'image' && !file.type.startsWith('image/')) {
       alert('Please select a valid image file.');
       return;
@@ -122,24 +124,24 @@ export class CompanyPromotionComponent implements OnInit {
       return;
     }
 
-    // Limit video size in base64 (e.g. 15MB) to avoid browser freeze
-    if (file.size > 15 * 1024 * 1024) {
-      alert('File size exceeds 15MB. Please upload a smaller video/image.');
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = () => {
-      const base64String = reader.result as string;
-      if (mode === 'new') {
-        if (mediaType === 'image') this.newPromo.imageUrl = base64String;
-        if (mediaType === 'video') this.newPromo.videoUrl = base64String;
-      } else {
-        if (mediaType === 'image') this.editingPromo.imageUrl = base64String;
-        if (mediaType === 'video') this.editingPromo.videoUrl = base64String;
+    this.isUploadingMedia = true;
+    this.uploadService.uploadFileSimple(file, 'promotions').subscribe({
+      next: (url) => {
+        if (mode === 'new') {
+          if (mediaType === 'image') this.newPromo.imageUrl = url;
+          if (mediaType === 'video') this.newPromo.videoUrl = url;
+        } else {
+          if (mediaType === 'image') this.editingPromo.imageUrl = url;
+          if (mediaType === 'video') this.editingPromo.videoUrl = url;
+        }
+        this.isUploadingMedia = false;
+      },
+      error: (err) => {
+        console.error('Upload failed:', err);
+        alert('Failed to upload file to Supabase storage. Please check your Supabase configuration.');
+        this.isUploadingMedia = false;
       }
-    };
-    reader.readAsDataURL(file);
+    });
   }
 
   savePromotion(): void {
