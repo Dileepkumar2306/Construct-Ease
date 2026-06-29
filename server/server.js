@@ -12,7 +12,11 @@ const PORT = process.env.PORT || 5000;
 connectDB();
 
 app.use(cors({
-    origin:      ['http://localhost:4200', 'http://localhost:5000'],
+    origin: [
+        'http://localhost:4200',
+        'http://localhost:5000',
+        'https://gkconstructease.vercel.app'
+    ],
     credentials: true
 }));
 app.use(express.json({ limit: '50mb' }));
@@ -23,12 +27,13 @@ app.use((req, res, next) => {
     next();
 });
 
-const interiorRoutes = require('./routes/interior');
-const companyRoutes  = require('./routes/company');
-const aiRoutes       = require('./routes/ai');
-const portfolioRoutes = require('./routes/portfolio');
+const interiorRoutes   = require('./routes/interior');
+const companyRoutes    = require('./routes/company');
+const aiRoutes         = require('./routes/ai');
+const portfolioRoutes  = require('./routes/portfolio');
 const promotionsRoutes = require('./routes/promotions');
 const authRoutes       = require('./routes/auth');
+const uploadRoutes     = require('./routes/upload');
 
 app.use('/api', apiRoutes);
 app.use('/api/auth', authRoutes);
@@ -37,6 +42,7 @@ app.use('/api/companies', companyRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/portfolio', portfolioRoutes);
 app.use('/api/promotions', promotionsRoutes);
+app.use('/api/upload', uploadRoutes);
 
 const path = require('path');
 
