@@ -11,12 +11,26 @@ const PORT = process.env.PORT || 5000;
 
 connectDB();
 
+const allowedOrigins = [
+    'http://localhost:4200',
+    'http://localhost:5000',
+    'http://localhost',
+    'capacitor://localhost',
+    'https://gkconstructease.vercel.app'
+];
+
 app.use(cors({
-    origin: [
-        'http://localhost:4200',
-        'http://localhost:5000',
-        'https://gkconstructease.vercel.app'
-    ],
+    origin: (origin, callback) => {
+        if (!origin) return callback(null, true);
+        const isAllowed = allowedOrigins.includes(origin) || 
+                          origin.startsWith('chrome-extension://') || 
+                          origin.startsWith('capacitor://');
+        if (isAllowed) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     credentials: true
 }));
 app.use(express.json({ limit: '50mb' }));

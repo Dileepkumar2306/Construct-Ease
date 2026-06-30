@@ -7,7 +7,17 @@ import { Observable, tap } from 'rxjs';
 })
 export class ApiService {
   private http = inject(HttpClient);
-  private baseUrl = 'http://localhost:5000/api';
+  private getBaseUrl(): string {
+    const origin = window.location.origin;
+    if (origin.includes('localhost:4200')) {
+      return 'http://localhost:5000/api';
+    } else if (origin.includes('vercel.app')) {
+      return '/api';
+    } else {
+      return 'https://gkconstructease.vercel.app/api';
+    }
+  }
+  private baseUrl = this.getBaseUrl();
   
   isLoginModalOpen = false;
   activeLocation = localStorage.getItem('user_location') || 'Hyderabad';

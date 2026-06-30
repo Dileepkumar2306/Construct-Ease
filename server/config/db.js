@@ -509,7 +509,9 @@ const seedPromotions = async () => {
 
 const connectDB = async () => {
     try {
-        await mongoose.connect(MONGO_URI);
+        await mongoose.connect(MONGO_URI, {
+            serverSelectionTimeoutMS: 3000
+        });
         console.log('MongoDB cluster connected successfully!');
         await seedProfessionals();
         await seedTemplates();

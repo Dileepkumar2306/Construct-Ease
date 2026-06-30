@@ -18,8 +18,17 @@ export type StorageBucket =
 @Injectable({ providedIn: 'root' })
 export class UploadService {
 
-  // Uses relative URL so it works on localhost (proxied) and production Vercel
-  private readonly apiUrl = '/api';
+  private getApiUrl(): string {
+    const origin = window.location.origin;
+    if (origin.includes('localhost:4200')) {
+      return 'http://localhost:5000/api';
+    } else if (origin.includes('vercel.app')) {
+      return '/api';
+    } else {
+      return 'https://gkconstructease.vercel.app/api';
+    }
+  }
+  private readonly apiUrl = this.getApiUrl();
 
   constructor(private http: HttpClient) {}
 

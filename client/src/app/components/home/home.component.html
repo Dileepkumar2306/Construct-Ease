@@ -56,7 +56,7 @@
             <h2>Welcome to <span class="text-accent">Construct Ease</span></h2>
             <p class="welcome-lead">We are a technology-driven construction aggregator that bridges the gap between dreams and reality, making home building simple, transparent, and beautiful.</p>
         </div>
-        <div class="welcome-features-grid">
+        <div class="welcome-features-grid" #welcomeScroll (scroll)="onScroll($event, 'welcome')">
             <div class="welcome-feature-item animate" style="animation-delay: 0.1s;">
                 <div class="wf-icon"><i class="fa-solid fa-calculator"></i></div>
                 <div class="wf-text">
@@ -79,6 +79,11 @@
                 </div>
             </div>
         </div>
+        <div class="carousel-dots mobile-only">
+            <span class="dot" [class.active]="activeWelcomeSlide === 0" (click)="scrollTo(welcomeScroll, 0)"></span>
+            <span class="dot" [class.active]="activeWelcomeSlide === 1" (click)="scrollTo(welcomeScroll, 1)"></span>
+            <span class="dot" [class.active]="activeWelcomeSlide === 2" (click)="scrollTo(welcomeScroll, 2)"></span>
+        </div>
     </div>
 </section>
 
@@ -88,7 +93,7 @@
         <h2>Who are you?</h2>
         <p style="color: var(--muted-color); font-size: 1.1rem;">Select your role to access tailored professional tools.</p>
     </div>
-    <div class="grid-3">
+    <div class="grid-3" #rolesScroll (scroll)="onScroll($event, 'roles')">
         <a routerLink="/customer" class="glass-card animate" style="animation-delay: 0.1s; text-align: center; display: block; text-decoration: none;">
             <i class="fa-solid fa-house-chimney-user feature-icon"></i>
             <h3>House Owner</h3>
@@ -123,6 +128,13 @@
             </div>
         </a>
     </div>
+    <div class="carousel-dots mobile-only">
+        <span class="dot" [class.active]="activeRoleSlide === 0" (click)="scrollTo(rolesScroll, 0)"></span>
+        <span class="dot" [class.active]="activeRoleSlide === 1" (click)="scrollTo(rolesScroll, 1)"></span>
+        <span class="dot" [class.active]="activeRoleSlide === 2" (click)="scrollTo(rolesScroll, 2)"></span>
+        <span class="dot" [class.active]="activeRoleSlide === 3" (click)="scrollTo(rolesScroll, 3)"></span>
+        <span class="dot" [class.active]="activeRoleSlide === 4" (click)="scrollTo(rolesScroll, 4)"></span>
+    </div>
 </section>
 
 <!-- ══ HOW TO USE ══ -->
@@ -132,7 +144,7 @@
         <p style="color: var(--muted-color); font-size: 1.1rem;">Follow these simple steps — no technical construction knowledge needed!</p>
     </div>
 
-    <div class="steps-grid animate">
+    <div class="steps-grid animate" #stepsScroll (scroll)="onScroll($event, 'steps')">
         <div class="step-card">
             <div class="step-number">1</div>
             <div class="step-icon"><i class="fa-solid fa-user-check"></i></div>
@@ -174,6 +186,14 @@
             <h3>Connect & Save</h3>
             <p>Connect with local verified architects and builders. Request quote estimations directly and save requests to our secure database.</p>
         </div>
+    </div>
+    <div class="carousel-dots mobile-only">
+        <span class="dot" [class.active]="activeStepSlide === 0" (click)="scrollTo(stepsScroll, 0)"></span>
+        <span class="dot" [class.active]="activeStepSlide === 1" (click)="scrollTo(stepsScroll, 1)"></span>
+        <span class="dot" [class.active]="activeStepSlide === 2" (click)="scrollTo(stepsScroll, 2)"></span>
+        <span class="dot" [class.active]="activeStepSlide === 3" (click)="scrollTo(stepsScroll, 3)"></span>
+        <span class="dot" [class.active]="activeStepSlide === 4" (click)="scrollTo(stepsScroll, 4)"></span>
+        <span class="dot" [class.active]="activeStepSlide === 5" (click)="scrollTo(stepsScroll, 5)"></span>
     </div>
 </section>
 
