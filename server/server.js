@@ -11,24 +11,26 @@ const PORT = process.env.PORT || 5000;
 
 connectDB();
 
-const allowedOrigins = [
-    'http://localhost:4200',
-    'http://localhost:5000',
-    'http://localhost',
-    'capacitor://localhost',
-    'https://gkconstructease.vercel.app'
-];
+
 
 app.use(cors({
     origin: (origin, callback) => {
         if (!origin) return callback(null, true);
-        const isAllowed = allowedOrigins.includes(origin) || 
+        
+        // Dynamically allow any local origins (localhost, 127.0.0.1, or local IP networks)
+        const isLocal = origin.includes('localhost') || 
+                        origin.includes('127.0.0.1') || 
+                        /https?:\/\/(192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+|172\.(1[6-9]|2\d|3[0-1])\.\d+\.\d+)(:\d+)?$/.test(origin);
+                        
+        const isAllowed = isLocal || 
+                          origin === 'https://gkconstructease.vercel.app' || 
                           origin.startsWith('chrome-extension://') || 
                           origin.startsWith('capacitor://');
+                          
         if (isAllowed) {
             callback(null, true);
         } else {
-            callback(new Error('Not allowed by CORS'));
+            callback(null, false); // Standard CORS rejection (does not throw server 500)
         }
     },
     credentials: true

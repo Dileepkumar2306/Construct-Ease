@@ -19,9 +19,17 @@ export type StorageBucket =
 export class UploadService {
 
   private getApiUrl(): string {
+    const hostname = window.location.hostname;
     const origin = window.location.origin;
-    if (origin.includes('localhost:4200')) {
-      return 'http://localhost:5000/api';
+    
+    const isLocal = hostname === 'localhost' || 
+                    hostname === '127.0.0.1' || 
+                    hostname.startsWith('192.168.') || 
+                    hostname.startsWith('10.') || 
+                    hostname.startsWith('172.');
+                    
+    if (isLocal) {
+      return `http://${hostname}:5000/api`;
     } else if (origin.includes('vercel.app')) {
       return '/api';
     } else {
