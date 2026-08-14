@@ -1,10 +1,24 @@
+// Load environment variables first
+const dotenv = require('dotenv');
+dotenv.config();
+
+// Hook require('mongoose') to use our Supabase compatibility shim
+const path = require('path');
+const Module = require('module');
+const mongooseShimPath = path.resolve(__dirname, './utils/mongooseShim');
+const originalRequire = Module.prototype.require;
+Module.prototype.require = function (id) {
+    if (id === 'mongoose') {
+        return originalRequire.call(this, mongooseShimPath);
+    }
+    return originalRequire.apply(this, arguments);
+};
+
 const express = require('express');
 const cors = require('cors');
 const connectDB = require('./config/db');
 const apiRoutes = require('./routes/api');
-const dotenv = require('dotenv');
 
-dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -60,7 +74,6 @@ app.use('/api/portfolio', portfolioRoutes);
 app.use('/api/promotions', promotionsRoutes);
 app.use('/api/upload', uploadRoutes);
 
-const path = require('path');
 
 app.use(express.static(path.join(__dirname, '../client/dist/client/browser')));
 

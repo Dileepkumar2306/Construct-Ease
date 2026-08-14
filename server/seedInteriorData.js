@@ -1,3 +1,15 @@
+// Hook require('mongoose') to use our Supabase compatibility shim
+const path = require('path');
+const Module = require('module');
+const mongooseShimPath = path.resolve(__dirname, './utils/mongooseShim');
+const originalRequire = Module.prototype.require;
+Module.prototype.require = function (id) {
+    if (id === 'mongoose') {
+        return originalRequire.call(this, mongooseShimPath);
+    }
+    return originalRequire.apply(this, arguments);
+};
+
 const mongoose = require('mongoose');
 const Vendor = require('./models/Vendor');
 const Professional = require('./models/Professional');

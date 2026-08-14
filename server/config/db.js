@@ -509,17 +509,23 @@ const seedPromotions = async () => {
 
 const connectDB = async () => {
     try {
-        await mongoose.connect(MONGO_URI, {
+        await mongoose.connect(MONGO_URI || '', {
             serverSelectionTimeoutMS: 3000
         });
-        console.log('MongoDB cluster connected successfully!');
-        await seedProfessionals();
-        await seedTemplates();
-        await seedBhkDetails();
-        await seedPromotions();
+        console.log('Connected to Supabase Database successfully!');
+        
+        try {
+            await seedProfessionals();
+            await seedTemplates();
+            await seedBhkDetails();
+            await seedPromotions();
+        } catch (seedError) {
+            console.warn('[Supabase Database Seeding Warning]: Seeding could not be completed automatically.');
+            console.warn('Reason:', seedError.message);
+            console.info('👉 ACTION REQUIRED: If you haven\'t created the database tables yet, please copy the SQL content from the file: "server/config/schema.sql" and run it in the SQL Editor on your Supabase Dashboard.');
+        }
     } catch (error) {
-        console.error('MongoDB connection failed:', error.message);
-        // Continue instead of process.exit(1) so backend runs with mocked data
+        console.error('Supabase Database connection failed:', error.message);
     }
 };
 
