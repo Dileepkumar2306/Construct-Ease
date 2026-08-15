@@ -1,5 +1,7 @@
-// Hook require('mongoose') to use our Supabase compatibility shim
+// Load environment variables first
 const path = require('path');
+const dotenv = require('dotenv');
+dotenv.config({ path: path.resolve(__dirname, '.env') });
 const Module = require('module');
 const mongooseShimPath = path.resolve(__dirname, './utils/mongooseShim');
 const originalRequire = Module.prototype.require;
