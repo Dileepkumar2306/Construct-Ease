@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
+const path = require('path');
+const fs = require('fs');
+
 const Template = require('../models/Template');
 const Estimate = require('../models/Estimate');
 const Professional = require('../models/Professional');
@@ -8,17 +11,33 @@ const Inquiry = require('../models/Inquiry');
 const BhkDetails = require('../models/BhkDetails');
 const Quote = require('../models/Quote');
 
+function loadFallbackData(filename, defaultFallback) {
+    try {
+        const filePath = path.resolve(__dirname, '../data', filename);
+        if (fs.existsSync(filePath)) {
+            return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+        }
+    } catch (e) {
+        console.warn(`Could not load fallback data for ${filename}:`, e.message);
+    }
+    return defaultFallback;
+}
+
 // GET /api/bhk-details
 router.get('/bhk-details', async (req, res) => {
     try {
         let bhks = [];
         if (mongoose.connection.readyState === 1) {
-            bhks = await BhkDetails.find({});
+            try {
+                bhks = await BhkDetails.find({});
+            } catch (e) {
+                console.warn('DB error fetching bhks:', e.message);
+            }
         }
         
         // Fallback mock array if database contains nothing
-        if (bhks.length === 0) {
-            bhks = [
+        if (!bhks || bhks.length === 0) {
+            bhks = loadFallbackData('bhk_details.json', [
                 {
                     bhkType: '1BHK',
                     title: '1 BHK — Compact & Smart Living Plan',
@@ -123,7 +142,7 @@ router.get('/bhk-details', async (req, res) => {
                         'Three-phase power connection with smart automation console provision.'
                     ]
                 }
-            ];
+            ]);
         }
 
         res.json(bhks);
@@ -318,10 +337,14 @@ router.get('/templates', async (req, res) => {
 
         let dbTemplates = [];
         if (mongoose.connection.readyState === 1) {
-            dbTemplates = await Template.find({});
+            try {
+                dbTemplates = await Template.find({});
+            } catch (e) {
+                console.warn('DB error fetching templates:', e.message);
+            }
         }
         
-        if (dbTemplates.length > 0) {
+        if (dbTemplates && dbTemplates.length > 0) {
             const allTemplates = [...dbTemplates];
             defaultTemplates.forEach(dt => {
                 if (!allTemplates.some(t => t.name === dt.name)) {
@@ -331,10 +354,11 @@ router.get('/templates', async (req, res) => {
             return res.json(allTemplates);
         }
         
-        res.json(defaultTemplates);
+        const fallbackTemplates = loadFallbackData('templates.json', defaultTemplates);
+        res.json(fallbackTemplates);
     } catch (err) {
-        console.error("Error fetching templates:", err);
-        res.status(500).json({ error: "Server error" });
+        console.error("Error fetching templates, returning fallback:", err);
+        res.json(loadFallbackData('templates.json', []));
     }
 });
 
@@ -419,12 +443,16 @@ router.get('/professionals', async (req, res) => {
 
         let professionals = [];
         if (mongoose.connection.readyState === 1) {
-            professionals = await Professional.find(query);
+            try {
+                professionals = await Professional.find(query);
+            } catch (e) {
+                console.warn('DB error fetching professionals:', e.message);
+            }
         }
 
-        // Fallback to mock data if DB connection has no matching records
-        if (professionals.length === 0) {
-            const mockPros = [
+        // Fallback to data files if DB connection has no matching records
+        if (!professionals || professionals.length === 0) {
+            let allPros = loadFallbackData('professionals.json', [
                 {
                     _id: "60c72b2f9b1d8b2badcf5001",
                     name: "Ar. Raghav Rao (Signature Arch Studios)",
@@ -461,11 +489,11 @@ router.get('/professionals', async (req, res) => {
                     specialties: ["Traditional Indian", "Modern Fusion"],
                     description: "Combining rich traditional craftsmanship with modern ergonomics to create stunning living spaces."
                 }
-            ];
+            ]);
 
             // Filter mocks locally
-            professionals = mockPros.filter(p => {
-                const matchesLoc = !req.query.location || p.location.toLowerCase().includes(req.query.location.toLowerCase());
+            professionals = allPros.filter(p => {
+                const matchesLoc = !req.query.location || (p.location && p.location.toLowerCase().includes(req.query.location.toLowerCase()));
                 const matchesRole = !req.query.role || req.query.role === 'All' || p.role === req.query.role;
                 return matchesLoc && matchesRole;
             });
@@ -473,8 +501,9 @@ router.get('/professionals', async (req, res) => {
 
         res.json(professionals);
     } catch (err) {
-        console.error("Error fetching professionals:", err);
-        res.status(500).json({ error: "Server error" });
+        console.error("Error fetching professionals, returning fallback:", err);
+        const allPros = loadFallbackData('professionals.json', []);
+        res.json(allPros);
     }
 });
 

@@ -137,9 +137,20 @@ export class CompanyPromotionComponent implements OnInit {
         this.isUploadingMedia = false;
       },
       error: (err) => {
-        console.error('Upload failed:', err);
-        alert('Failed to upload file to Supabase storage. Please check your Supabase configuration.');
-        this.isUploadingMedia = false;
+        console.warn('Upload API fallback to data URL:', err);
+        const reader = new FileReader();
+        reader.onload = () => {
+          const dataUrl = reader.result as string;
+          if (mode === 'new') {
+            if (mediaType === 'image') this.newPromo.imageUrl = dataUrl;
+            if (mediaType === 'video') this.newPromo.videoUrl = dataUrl;
+          } else {
+            if (mediaType === 'image') this.editingPromo.imageUrl = dataUrl;
+            if (mediaType === 'video') this.editingPromo.videoUrl = dataUrl;
+          }
+          this.isUploadingMedia = false;
+        };
+        reader.readAsDataURL(file);
       }
     });
   }

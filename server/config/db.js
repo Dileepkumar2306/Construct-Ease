@@ -508,11 +508,17 @@ const seedPromotions = async () => {
 };
 
 const connectDB = async () => {
+    // If running on Vercel without a remote MongoDB URI, skip connecting to localhost to avoid connection timeouts
+    if (process.env.VERCEL && (!process.env.MONGO_URI || process.env.MONGO_URI.includes('localhost') || process.env.MONGO_URI.includes('127.0.0.1'))) {
+        console.log('[Vercel] Serverless environment detected without external MongoDB. Using pre-bundled database.');
+        return;
+    }
+
     try {
-        await mongoose.connect(MONGO_URI || '', {
+        await mongoose.connect(MONGO_URI || "mongodb://localhost:27017/construct_ease_db", {
             serverSelectionTimeoutMS: 3000
         });
-        console.log('Connected to Supabase Database successfully!');
+        console.log('Connected to MongoDB database successfully!');
         
         try {
             await seedProfessionals();
@@ -520,12 +526,11 @@ const connectDB = async () => {
             await seedBhkDetails();
             await seedPromotions();
         } catch (seedError) {
-            console.warn('[Supabase Database Seeding Warning]: Seeding could not be completed automatically.');
-            console.warn('Reason:', seedError.message);
-            console.info('👉 ACTION REQUIRED: If you haven\'t created the database tables yet, please copy the SQL content from the file: "server/config/schema.sql" and run it in the SQL Editor on your Supabase Dashboard.');
+            console.warn('[Database Seeding Warning]:', seedError.message);
         }
     } catch (error) {
-        console.error('Supabase Database connection failed:', error.message);
+        console.warn('[MongoDB Connection Warning]: Could not connect to MongoDB:', error.message);
+        console.info('Application will run with pre-bundled fallback database.');
     }
 };
 

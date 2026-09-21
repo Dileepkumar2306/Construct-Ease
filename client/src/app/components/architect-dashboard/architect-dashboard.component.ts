@@ -82,9 +82,18 @@ export class ArchitectDashboardComponent implements OnInit {
           this.isUploadingFile = false;
         },
         error: (err) => {
-          console.error('Upload failed:', err);
-          alert('Failed to upload image to Supabase storage.');
-          this.isUploadingFile = false;
+          console.warn('Upload API fallback to data URL:', err);
+          const reader = new FileReader();
+          reader.onload = () => {
+            const dataUrl = reader.result as string;
+            if (target === 'new') {
+              this.newPortfolioItem.imageUrl = dataUrl;
+            } else if (this.editingItem) {
+              this.editingItem.imageUrl = dataUrl;
+            }
+            this.isUploadingFile = false;
+          };
+          reader.readAsDataURL(file);
         }
       });
     }

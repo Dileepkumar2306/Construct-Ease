@@ -3,71 +3,75 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const Promotion = require('../models/Promotion');
 
-// Helper for default promotions
-const getDefaultPromotions = () => [
-    {
-        _id: "default_promo1",
-        title: "GK Luxury Villa & Penthouse",
-        description: "Exquisite 4BHK duplex villa featuring imported Italian marble, modular kitchen, a private rooftop swimming pool, landscaped gardens, and smart voice automation systems.",
-        propertyType: "Villa",
-        location: "Jubilee Hills, Hyderabad",
-        price: 45000000,
-        area: 4200,
-        imageUrl: "/assets/images/template3.png",
-        videoUrl: "",
-        ownerName: "GK Luxury Company",
-        ownerPhone: "7013241482",
-        likes: 128,
-        createdAt: new Date("2026-05-28T00:00:00Z")
-    },
-    {
-        _id: "default_promo2",
-        title: "Prestige High-Rise Apartments",
-        description: "Spacious 3BHK premium apartment on the 24th floor offering panoramic city views. Multi-level car parking, clubhouse access, indoor gym, and round-the-clock power backup.",
-        propertyType: "Apartment",
-        location: "Uppal, Hyderabad",
-        price: 18500000,
-        area: 2200,
-        imageUrl: "/assets/images/high_rise.png",
-        videoUrl: "",
-        ownerName: "Elite Construction Builders",
-        ownerPhone: "7013241482",
-        likes: 84,
-        createdAt: new Date("2026-05-28T00:00:00Z")
-    },
-    {
-        _id: "default_promo3",
-        title: "Premium Construction Plot in Uppal",
-        description: "East-facing 300 Sq.Yards (2700 Sq.Ft.) premium residential plot with direct 40ft wide road access. GHMC approved layout, fully cleared titles, ready for immediate construction. Excellent location near metro station.",
-        propertyType: "Land",
-        location: "Uppal, Hyderabad",
-        price: 13500000,
-        area: 2700,
-        imageUrl: "/assets/images/urban_house.png",
-        videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-drone-shot-of-a-green-field-and-trees-40431-large.mp4",
-        ownerName: "Kondal Chowdary",
-        ownerPhone: "7013241482",
-        likes: 42,
-        createdAt: new Date("2026-06-01T00:00:00Z")
+const path = require('path');
+const fs = require('fs');
+
+let inMemoryPromotions = null;
+
+const getFallbackPromotions = () => {
+    if (inMemoryPromotions) return inMemoryPromotions;
+    try {
+        const filePath = path.resolve(__dirname, '../data/promotions.json');
+        if (fs.existsSync(filePath)) {
+            inMemoryPromotions = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+            return inMemoryPromotions;
+        }
+    } catch (e) {
+        console.warn('Could not read fallback promotions:', e.message);
     }
-];
+    return [
+        {
+            _id: "default_promo1",
+            title: "GK Luxury Villa & Penthouse",
+            description: "Exquisite 4BHK duplex villa featuring imported Italian marble, modular kitchen, a private rooftop swimming pool, landscaped gardens, and smart voice automation systems.",
+            propertyType: "Villa",
+            location: "Jubilee Hills, Hyderabad",
+            price: 45000000,
+            area: 4200,
+            imageUrl: "/assets/images/template3.png",
+            videoUrl: "",
+            ownerName: "GK Luxury Company",
+            ownerPhone: "7013241482",
+            likes: 128,
+            createdAt: new Date("2026-05-28T00:00:00Z")
+        },
+        {
+            _id: "default_promo2",
+            title: "Prestige High-Rise Apartments",
+            description: "Spacious 3BHK premium apartment on the 24th floor offering panoramic city views. Multi-level car parking, clubhouse access, indoor gym, and round-the-clock power backup.",
+            propertyType: "Apartment",
+            location: "Uppal, Hyderabad",
+            price: 18500000,
+            area: 2200,
+            imageUrl: "/assets/images/high_rise.png",
+            videoUrl: "",
+            ownerName: "Elite Construction Builders",
+            ownerPhone: "7013241482",
+            likes: 84,
+            createdAt: new Date("2026-05-28T00:00:00Z")
+        }
+    ];
+};
 
 // GET /api/promotions - Get all promotions
 router.get('/', async (req, res) => {
     try {
         let promotions = [];
         if (mongoose.connection.readyState === 1) {
-            promotions = await Promotion.find().sort({ createdAt: -1 });
+            try {
+                promotions = await Promotion.find().sort({ createdAt: -1 });
+            } catch (dbErr) {
+                console.warn("DB query failed, using fallback promotions:", dbErr.message);
+            }
         }
         
-        if (promotions.length === 0) {
-            // Return defaults if DB is empty
-            return res.json(getDefaultPromotions());
+        if (!promotions || promotions.length === 0) {
+            return res.json(getFallbackPromotions());
         }
         res.json(promotions);
     } catch (err) {
-        console.error("Error fetching promotions:", err);
-        res.status(500).json({ error: "Server error" });
+        console.error("Error fetching promotions, returning fallback:", err);
+        res.json(getFallbackPromotions());
     }
 });
 
@@ -95,10 +99,18 @@ router.post('/', async (req, res) => {
 
         let savedPromo;
         if (mongoose.connection.readyState === 1) {
-            const promo = new Promotion(newPromoData);
-            savedPromo = await promo.save();
-        } else {
-            savedPromo = { ...newPromoData, _id: 'mock_' + Math.random().toString(36).substr(2, 9), createdAt: new Date() };
+            try {
+                const promo = new Promotion(newPromoData);
+                savedPromo = await promo.save();
+            } catch (dbErr) {
+                console.warn("DB save failed, using in-memory promo:", dbErr.message);
+            }
+        }
+        
+        if (!savedPromo) {
+            savedPromo = { ...newPromoData, _id: 'promo_' + Math.random().toString(36).substr(2, 9), createdAt: new Date() };
+            const fallback = getFallbackPromotions();
+            fallback.unshift(savedPromo);
         }
 
         res.status(201).json(savedPromo);

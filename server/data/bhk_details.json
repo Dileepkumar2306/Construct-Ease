@@ -1,0 +1,218 @@
+[
+  {
+    "_id": "6a20f2260a8b6272e9bd5655",
+    "bhkType": "1BHK",
+    "title": "1 BHK — Compact & Smart Living Plan",
+    "areaRange": "400 - 700 Sq.Ft.",
+    "duration": "4 - 6 Months",
+    "rooms": [
+      {
+        "name": "Living Room",
+        "size": "14 x 12 ft",
+        "description": "Welcoming space with provisions for TV unit, sofa set, and natural lighting.",
+        "_id": "6a20f2260a8b6272e9bd5656"
+      },
+      {
+        "name": "Master Bedroom",
+        "size": "12 x 10 ft",
+        "description": "Cozy bedroom layout with built-in wardrobe slots and attached window ventilation.",
+        "_id": "6a20f2260a8b6272e9bd5657"
+      },
+      {
+        "name": "Kitchen",
+        "size": "8 x 8 ft",
+        "description": "L-shaped granite countertop platform with sink and gas outlet.",
+        "_id": "6a20f2260a8b6272e9bd5658"
+      },
+      {
+        "name": "Bathroom",
+        "size": "7 x 5 ft",
+        "description": "Equipped with standard sanitary ware, water heater provisions, and anti-skid tiling.",
+        "_id": "6a20f2260a8b6272e9bd5659"
+      }
+    ],
+    "materials": {
+      "cement": "320 Bags",
+      "steel": "2.5 Tons",
+      "sand": "780 CFT (Cubic Feet)",
+      "aggregate": "920 CFT",
+      "bricks": "6,200 Pcs"
+    },
+    "specifications": [
+      "Vitrified tile flooring (2x2 ft) in all rooms.",
+      "Flush doors with teak wood frames for main entrance.",
+      "UPVC sliding windows with safety grills.",
+      "Single-phase electrical connection with 25 modular switch points."
+    ],
+    "createdAt": "2026-06-04T03:33:58.487Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a20f2260a8b6272e9bd565a",
+    "bhkType": "2BHK",
+    "title": "2 BHK — Comfort & Family Lifestyle Plan",
+    "areaRange": "800 - 1200 Sq.Ft.",
+    "duration": "6 - 8 Months",
+    "rooms": [
+      {
+        "name": "Living & Dining Room",
+        "size": "18 x 12 ft",
+        "description": "Generous area designed for family gatherings, TV setup, and 6-seater dining table.",
+        "_id": "6a20f2260a8b6272e9bd565b"
+      },
+      {
+        "name": "Master Bedroom",
+        "size": "14 x 12 ft",
+        "description": "Spacious room with attached balcony and modern master bath suite.",
+        "_id": "6a20f2260a8b6272e9bd565c"
+      },
+      {
+        "name": "Kids Bedroom",
+        "size": "12 x 10 ft",
+        "description": "Perfect room layout for kids or home-office setup with study alcove.",
+        "_id": "6a20f2260a8b6272e9bd565d"
+      },
+      {
+        "name": "Kitchen",
+        "size": "10 x 8 ft",
+        "description": "Parallel modular platform layout with utility area for washing machine.",
+        "_id": "6a20f2260a8b6272e9bd565e"
+      },
+      {
+        "name": "Common Bath & Toilet",
+        "size": "7 x 5 ft",
+        "description": "Conveniently accessible bath with anti-skid ceramic tiles.",
+        "_id": "6a20f2260a8b6272e9bd565f"
+      }
+    ],
+    "materials": {
+      "cement": "520 Bags",
+      "steel": "4.5 Tons",
+      "sand": "1,300 CFT (Cubic Feet)",
+      "aggregate": "1,600 CFT",
+      "bricks": "11,000 Pcs"
+    },
+    "specifications": [
+      "Double-charged vitrified tile flooring in living & bedrooms.",
+      "Pre-laminated flush doors and teak wood main door.",
+      "3-track aluminum sliding windows with mosquito mesh.",
+      "AC provisions in Master Bedroom, 45 electrical points."
+    ],
+    "createdAt": "2026-06-04T03:33:58.488Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a20f2260a8b6272e9bd5660",
+    "bhkType": "3BHK",
+    "title": "3 BHK — Elite & Spacious Premium Plan",
+    "areaRange": "1200 - 1800 Sq.Ft.",
+    "duration": "8 - 10 Months",
+    "rooms": [
+      {
+        "name": "Spacious Living Room",
+        "size": "20 x 14 ft",
+        "description": "Grand lounge area overlooking balcony, ideal for L-shaped sofas and entertainment console.",
+        "_id": "6a20f2260a8b6272e9bd5661"
+      },
+      {
+        "name": "Master Bedroom Suite",
+        "size": "15 x 12 ft",
+        "description": "Luxury suite featuring walk-in wardrobe, wooden flooring, and private balcony.",
+        "_id": "6a20f2260a8b6272e9bd5662"
+      },
+      {
+        "name": "Parents Bedroom",
+        "size": "13 x 11 ft",
+        "description": "Comfortable double bedroom layout with attached modular bathroom.",
+        "_id": "6a20f2260a8b6272e9bd5663"
+      },
+      {
+        "name": "Guest Bedroom",
+        "size": "12 x 10 ft",
+        "description": "Versatile room layout with sliding wardrobe slot and large windows.",
+        "_id": "6a20f2260a8b6272e9bd5664"
+      },
+      {
+        "name": "Modular Kitchen & Utility",
+        "size": "12 x 8 ft",
+        "description": "Modern kitchen space with chimney provision and washing machine wash area.",
+        "_id": "6a20f2260a8b6272e9bd5665"
+      }
+    ],
+    "materials": {
+      "cement": "780 Bags",
+      "steel": "6.8 Tons",
+      "sand": "1,900 CFT (Cubic Feet)",
+      "aggregate": "2,300 CFT",
+      "bricks": "16,500 Pcs"
+    },
+    "specifications": [
+      "Premium vitrified flooring. Engineered wood flooring in Master Bedroom.",
+      "Teak wood main door and waterproof flush doors for toilets.",
+      "UPVC soundproof windows with safety grills.",
+      "Modular switches with concealed copper wiring (65+ points)."
+    ],
+    "createdAt": "2026-06-04T03:33:58.488Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a20f2260a8b6272e9bd5666",
+    "bhkType": "4BHK",
+    "title": "4 BHK — Imperial Villa & Grand Residency Plan",
+    "areaRange": "2000 - 3500 Sq.Ft.",
+    "duration": "12 - 14 Months",
+    "rooms": [
+      {
+        "name": "Grand Entrance & Living",
+        "size": "22 x 15 ft",
+        "description": "High-ceiling lounge welcoming guests with marble styling and natural skylights.",
+        "_id": "6a20f2260a8b6272e9bd5667"
+      },
+      {
+        "name": "Imperial Master Suite",
+        "size": "18 x 14 ft",
+        "description": "Palatial bedroom with private lounge terrace, dressing room, and rain-shower bath.",
+        "_id": "6a20f2260a8b6272e9bd5668"
+      },
+      {
+        "name": "Kids Suite & Study",
+        "size": "14 x 12 ft",
+        "description": "Large bedroom suite on the first floor with integrated study desk and storage.",
+        "_id": "6a20f2260a8b6272e9bd5669"
+      },
+      {
+        "name": "Parents Ground Suite",
+        "size": "14 x 12 ft",
+        "description": "Elder-friendly ground floor layout with immediate access to lawns.",
+        "_id": "6a20f2260a8b6272e9bd566a"
+      },
+      {
+        "name": "Guest Suite",
+        "size": "12 x 11 ft",
+        "description": "Quiet double bedroom on first floor for visitors.",
+        "_id": "6a20f2260a8b6272e9bd566b"
+      },
+      {
+        "name": "Gourmet Kitchen & Pantry",
+        "size": "16 x 10 ft",
+        "description": "State-of-the-art kitchen space with separate store pantry and breakfast counter.",
+        "_id": "6a20f2260a8b6272e9bd566c"
+      }
+    ],
+    "materials": {
+      "cement": "1,450 Bags",
+      "steel": "12.5 Tons",
+      "sand": "3,600 CFT (Cubic Feet)",
+      "aggregate": "4,400 CFT",
+      "bricks": "29,000 Pcs"
+    },
+    "specifications": [
+      "Italian marble flooring in Living/Dining; laminated wooden in master bedroom.",
+      "Designer teak wood carved main door, panelled doors inside.",
+      "Double-glazed UPVC glass sliding panels for balconies.",
+      "Three-phase power connection with smart automation console provision."
+    ],
+    "createdAt": "2026-06-04T03:33:58.489Z",
+    "__v": 0
+  }
+]

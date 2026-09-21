@@ -1,0 +1,187 @@
+[
+  {
+    "_id": "6a20e8ebe3e3cf36451867d3",
+    "name": "Ar. Raghav Rao (Signature Arch Studios)",
+    "role": "Architect",
+    "location": "Banjara Hills, Hyderabad",
+    "rating": 4.9,
+    "experience": "12+ Years",
+    "contactEmail": "raghav@signaturearch.com",
+    "phone": "+91 98765 43210",
+    "specialties": [
+      "Modern",
+      "Eco-friendly Villa",
+      "High-Rise Residential"
+    ],
+    "description": "Award-winning architectural studio specializing in contemporary layouts and sustainable green designs.",
+    "__v": 0
+  },
+  {
+    "_id": "6a20e8ebe3e3cf36451867d4",
+    "name": "Elite Construction Builders",
+    "role": "Builder",
+    "location": "Gachibowli, Hyderabad",
+    "rating": 4.8,
+    "experience": "15+ Years",
+    "contactEmail": "projects@elitebuilders.in",
+    "phone": "+91 91234 56789",
+    "specialties": [
+      "Residential Villa",
+      "Apartments",
+      "Commercial Complex"
+    ],
+    "description": "Premier infrastructure construction firm delivering high-quality turnkey residential villas and commercial apartments.",
+    "__v": 0
+  },
+  {
+    "_id": "6a20e8ebe3e3cf36451867d5",
+    "name": "Heritage Craft Interiors",
+    "role": "Interior Designer",
+    "location": "Kukatpally, Hyderabad",
+    "rating": 4.7,
+    "experience": "10+ Years",
+    "contactEmail": "info@heritagecraft.com",
+    "phone": "+91 87654 32109",
+    "specialties": [
+      "Traditional Indian",
+      "Modern Fusion",
+      "Modular Kitchens"
+    ],
+    "description": "Combining rich traditional craftsmanship with modern ergonomics to create stunning living spaces.",
+    "__v": 0
+  },
+  {
+    "_id": "6a20e8ebe3e3cf36451867d6",
+    "name": "Aura Space Designers",
+    "role": "Interior Designer",
+    "location": "Madhapur, Hyderabad",
+    "rating": 4.9,
+    "experience": "7+ Years",
+    "contactEmail": "contact@auraspaces.in",
+    "phone": "+91 96543 21098",
+    "specialties": [
+      "Scandinavian",
+      "Minimalist",
+      "Home Office"
+    ],
+    "description": "Creating light, open, and decluttered interior designs inspired by modern Nordic aesthetics.",
+    "__v": 0
+  },
+  {
+    "_id": "6a20e8ebe3e3cf36451867d7",
+    "name": "Vanguard Architects",
+    "role": "Architect",
+    "location": "Indiranagar, Bangalore",
+    "rating": 4.8,
+    "experience": "10+ Years",
+    "contactEmail": "hello@vanguard.arch",
+    "phone": "+91 94456 78901",
+    "specialties": [
+      "Contemporary",
+      "Glass Facades",
+      "Smart Homes"
+    ],
+    "description": "Cutting-edge architectural designs incorporating smart home technology and premium steel framing.",
+    "__v": 0
+  },
+  {
+    "_id": "6a20e8ebe3e3cf36451867d8",
+    "name": "Deccan Civil Works",
+    "role": "Builder",
+    "location": "Whitefield, Bangalore",
+    "rating": 4.9,
+    "experience": "20+ Years",
+    "contactEmail": "contact@deccancivil.com",
+    "phone": "+91 96003 34567",
+    "specialties": [
+      "Luxury Villas",
+      "Duplex Homes",
+      "Gated Communities"
+    ],
+    "description": "Over two decades of excellence in civil construction and turnkey home building services in Bangalore.",
+    "__v": 0
+  },
+  {
+    "_id": "6a20e8ebe3e3cf36451867d9",
+    "name": "Indira Interior Studio",
+    "role": "Interior Designer",
+    "location": "Koramangala, Bangalore",
+    "rating": 4.6,
+    "experience": "6+ Years",
+    "contactEmail": "design@indirastudio.com",
+    "phone": "+91 95004 45678",
+    "specialties": [
+      "Luxury Modular Kitchens",
+      "Wardrobes",
+      "Living Room Decor"
+    ],
+    "description": "Bespoke interior styling and customized premium modular units for apartments and villas.",
+    "__v": 0
+  },
+  {
+    "_id": "6a20e8ebe3e3cf36451867da",
+    "name": "Apex Buildcon",
+    "role": "Builder",
+    "location": "Andheri West, Mumbai",
+    "rating": 4.7,
+    "experience": "14+ Years",
+    "contactEmail": "info@apexbuildcon.com",
+    "phone": "+91 98001 12345",
+    "specialties": [
+      "Apartment Renovation",
+      "High-rise construction"
+    ],
+    "description": "Delivering reliable structural work, high-rise flat modifications, and premium finishing solutions.",
+    "__v": 0
+  },
+  {
+    "_id": "6a20e8ebe3e3cf36451867db",
+    "name": "Studio Mumbai Design",
+    "role": "Architect",
+    "location": "Bandra, Mumbai",
+    "rating": 4.9,
+    "experience": "16+ Years",
+    "contactEmail": "projects@studiomumbai.co",
+    "phone": "+91 97002 23456",
+    "specialties": [
+      "Luxury Penthouses",
+      "Sea-facing Villas",
+      "Minimalist Studio"
+    ],
+    "description": "Exclusive architectural consultancy and custom styling for luxury penthouses and premium residences.",
+    "__v": 0
+  },
+  {
+    "_id": "6a20e8ebe3e3cf36451867dc",
+    "name": "Delhi BuildTech",
+    "role": "Builder",
+    "location": "Dwarka, Delhi",
+    "rating": 4.6,
+    "experience": "11+ Years",
+    "contactEmail": "contact@delhibuildtech.com",
+    "phone": "+91 93005 56789",
+    "specialties": [
+      "Independent Floors",
+      "Basement Construction"
+    ],
+    "description": "Turnkey builders specialized in custom builder floors, basement design, and earthquake-proof building techniques.",
+    "__v": 0
+  },
+  {
+    "_id": "6a20e8ebe3e3cf36451867dd",
+    "name": "Capital Arch Partners",
+    "role": "Architect",
+    "location": "Connaught Place, Delhi",
+    "rating": 4.8,
+    "experience": "15+ Years",
+    "contactEmail": "info@capitalarch.com",
+    "phone": "+91 92006 67890",
+    "specialties": [
+      "Modernist",
+      "Heritage Restoration",
+      "Vastu Compliant"
+    ],
+    "description": "Professional architectural planning integrated with Vastu guidelines and structural safety certificates.",
+    "__v": 0
+  }
+]

@@ -2,24 +2,21 @@
 const path = require('path');
 const dotenv = require('dotenv');
 dotenv.config({ path: path.resolve(__dirname, '.env') });
-const Module = require('module');
-const mongooseShimPath = path.resolve(__dirname, './utils/mongooseShim');
-const originalRequire = Module.prototype.require;
-Module.prototype.require = function (id) {
-    if (id === 'mongoose') {
-        return originalRequire.call(this, mongooseShimPath);
-    }
-    return originalRequire.apply(this, arguments);
-};
-
+const fs = require('fs');
 const express = require('express');
 const cors = require('cors');
 const connectDB = require('./config/db');
 const apiRoutes = require('./routes/api');
 
-
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+// Ensure local uploads directory exists
+const uploadsDir = path.resolve(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+}
+app.use('/uploads', express.static(uploadsDir));
 
 connectDB();
 
@@ -35,7 +32,7 @@ app.use(cors({
                         /https?:\/\/(192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+|172\.(1[6-9]|2\d|3[0-1])\.\d+\.\d+)(:\d+)?$/.test(origin);
                         
         const isAllowed = isLocal || 
-                          origin === 'https://gkconstructease.vercel.app' || 
+                          origin.includes('vercel.app') || 
                           origin.startsWith('chrome-extension://') || 
                           origin.startsWith('capacitor://');
                           

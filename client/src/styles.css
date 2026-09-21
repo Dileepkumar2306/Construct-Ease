@@ -29,30 +29,30 @@
 }
 
 .home-theme {
-    --primary-color: #f8fafc;
-    --secondary-color: #ffffff;
-    --accent-color: #2563eb; /* Vibrant Blue */
-    --accent-hover: #3b82f6;
-    --text-color: #0f172a;
-    --muted-color: #475569;
-    --bg-overlay: rgba(248, 250, 252, 0.88); /* Bright overlay for background image */
+    --primary-color: #0d1b2a;
+    --secondary-color: #1b263b;
+    --accent-color: #e0a96d; /* Vibrant Gold/Bronze */
+    --accent-hover: #ffcf96;
+    --text-color: #ffffff;
+    --muted-color: #b0c4de;
+    --bg-overlay: rgba(10, 14, 23, 0.7); /* Deep dark overlay for background image */
     
     /* Advanced Glassmorphism Variables */
-    --glass-bg: rgba(255, 255, 255, 0.75);
-    --glass-bg-hover: rgba(255, 255, 255, 0.9);
-    --glass-border: 1px solid rgba(15, 23, 42, 0.08);
-    --glass-border-hover: 1px solid rgba(37, 99, 235, 0.4);
-    --glass-shadow: 0 8px 32px 0 rgba(15, 23, 42, 0.06);
+    --glass-bg: rgba(20, 30, 48, 0.45);
+    --glass-bg-hover: rgba(30, 45, 70, 0.6);
+    --glass-border: 1px solid rgba(255, 255, 255, 0.15);
+    --glass-border-hover: 1px solid rgba(224, 169, 109, 0.5);
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
     --glass-blur: blur(16px);
 
     /* Form & Toast Variables */
-    --input-bg: rgba(255, 255, 255, 0.85);
-    --input-border: 1px solid rgba(15, 23, 42, 0.15);
-    --input-focus-bg: rgba(255, 255, 255, 0.95);
-    --input-focus-border: var(--accent-hover);
-    --input-focus-shadow: 0 0 15px rgba(37, 99, 235, 0.2);
-    --toast-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(209, 250, 229, 0.95) 100%);
-    --toast-color: #065f46;
+    --input-bg: rgba(0, 0, 0, 0.4);
+    --input-border: 1px solid rgba(255, 255, 255, 0.2);
+    --input-focus-bg: rgba(0, 0, 0, 0.6);
+    --input-focus-border: var(--accent-color);
+    --input-focus-shadow: 0 0 15px rgba(224, 169, 109, 0.3);
+    --toast-bg: linear-gradient(135deg, rgba(20, 30, 48, 0.85) 0%, rgba(6, 78, 59, 0.9) 100%);
+    --toast-color: #a7f3d0;
 }
 
 /* ==== RESET ==== */

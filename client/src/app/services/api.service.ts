@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { Observable, tap, map, catchError, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -40,6 +40,26 @@ export class ApiService {
     return !!this.currentUser;
   }
 
+  resolveMediaUrl(url: string | undefined | null): string {
+    if (!url) return '';
+    if (url.startsWith('data:')) return url;
+    
+    // Normalize localhost / 127.0.0.1 media URLs to static assets path
+    if (url.includes('localhost:5000/uploads/') || url.includes('127.0.0.1:5000/uploads/')) {
+      const match = url.match(/\/uploads\/(.+)$/);
+      if (match) {
+        return `/assets/uploads/${match[1]}`;
+      }
+    }
+    
+    // Normalize root-relative uploads path to assets path
+    if (url.startsWith('/uploads/')) {
+      return `/assets${url}`;
+    }
+    
+    return url;
+  }
+
   setActiveLocation(location: string) {
     this.activeLocation = location;
     localStorage.setItem('user_location', location);
@@ -59,7 +79,7 @@ export class ApiService {
     );
   }
 
-  customerLogin(credentials: { email: string; password: string; name?: string }): Observable<any> {
+  customerLogin(credentials: { email?: string; phone?: string; password: string; name?: string }): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/auth/customer-login`, credentials).pipe(
       tap(res => {
         if (res.user && res.token) {
@@ -71,6 +91,18 @@ export class ApiService {
     );
   }
 
+  customerRegister(data: any): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/auth/customer-register`, data);
+  }
+
+  sendOtp(phone: string): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/auth/send-otp`, { phone });
+  }
+
+  verifyOtp(phone: string, otp: string): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/auth/verify-otp`, { phone, otp });
+  }
+
   logout() {
     this.currentUser = null;
     localStorage.removeItem('current_user');
@@ -80,11 +112,21 @@ export class ApiService {
   // ── DATA METHODS ────────────────────────────────────────────────────────────
 
   getTemplates(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/templates`);
+    return this.http.get<any[]>(`${this.baseUrl}/templates`).pipe(
+      catchError(err => {
+        console.warn('Backend /templates unavailable, loading fallback templates:', err);
+        return this.http.get<any[]>('/assets/data/templates.json').pipe(catchError(() => of([])));
+      })
+    );
   }
 
   getBhkDetails(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/bhk-details`);
+    return this.http.get<any[]>(`${this.baseUrl}/bhk-details`).pipe(
+      catchError(err => {
+        console.warn('Backend /bhk-details unavailable, loading fallback bhk details:', err);
+        return this.http.get<any[]>('/assets/data/bhk_details.json').pipe(catchError(() => of([])));
+      })
+    );
   }
 
   uploadTemplate(template: any): Observable<any> {
@@ -96,7 +138,24 @@ export class ApiService {
   }
 
   getPromotions(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/promotions`);
+    return this.http.get<any[]>(`${this.baseUrl}/promotions`).pipe(
+      map(list => (list || []).map(p => ({
+        ...p,
+        imageUrl: this.resolveMediaUrl(p.imageUrl),
+        videoUrl: this.resolveMediaUrl(p.videoUrl)
+      }))),
+      catchError(err => {
+        console.warn('Backend /promotions unavailable, loading fallback promotions:', err);
+        return this.http.get<any[]>('/assets/data/promotions.json').pipe(
+          map(list => (list || []).map(p => ({
+            ...p,
+            imageUrl: this.resolveMediaUrl(p.imageUrl),
+            videoUrl: this.resolveMediaUrl(p.videoUrl)
+          }))),
+          catchError(() => of([]))
+        );
+      })
+    );
   }
 
   createPromotion(promo: any): Observable<any> {
@@ -189,7 +248,27 @@ export class ApiService {
     if (params.length > 0) {
       url += `?${params.join('&')}`;
     }
-    return this.http.get<any[]>(url);
+    return this.http.get<any[]>(url).pipe(
+      map(list => (list || []).map(item => ({
+        ...item,
+        imageUrl: this.resolveMediaUrl(item.imageUrl)
+      }))),
+      catchError(err => {
+        console.warn('Backend /portfolio unavailable, loading fallback portfolio:', err);
+        return this.http.get<any[]>('/assets/data/portfolio.json').pipe(
+          map(list => {
+            let items = list || [];
+            if (role) items = items.filter(i => i.role === role);
+            if (category) items = items.filter(i => i.category === category);
+            return items.map(item => ({
+              ...item,
+              imageUrl: this.resolveMediaUrl(item.imageUrl)
+            }));
+          }),
+          catchError(() => of([]))
+        );
+      })
+    );
   }
 
   createPortfolioItem(item: any): Observable<any> {
@@ -212,7 +291,24 @@ export class ApiService {
     if (params.length > 0) {
       url += `?${params.join('&')}`;
     }
-    return this.http.get<any[]>(url);
+    return this.http.get<any[]>(url).pipe(
+      catchError(err => {
+        console.warn('Backend /professionals unavailable, loading fallback professionals:', err);
+        return this.http.get<any[]>('/assets/data/professionals.json').pipe(
+          map(list => {
+            let items = list || [];
+            if (location && location !== 'All') {
+              items = items.filter(p => !p.location || p.location.toLowerCase().includes(location.toLowerCase()));
+            }
+            if (role && role !== 'All') {
+              items = items.filter(p => !p.role || p.role.toLowerCase() === role.toLowerCase());
+            }
+            return items;
+          }),
+          catchError(() => of([]))
+        );
+      })
+    );
   }
 
   sendInquiry(inquiryData: any): Observable<any> {

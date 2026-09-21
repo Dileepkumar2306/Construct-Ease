@@ -1,0 +1,146 @@
+[
+  {
+    "_id": "6a20f23ce4d4aef42d012949",
+    "name": "Modern Minimalist",
+    "area": 1200,
+    "style": "Modern",
+    "image_url": "/assets/images/template1.png",
+    "bedrooms": "3",
+    "duration": "8 Months",
+    "highlights": [
+      "Premium cross-ventilation layout",
+      "Vastu-compliant entrance and kitchen positioning",
+      "Double-glazed window paneling for maximum soundproofing",
+      "Spacious modular kitchen utility area"
+    ],
+    "materials": {
+      "cement": "600 Bags",
+      "steel": "5.4 Tons",
+      "sand": "1620 CFT",
+      "aggregate": "1980 CFT",
+      "bricks": "12000 Pcs"
+    },
+    "createdAt": "2026-06-04T03:34:20.504Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a20f23ce4d4aef42d01294a",
+    "name": "Cozy Cottage",
+    "area": 900,
+    "style": "Classic",
+    "image_url": "/assets/images/template2.png",
+    "bedrooms": "2",
+    "duration": "5 Months",
+    "highlights": [
+      "Traditional sloped shingle roof design",
+      "Vastu-compliant entrance and kitchen positioning",
+      "Cozy fireplace feature in living room",
+      "High ceiling wooden panel design"
+    ],
+    "materials": {
+      "cement": "450 Bags",
+      "steel": "4.1 Tons",
+      "sand": "1215 CFT",
+      "aggregate": "1485 CFT",
+      "bricks": "9000 Pcs"
+    },
+    "createdAt": "2026-06-04T03:34:20.505Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a20f23ce4d4aef42d01294b",
+    "name": "Classic Luxury Villa",
+    "area": 3500,
+    "style": "Premium",
+    "image_url": "/assets/images/template3.png",
+    "bedrooms": "4",
+    "duration": "12 Months",
+    "highlights": [
+      "Grand double-height foyer entrance",
+      "Vastu-compliant entrance and kitchen positioning",
+      "Private rooftop terrace and landscaped courtyard",
+      "Engineered hardwood flooring and marble finishes"
+    ],
+    "materials": {
+      "cement": "1750 Bags",
+      "steel": "15.8 Tons",
+      "sand": "4725 CFT",
+      "aggregate": "5775 CFT",
+      "bricks": "35000 Pcs"
+    },
+    "createdAt": "2026-06-04T03:34:20.505Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a20f23ce4d4aef42d01294c",
+    "name": "Modern High-Rise",
+    "area": 50000,
+    "style": "High-Rise Residential",
+    "image_url": "/assets/images/high_rise.png",
+    "bedrooms": "4",
+    "duration": "12 Months",
+    "highlights": [
+      "Reinforced earthquake-resistant frame construction",
+      "Vastu-compliant entrance and kitchen positioning",
+      "Premium sound insulation between apartments",
+      "Central fire protection and ventilation systems"
+    ],
+    "materials": {
+      "cement": "25000 Bags",
+      "steel": "225.0 Tons",
+      "sand": "67500 CFT",
+      "aggregate": "82500 CFT",
+      "bricks": "500000 Pcs"
+    },
+    "createdAt": "2026-06-04T03:34:20.505Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a20f23ce4d4aef42d01294d",
+    "name": "Ultra Modern Luxury Villa",
+    "area": 4500,
+    "style": "Premium Modern",
+    "image_url": "/assets/images/luxury_villa.png",
+    "bedrooms": "4",
+    "duration": "12 Months",
+    "highlights": [
+      "Integrated infinity pool and patio deck",
+      "Vastu-compliant entrance and kitchen positioning",
+      "Smart automated climate and security console",
+      "State-of-the-art cantilever structural features"
+    ],
+    "materials": {
+      "cement": "2250 Bags",
+      "steel": "20.3 Tons",
+      "sand": "6075 CFT",
+      "aggregate": "7425 CFT",
+      "bricks": "45000 Pcs"
+    },
+    "createdAt": "2026-06-04T03:34:20.505Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a20f23ce4d4aef42d01294e",
+    "name": "Urban Eco House",
+    "area": 2200,
+    "style": "Urban Modern",
+    "image_url": "/assets/images/urban_house.png",
+    "bedrooms": "3",
+    "duration": "8 Months",
+    "highlights": [
+      "Passive solar cooling and ventilation design",
+      "Vastu-compliant entrance and kitchen positioning",
+      "Rainwater harvesting and greywater recycling integration",
+      "Recycled steel frames and non-toxic paint finishes"
+    ],
+    "materials": {
+      "cement": "1100 Bags",
+      "steel": "9.9 Tons",
+      "sand": "2970 CFT",
+      "aggregate": "3630 CFT",
+      "bricks": "22000 Pcs"
+    },
+    "createdAt": "2026-06-04T03:34:20.505Z",
+    "__v": 0
+  }
+]

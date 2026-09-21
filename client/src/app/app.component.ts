@@ -21,13 +21,6 @@ export class AppComponent {
   constructor() {
     this.router.events.subscribe(() => {
       this.isHome = this.router.url === '/' || this.router.url.split('?')[0] === '/';
-      if (typeof document !== 'undefined') {
-        if (this.isHome) {
-          document.body.classList.add('home-theme');
-        } else {
-          document.body.classList.remove('home-theme');
-        }
-      }
     });
   }
 

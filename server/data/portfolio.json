@@ -1,0 +1,68 @@
+[
+  {
+    "_id": "6a17b66a28b04ae5c739209f",
+    "title": "modern house",
+    "description": "swimming pool",
+    "role": "customer",
+    "category": "idea",
+    "imageUrl": "/assets/uploads/portfolio_customer_modern_house_1789983958544_2btk7z.jpg",
+    "author": "House Owner",
+    "createdAt": "2026-05-28T03:28:42.679Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a17b70c28b04ae5c73920a1",
+    "title": "4BHK",
+    "description": "2000sqpt",
+    "role": "architect",
+    "category": "design",
+    "imageUrl": "/assets/uploads/portfolio_architect_4bhk_1789983958555_aj7m4y.jpg",
+    "author": "Ar. Raghav Rao",
+    "createdAt": "2026-05-28T03:31:24.321Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a17b79d28b04ae5c73920a2",
+    "title": "hall",
+    "description": "furniture from IKEA",
+    "role": "interior",
+    "category": "interior_design",
+    "imageUrl": "/assets/uploads/portfolio_interior_hall_1789983958561_akk02y.jpg",
+    "author": "Heritage Craft Interiors",
+    "createdAt": "2026-05-28T03:33:49.339Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a17b7f028b04ae5c73920a3",
+    "title": "TV area or hall",
+    "description": "materials used form imported furinture and designed by owners choice",
+    "role": "interior",
+    "category": "interior_design",
+    "imageUrl": "/assets/uploads/portfolio_interior_tv_area_or_hall_1789983958567_a2vuw6.jpg",
+    "author": "Heritage Craft Interiors",
+    "createdAt": "2026-05-28T03:35:12.169Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a17b8ae28b04ae5c73920a4",
+    "title": "DK residency",
+    "description": "completed outside plasting and now working on inside plasting",
+    "role": "builder",
+    "category": "construction",
+    "imageUrl": "/assets/uploads/portfolio_builder_dk_residency_1789983958573_9vhy3m.jpg",
+    "author": "Elite Construction Builders",
+    "createdAt": "2026-05-28T03:38:22.183Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a19113f9c50b9b23aa79bb5",
+    "title": "3BHK",
+    "description": "Appartment",
+    "role": "architect",
+    "category": "design",
+    "imageUrl": "/assets/uploads/portfolio_architect_3bhk_1789983958581_7bwjzx.jpg",
+    "author": "Ar. Raghav Rao",
+    "createdAt": "2026-05-29T04:08:31.392Z",
+    "__v": 0
+  }
+]

@@ -3,6 +3,32 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const PortfolioItem = require('../models/PortfolioItem');
 
+const path = require('path');
+const fs = require('fs');
+
+let inMemoryPortfolio = null;
+
+function getFallbackPortfolio(role, category) {
+    if (!inMemoryPortfolio) {
+        try {
+            const filePath = path.resolve(__dirname, '../data/portfolio.json');
+            if (fs.existsSync(filePath)) {
+                inMemoryPortfolio = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+            }
+        } catch (e) {
+            console.warn('Could not read fallback portfolio:', e.message);
+        }
+    }
+    let list = inMemoryPortfolio || getMockItems();
+    if (role) {
+        list = list.filter(m => m.role === role);
+    }
+    if (category) {
+        list = list.filter(m => m.category === category);
+    }
+    return list;
+}
+
 // GET /api/portfolio - Get portfolio items (filtered by role/category if provided)
 router.get('/', async (req, res) => {
     try {
@@ -13,15 +39,19 @@ router.get('/', async (req, res) => {
 
         let items = [];
         if (mongoose.connection.readyState === 1) {
-            items = await PortfolioItem.find(filter).sort({ createdAt: -1 });
-        } else {
-            // Default mock items if DB not connected
-            items = getMockItems(role);
+            try {
+                items = await PortfolioItem.find(filter).sort({ createdAt: -1 });
+            } catch (dbErr) {
+                console.warn("DB query failed, using fallback portfolio:", dbErr.message);
+            }
+        }
+        if (!items || items.length === 0) {
+            items = getFallbackPortfolio(role, category);
         }
         res.json(items);
     } catch (err) {
-        console.error("Error fetching portfolio items:", err);
-        res.status(500).json({ error: "Server error" });
+        console.error("Error fetching portfolio items, returning fallback:", err);
+        res.json(getFallbackPortfolio(req.query.role, req.query.category));
     }
 });
 
@@ -37,10 +67,17 @@ router.post('/', async (req, res) => {
 
         let savedItem;
         if (mongoose.connection.readyState === 1) {
-            const item = new PortfolioItem(newItemData);
-            savedItem = await item.save();
-        } else {
-            savedItem = { ...newItemData, _id: 'mock_' + Math.random().toString(36).substr(2, 9), createdAt: new Date() };
+            try {
+                const item = new PortfolioItem(newItemData);
+                savedItem = await item.save();
+            } catch (dbErr) {
+                console.warn("DB save failed, using in-memory portfolio item:", dbErr.message);
+            }
+        }
+        if (!savedItem) {
+            savedItem = { ...newItemData, _id: 'portfolio_' + Math.random().toString(36).substr(2, 9), createdAt: new Date() };
+            if (!inMemoryPortfolio) getFallbackPortfolio();
+            if (inMemoryPortfolio) inMemoryPortfolio.unshift(savedItem);
         }
 
         res.status(201).json(savedItem);
