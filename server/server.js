@@ -11,12 +11,18 @@ const apiRoutes = require('./routes/api');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Ensure local uploads directory exists
-const uploadsDir = path.resolve(__dirname, 'uploads');
-if (!fs.existsSync(uploadsDir)) {
-    fs.mkdirSync(uploadsDir, { recursive: true });
+// Ensure local uploads directory exists (safely skipped in Vercel serverless)
+if (!process.env.VERCEL) {
+    try {
+        const uploadsDir = path.resolve(__dirname, 'uploads');
+        if (!fs.existsSync(uploadsDir)) {
+            fs.mkdirSync(uploadsDir, { recursive: true });
+        }
+        app.use('/uploads', express.static(uploadsDir));
+    } catch (err) {
+        console.warn('[Uploads] Could not initialize local directory:', err.message);
+    }
 }
-app.use('/uploads', express.static(uploadsDir));
 
 connectDB();
 

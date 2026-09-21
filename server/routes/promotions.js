@@ -11,13 +11,16 @@ let inMemoryPromotions = null;
 const getFallbackPromotions = () => {
     if (inMemoryPromotions) return inMemoryPromotions;
     try {
-        const filePath = path.resolve(__dirname, '../data/promotions.json');
-        if (fs.existsSync(filePath)) {
-            inMemoryPromotions = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-            return inMemoryPromotions;
-        }
+        inMemoryPromotions = require('../data/promotions.json');
+        return inMemoryPromotions;
     } catch (e) {
-        console.warn('Could not read fallback promotions:', e.message);
+        try {
+            const filePath = path.resolve(__dirname, '../data/promotions.json');
+            if (fs.existsSync(filePath)) {
+                inMemoryPromotions = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+                return inMemoryPromotions;
+            }
+        } catch (err) {}
     }
     return [
         {

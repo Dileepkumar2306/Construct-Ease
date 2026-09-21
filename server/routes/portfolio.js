@@ -11,12 +11,14 @@ let inMemoryPortfolio = null;
 function getFallbackPortfolio(role, category) {
     if (!inMemoryPortfolio) {
         try {
-            const filePath = path.resolve(__dirname, '../data/portfolio.json');
-            if (fs.existsSync(filePath)) {
-                inMemoryPortfolio = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-            }
+            inMemoryPortfolio = require('../data/portfolio.json');
         } catch (e) {
-            console.warn('Could not read fallback portfolio:', e.message);
+            try {
+                const filePath = path.resolve(__dirname, '../data/portfolio.json');
+                if (fs.existsSync(filePath)) {
+                    inMemoryPortfolio = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+                }
+            } catch (err) {}
         }
     }
     let list = inMemoryPortfolio || getMockItems();

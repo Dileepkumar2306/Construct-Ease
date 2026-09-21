@@ -13,12 +13,14 @@ const Quote = require('../models/Quote');
 
 function loadFallbackData(filename, defaultFallback) {
     try {
-        const filePath = path.resolve(__dirname, '../data', filename);
-        if (fs.existsSync(filePath)) {
-            return JSON.parse(fs.readFileSync(filePath, 'utf8'));
-        }
+        return require(`../data/${filename}`);
     } catch (e) {
-        console.warn(`Could not load fallback data for ${filename}:`, e.message);
+        try {
+            const filePath = path.resolve(__dirname, '../data', filename);
+            if (fs.existsSync(filePath)) {
+                return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+            }
+        } catch (err) {}
     }
     return defaultFallback;
 }
