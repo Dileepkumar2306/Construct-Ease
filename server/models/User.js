@@ -16,6 +16,8 @@ const UserSchema = new mongoose.Schema({
         enum:    ['customer', 'architect', 'builder', 'interior', 'admin', 'owner'],
         default: 'customer'
     },
+    googleId:   { type: String, sparse: true },
+    avatar:     { type: String, default: '' },
     isVerified: { type: Boolean, default: false },
     createdAt:  { type: Date,    default: Date.now },
     lastLogin:  { type: Date,    default: null }

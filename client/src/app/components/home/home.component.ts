@@ -17,8 +17,12 @@ export class HomeComponent {
   activeRoleSlide = 0;
   activeStepSlide = 0;
 
+  openAuthModal(mode: 'register' | 'login' = 'register') {
+    this.apiService.openAuthModal(mode);
+  }
+
   openLoginModal() {
-    this.apiService.isLoginModalOpen = true;
+    this.apiService.openAuthModal('login');
   }
 
   onScroll(event: any, type: 'welcome' | 'roles' | 'steps') {

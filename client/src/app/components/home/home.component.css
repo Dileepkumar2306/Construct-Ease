@@ -74,18 +74,31 @@
 }
 
 .btn-quote-now {
-    background: transparent !important;
-    border: 2px solid #ffffff !important;
+    background: linear-gradient(135deg, #10b981, #059669) !important;
+    border: none !important;
     color: #ffffff !important;
-    box-shadow: none !important;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3) !important;
 }
 
 .btn-quote-now:hover {
-    background: rgba(224, 169, 109, 0.2) !important;
+    background: linear-gradient(135deg, #34d399, #10b981) !important;
     color: #ffffff !important;
-    border-color: var(--accent-color) !important;
     transform: translateY(-3px) scale(1.02);
-    box-shadow: 0 8px 25px rgba(224, 169, 109, 0.3) !important;
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.45) !important;
+}
+
+.btn-login-hero {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.4) !important;
+    color: #ffffff !important;
+    backdrop-filter: blur(10px);
+}
+
+.btn-login-hero:hover {
+    background: rgba(255, 255, 255, 0.22) !important;
+    border-color: #ffffff !important;
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3) !important;
 }
 
 /* ==== OVERLAPPING HIGHLIGHT GRID (Induzy Style) ==== */

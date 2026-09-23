@@ -50,9 +50,16 @@
                 <a href="tel:+919000089996" style="color: inherit; font-weight: inherit;">+91 90000 89996</a>
             </div>
             
-            <!-- Auth / User Status Button -->
+            <!-- Auth / User Status Actions -->
             <ng-container *ngIf="!apiService.isLoggedIn">
-                <button class="btn-utility-quote" (click)="openLoginModal('customer')"><i class="fa-solid fa-right-to-bracket"></i> Login</button>
+                <div class="auth-btn-group">
+                    <button class="btn-utility-reg" (click)="openAuthModal('register')">
+                        <i class="fa-solid fa-user-plus"></i> Register
+                    </button>
+                    <button class="btn-utility-quote" (click)="openAuthModal('login')">
+                        <i class="fa-solid fa-right-to-bracket"></i> Login
+                    </button>
+                </div>
             </ng-container>
             <ng-container *ngIf="apiService.isLoggedIn">
                 <div class="user-logged-badge">
@@ -86,7 +93,7 @@
     </div>
 </nav>
 
-<!-- Floating Connect Sidebar (Bollanos Reference) -->
+<!-- Floating Connect Sidebar -->
 <div class="floating-sidebar">
     <div class="sidebar-label">CONNECT</div>
     <div class="sidebar-links">
@@ -131,7 +138,10 @@
             <h3>CONTACT US TODAY</h3>
             <div class="footer-contact-item">
                 <i class="fa-solid fa-location-dot"></i>
-                <span>Kandukur, Prakasam District, Andhra Pradesh</span>
+                <span>
+                    GK CONSTRUCTIONS - TELANGANA<br>
+                    GK BUILDERS - KARNATAKA
+                </span>
             </div>
             <div class="footer-contact-item">
                 <i class="fa-solid fa-envelope"></i>
@@ -167,75 +177,279 @@
     </div>
 </footer>
 
-<!-- Dual-Role Glassmorphic Authentication Modal -->
-<div class="modal-overlay" *ngIf="apiService.isLoginModalOpen" (click)="closeLoginModal()">
-    <div class="glass-modal animate auth-modal" (click)="$event.stopPropagation()">
-        <button class="modal-close-btn" (click)="closeLoginModal()">&times;</button>
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- UNIFIED GLASSMORHPIC AUTHENTICATION MODAL (REGISTER FIRST -> THEN LOGIN)     -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" *ngIf="apiService.isLoginModalOpen" (click)="closeAuthModal()">
+    <div class="glass-modal animate auth-modal-v2" (click)="$event.stopPropagation()">
+        <button class="modal-close-btn" (click)="closeAuthModal()" aria-label="Close modal">&times;</button>
         
+        <!-- Header Section -->
         <div class="modal-header">
-            <h2><i class="fa-solid fa-shield-halved text-accent"></i> Welcome to Construct Ease</h2>
-            <p>Select your account type to log in or register</p>
+            <h2>
+                <i class="fa-solid" [ngClass]="authModalMode === 'register' ? 'fa-user-plus text-accent' : 'fa-shield-halved text-accent'"></i>
+                {{ authModalMode === 'register' ? 'Create New Account' : 'Welcome to Construct Ease' }}
+            </h2>
+            <p>
+                {{ authModalMode === 'register' ? 'Register with your mobile & email to unlock premium construction tools' : 'Sign in to access your dashboard, quotes, and AI tools' }}
+            </p>
         </div>
 
-        <!-- Role Switcher Tabs -->
-        <div class="auth-tabs">
-            <button class="auth-tab-btn" [class.active]="activeAuthTab === 'customer'" (click)="switchAuthTab('customer')">
-                <i class="fa-solid fa-user"></i> Customer / Visitor
+        <!-- Primary Mode Switcher (Register vs Login) -->
+        <div class="auth-mode-switch">
+            <button type="button" class="mode-switch-btn" [class.active-mode]="authModalMode === 'register'" (click)="switchAuthMode('register')">
+                <i class="fa-solid fa-user-plus"></i> 1. Register (New User)
             </button>
-            <button class="auth-tab-btn owner-tab" [class.active]="activeAuthTab === 'owner'" (click)="switchAuthTab('owner')">
-                <i class="fa-solid fa-building-user"></i> Company Owner
+            <button type="button" class="mode-switch-btn" [class.active-mode]="authModalMode === 'login'" (click)="switchAuthMode('login')">
+                <i class="fa-solid fa-right-to-bracket"></i> 2. Login (Existing User)
             </button>
         </div>
 
-        <!-- Error Message Alert -->
-        <div class="auth-error-alert" *ngIf="authErrorMessage">
-            <i class="fa-solid fa-circle-exclamation"></i> {{ authErrorMessage }}
+        <!-- Success Alert Notification -->
+        <div class="auth-success-alert animate" *ngIf="authSuccessMessage">
+            <i class="fa-solid fa-circle-check"></i>
+            <div>{{ authSuccessMessage }}</div>
         </div>
 
-        <!-- TAB 1: Customer / Visitor Login (Email & Password) -->
-        <form (ngSubmit)="submitCustomerLogin()" *ngIf="activeAuthTab === 'customer'" class="modal-form">
-            <div class="form-group">
-                <label for="custEmail">Email Address *</label>
-                <input type="email" id="custEmail" name="email" [(ngModel)]="customerForm.email" required class="form-control" placeholder="e.g. customer@example.com">
+        <!-- Error Alert Notification -->
+        <div class="auth-error-alert animate" *ngIf="authErrorMessage">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <div>{{ authErrorMessage }}</div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <!-- VIEW 1: CUSTOMER REGISTRATION FORM                                 -->
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <div *ngIf="authModalMode === 'register'" class="auth-view-container animate">
+            <form (ngSubmit)="submitCustomerRegister()" class="modal-form">
+                
+                <!-- Full Name -->
+                <div class="form-group">
+                    <label for="regName">Full Name *</label>
+                    <div class="input-icon-wrapper">
+                        <i class="fa-solid fa-user input-icon"></i>
+                        <input type="text" id="regName" name="name" [(ngModel)]="registerForm.name" required class="form-control with-icon" placeholder="e.g. Kondal Chowdary">
+                    </div>
+                </div>
+
+                <!-- Customer Mobile Number -->
+                <div class="form-group">
+                    <label for="regPhone">Mobile Number (10 Digits) *</label>
+                    <div class="input-icon-wrapper">
+                        <i class="fa-solid fa-phone input-icon"></i>
+                        <input type="tel" id="regPhone" name="phone" [(ngModel)]="registerForm.phone" maxlength="10" required class="form-control with-icon" placeholder="e.g. 9000089996">
+                    </div>
+                </div>
+
+                <!-- Customer Email ID -->
+                <div class="form-group">
+                    <label for="regEmail">Email Address *</label>
+                    <div class="input-icon-wrapper">
+                        <i class="fa-solid fa-envelope input-icon"></i>
+                        <input type="email" id="regEmail" name="email" [(ngModel)]="registerForm.email" required class="form-control with-icon" placeholder="e.g. customer@example.com">
+                    </div>
+                </div>
+
+                <!-- Password -->
+                <div class="form-group">
+                    <label for="regPassword">Password (Min 6 Characters) *</label>
+                    <div class="input-icon-wrapper">
+                        <i class="fa-solid fa-lock input-icon"></i>
+                        <input [type]="showRegisterPassword ? 'text' : 'password'" id="regPassword" name="password" [(ngModel)]="registerForm.password" required class="form-control with-icon with-eye" placeholder="Create a strong password">
+                        <button type="button" class="btn-toggle-eye" (click)="showRegisterPassword = !showRegisterPassword" tabindex="-1">
+                            <i class="fa-solid" [ngClass]="showRegisterPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Confirm Password -->
+                <div class="form-group">
+                    <label for="regConfirmPassword">Confirm Password *</label>
+                    <div class="input-icon-wrapper">
+                        <i class="fa-solid fa-shield-halved input-icon"></i>
+                        <input [type]="showConfirmPassword ? 'text' : 'password'" id="regConfirmPassword" name="confirmPassword" [(ngModel)]="registerForm.confirmPassword" required class="form-control with-icon with-eye" placeholder="Re-type your password">
+                        <button type="button" class="btn-toggle-eye" (click)="showConfirmPassword = !showConfirmPassword" tabindex="-1">
+                            <i class="fa-solid" [ngClass]="showConfirmPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-submit btn-reg-submit" [disabled]="isAuthenticating">
+                    <span *ngIf="!isAuthenticating"><i class="fa-solid fa-user-check"></i> Register as Customer</span>
+                    <span *ngIf="isAuthenticating"><i class="fa-solid fa-circle-notch fa-spin"></i> Registering Account...</span>
+                </button>
+            </form>
+
+            <!-- Social / Direct Google Sign-Up Option -->
+            <div class="auth-divider">
+                <span>OR SIGN UP DIRECTLY</span>
             </div>
+
+            <button type="button" class="btn-google-auth" (click)="triggerGoogleAuth()" [disabled]="isAuthenticating">
+                <svg class="google-svg-icon" viewBox="0 0 24 24" width="20" height="20">
+                    <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/>
+                    <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.26v3.15C3.25 21.36 7.33 24 12 24z"/>
+                    <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.26C.46 8.17 0 9.96 0 12s.46 3.83 1.26 5.42l4.02-3.15z"/>
+                    <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.25 2.64 1.26 6.58l4.02 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
+                </svg>
+                <span>Continue with Google</span>
+            </button>
+
+            <!-- Bottom Prompt to Switch to Login -->
+            <div class="auth-footer-prompt">
+                <span>Already registered?</span>
+                <button type="button" class="link-switch-auth" (click)="switchAuthMode('login')">
+                    Log In with Email & Password <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <!-- VIEW 2: LOGIN FORM (CUSTOMER / OWNER)                              -->
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <div *ngIf="authModalMode === 'login'" class="auth-view-container animate">
             
-            <div class="form-group">
-                <label for="custPassword">Password *</label>
-                <input type="password" id="custPassword" name="password" [(ngModel)]="customerForm.password" required class="form-control" placeholder="Enter your password">
+            <!-- Sub-Role Selector for Login -->
+            <div class="auth-tabs">
+                <button type="button" class="auth-tab-btn" [class.active]="activeAuthTab === 'customer'" (click)="switchAuthTab('customer')">
+                    <i class="fa-solid fa-user"></i> Customer / Visitor
+                </button>
+                <button type="button" class="auth-tab-btn owner-tab" [class.active]="activeAuthTab === 'owner'" (click)="switchAuthTab('owner')">
+                    <i class="fa-solid fa-building-user"></i> Company Owner
+                </button>
             </div>
 
-            <div class="form-group">
-                <label for="custName">Your Name (Optional)</label>
-                <input type="text" id="custName" name="name" [(ngModel)]="customerForm.name" class="form-control" placeholder="e.g. John Doe">
-            </div>
+            <!-- TAB 1: Customer Login (Email / Mobile + Password) -->
+            <form (ngSubmit)="submitCustomerLogin()" *ngIf="activeAuthTab === 'customer'" class="modal-form">
+                <div class="form-group">
+                    <label for="loginIdentifier">Email Address or Mobile Number *</label>
+                    <div class="input-icon-wrapper">
+                        <i class="fa-solid fa-user-check input-icon"></i>
+                        <input type="text" id="loginIdentifier" name="identifier" [(ngModel)]="customerLoginForm.identifier" required class="form-control with-icon" placeholder="e.g. customer@example.com or 9000089996">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="loginPassword">Password *</label>
+                    <div class="input-icon-wrapper">
+                        <i class="fa-solid fa-lock input-icon"></i>
+                        <input [type]="showLoginPassword ? 'text' : 'password'" id="loginPassword" name="password" [(ngModel)]="customerLoginForm.password" required class="form-control with-icon with-eye" placeholder="Enter your password">
+                        <button type="button" class="btn-toggle-eye" (click)="showLoginPassword = !showLoginPassword" tabindex="-1">
+                            <i class="fa-solid" [ngClass]="showLoginPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+                        </button>
+                    </div>
+                </div>
 
-            <button type="submit" class="btn btn-submit" [disabled]="isAuthenticating">
-                <span *ngIf="!isAuthenticating"><i class="fa-solid fa-right-to-bracket"></i> Login as Customer</span>
-                <span *ngIf="isAuthenticating"><i class="fa-solid fa-circle-notch fa-spin"></i> Verifying...</span>
-            </button>
-        </form>
+                <button type="submit" class="btn btn-submit" [disabled]="isAuthenticating">
+                    <span *ngIf="!isAuthenticating"><i class="fa-solid fa-right-to-bracket"></i> Login as Customer</span>
+                    <span *ngIf="isAuthenticating"><i class="fa-solid fa-circle-notch fa-spin"></i> Verifying Credentials...</span>
+                </button>
 
-        <!-- TAB 2: Company Owner Login (Mobile Number & Password) -->
-        <form (ngSubmit)="submitOwnerLogin()" *ngIf="activeAuthTab === 'owner'" class="modal-form">
-            <div class="form-group">
-                <label for="ownerPhone">Mobile Number *</label>
-                <input type="tel" id="ownerPhone" name="phone" [(ngModel)]="ownerForm.phone" required class="form-control" placeholder="e.g. 9000089996">
-            </div>
-            
-            <div class="form-group">
-                <label for="ownerPassword">Password *</label>
-                <input type="password" id="ownerPassword" name="password" [(ngModel)]="ownerForm.password" required class="form-control" placeholder="Enter owner password">
-            </div>
+                <!-- Social / Direct Google Login Option -->
+                <div class="auth-divider">
+                    <span>OR LOGIN INSTANTLY</span>
+                </div>
 
-            <div class="form-group">
-                <label for="ownerName">Company / Owner Name (Optional)</label>
-                <input type="text" id="ownerName" name="name" [(ngModel)]="ownerForm.name" class="form-control" placeholder="e.g. GK Constructions Owner">
-            </div>
+                <button type="button" class="btn-google-auth" (click)="triggerGoogleAuth()" [disabled]="isAuthenticating">
+                    <svg class="google-svg-icon" viewBox="0 0 24 24" width="20" height="20">
+                        <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/>
+                        <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.26v3.15C3.25 21.36 7.33 24 12 24z"/>
+                        <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.26C.46 8.17 0 9.96 0 12s.46 3.83 1.26 5.42l4.02-3.15z"/>
+                        <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.25 2.64 1.26 6.58l4.02 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
+                    </svg>
+                    <span>Sign in with Google</span>
+                </button>
 
-            <button type="submit" class="btn btn-submit owner-submit-btn" [disabled]="isAuthenticating">
-                <span *ngIf="!isAuthenticating"><i class="fa-solid fa-user-shield"></i> Login as Company Owner</span>
-                <span *ngIf="isAuthenticating"><i class="fa-solid fa-circle-notch fa-spin"></i> Authenticating Owner...</span>
-            </button>
-        </form>
+                <!-- Prompt to Switch to Register -->
+                <div class="auth-footer-prompt">
+                    <span>New to Construct Ease?</span>
+                    <button type="button" class="link-switch-auth" (click)="switchAuthMode('register')">
+                        Register Account First <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </form>
+
+            <!-- TAB 2: Company Owner Login (Mobile Number & Password) -->
+            <form (ngSubmit)="submitOwnerLogin()" *ngIf="activeAuthTab === 'owner'" class="modal-form">
+                <div class="form-group">
+                    <label for="ownerPhone">Mobile Number *</label>
+                    <div class="input-icon-wrapper">
+                        <i class="fa-solid fa-phone input-icon"></i>
+                        <input type="tel" id="ownerPhone" name="phone" [(ngModel)]="ownerForm.phone" required class="form-control with-icon" placeholder="e.g. 9000089996">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="ownerPassword">Password *</label>
+                    <div class="input-icon-wrapper">
+                        <i class="fa-solid fa-lock input-icon"></i>
+                        <input [type]="showOwnerPassword ? 'text' : 'password'" id="ownerPassword" name="password" [(ngModel)]="ownerForm.password" required class="form-control with-icon with-eye" placeholder="Enter owner password">
+                        <button type="button" class="btn-toggle-eye" (click)="showOwnerPassword = !showOwnerPassword" tabindex="-1">
+                            <i class="fa-solid" [ngClass]="showOwnerPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="ownerName">Company / Owner Name (Optional)</label>
+                    <div class="input-icon-wrapper">
+                        <i class="fa-solid fa-id-badge input-icon"></i>
+                        <input type="text" id="ownerName" name="name" [(ngModel)]="ownerForm.name" class="form-control with-icon" placeholder="e.g. GK Constructions Owner">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-submit owner-submit-btn" [disabled]="isAuthenticating">
+                    <span *ngIf="!isAuthenticating"><i class="fa-solid fa-user-shield"></i> Login as Company Owner</span>
+                    <span *ngIf="isAuthenticating"><i class="fa-solid fa-circle-notch fa-spin"></i> Authenticating Owner...</span>
+                </button>
+            </form>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <!-- GOOGLE INSTANT AUTHENTICATION DIALOG (FOR SMOOTH 1-CLICK FLOW)       -->
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <div class="google-prompt-overlay" *ngIf="showGooglePrompt" (click)="showGooglePrompt = false">
+            <div class="google-prompt-card animate" (click)="$event.stopPropagation()">
+                <div class="google-prompt-header">
+                    <svg class="google-svg-icon" viewBox="0 0 24 24" width="28" height="28">
+                        <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/>
+                        <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.26v3.15C3.25 21.36 7.33 24 12 24z"/>
+                        <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.26C.46 8.17 0 9.96 0 12s.46 3.83 1.26 5.42l4.02-3.15z"/>
+                        <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.25 2.64 1.26 6.58l4.02 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
+                    </svg>
+                    <div class="google-prompt-title">
+                        <h4>Sign in with Google</h4>
+                        <p>to continue to Construct Ease</p>
+                    </div>
+                </div>
+
+                <div class="google-account-quick-options">
+                    <!-- Option 1: One-Click Quick Google Account -->
+                    <button type="button" class="google-account-pill" (click)="executeGoogleLogin('dillu2354@gmail.com', 'Dileep Kumar')">
+                        <div class="google-avatar-circle">D</div>
+                        <div class="google-account-info">
+                            <strong>Dileep Kumar</strong>
+                            <span>dillu2354&#64;gmail.com</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-accent"></i>
+                    </button>
+
+                    <!-- Option 2: Custom Google Account Entry -->
+                    <div class="google-custom-entry">
+                        <label>Or enter any Google Email:</label>
+                        <div class="google-input-box">
+                            <input type="email" [(ngModel)]="googleCustomEmail" placeholder="yourname@gmail.com" class="form-control" (keyup.enter)="executeGoogleLogin()">
+                            <button class="btn btn-google-go" (click)="executeGoogleLogin()" [disabled]="!googleCustomEmail">
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" class="btn-cancel-google" (click)="showGooglePrompt = false">Cancel</button>
+            </div>
+        </div>
+
     </div>
 </div>

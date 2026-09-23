@@ -28,6 +28,8 @@ export class ApiService {
   private baseUrl = this.getBaseUrl();
   
   isLoginModalOpen = false;
+  authModalMode: 'register' | 'login' = 'register';
+  activeAuthTab: 'customer' | 'owner' = 'customer';
   activeLocation = localStorage.getItem('user_location') || 'Hyderabad';
   
   currentUser: any = JSON.parse(localStorage.getItem('current_user') || 'null');
@@ -38,6 +40,16 @@ export class ApiService {
 
   get isLoggedIn(): boolean {
     return !!this.currentUser;
+  }
+
+  openAuthModal(mode: 'register' | 'login' = 'register', tab: 'customer' | 'owner' = 'customer') {
+    this.authModalMode = mode;
+    this.activeAuthTab = tab;
+    this.isLoginModalOpen = true;
+  }
+
+  closeAuthModal() {
+    this.isLoginModalOpen = false;
   }
 
   resolveMediaUrl(url: string | undefined | null): string {
@@ -79,7 +91,7 @@ export class ApiService {
     );
   }
 
-  customerLogin(credentials: { email?: string; phone?: string; password: string; name?: string }): Observable<any> {
+  customerLogin(credentials: { identifier?: string; email?: string; phone?: string; password: string; name?: string }): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/auth/customer-login`, credentials).pipe(
       tap(res => {
         if (res.user && res.token) {
@@ -91,8 +103,20 @@ export class ApiService {
     );
   }
 
-  customerRegister(data: any): Observable<any> {
+  customerRegister(data: { name: string; email: string; phone: string; password: string }): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/auth/customer-register`, data);
+  }
+
+  googleLogin(googleData: { email: string; name?: string; googleId?: string; picture?: string }): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/auth/google-login`, googleData).pipe(
+      tap(res => {
+        if (res.user && res.token) {
+          this.currentUser = res.user;
+          localStorage.setItem('current_user', JSON.stringify(res.user));
+          localStorage.setItem('auth_token', res.token);
+        }
+      })
+    );
   }
 
   sendOtp(phone: string): Observable<any> {
